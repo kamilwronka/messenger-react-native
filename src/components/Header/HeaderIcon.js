@@ -1,5 +1,5 @@
-import React from 'react';
-import { TouchableOpacity, StyleSheet } from 'react-native';
+import React from "react";
+import { TouchableOpacity, StyleSheet } from "react-native";
 
 const HeaderIcon = props => {
   return (
@@ -13,7 +13,7 @@ export default HeaderIcon;
 
 const styles = StyleSheet.create({
   icon: {
-    position: 'absolute',
-    right: 20,
-  },
+    position: "absolute",
+    right: 20
+  }
 });

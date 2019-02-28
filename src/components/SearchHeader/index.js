@@ -1,42 +1,42 @@
-import React, { Component } from 'react';
-import { View, StyleSheet, TouchableWithoutFeedback, Text } from 'react-native';
-// import { Ionicons } from '@expo/vector-icons';
-import { withNavigation } from 'react-navigation';
+import React, { Component } from "react";
+import { View, StyleSheet, TouchableWithoutFeedback, Text } from "react-native";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import { withNavigation } from "react-navigation";
 
 const styles = StyleSheet.create({
   container: {
     // borderColor: '#cccccc',
     // borderWidth: 1,
     height: 42,
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#f0f0f0',
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#f0f0f0",
     borderRadius: 21,
     paddingHorizontal: 15,
     marginBottom: 20,
-    marginHorizontal: 25,
+    marginHorizontal: 25
   },
   search: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: "center",
     height: 42,
-    paddingLeft: 25,
+    paddingLeft: 25
   },
   text: {
     fontSize: 16,
-    color: '#cccccc',
+    color: "#cccccc"
   },
   icon: {
-    left: 10,
+    left: 10
   },
   iconRight: {
-    right: 10,
-  },
+    right: 10
+  }
 });
 
 class SearchHeader extends Component {
   componentDidMount() {
-    console.log('mount');
+    console.log("mount");
   }
 
   componentWillReceiveProps(nextProps) {
@@ -45,19 +45,21 @@ class SearchHeader extends Component {
 
   handleSearch = () => {
     this.props.navigation.navigate({
-      routeName: 'SearchScreen',
-      params: { callback: () => {} },
+      routeName: "SearchScreen",
+      params: { callback: () => {} }
     });
   };
 
   render() {
-    const desiredColor = this.props.inputColor ? this.props.inputColor : '#912F56';
-    // console.log(this.props.navigation);
+    const desiredColor = this.props.inputColor
+      ? this.props.inputColor
+      : "#912F56";
+
     return (
       <TouchableWithoutFeedback onPress={this.handleSearch}>
         <View style={styles.container}>
           <View style={styles.icon}>
-            {/*<Ionicons name="ios-search" size={28} color={desiredColor} />*/}
+            <Icon name="magnify" size={28} color={desiredColor} />
           </View>
           <View style={styles.search} {...this.props}>
             <Text style={styles.text}>Szukaj...</Text>

@@ -1,10 +1,10 @@
-import React from 'react';
-import { createSwitchNavigator } from 'react-navigation';
+import React from "react";
+import { createSwitchNavigator } from "react-navigation";
 
-import MainTabNavigator from './MainTabNavigator';
-import AuthScreen from '../screens/AuthScreen/AuthScreen';
-import WelcomeScreen from '../screens/WelcomeScreen/WelcomeScreen';
-import AuthLoadingScreen from '../screens/AuthScreen/AuthLoadingScreen';
+import MainTabNavigator from "./MainTabNavigator";
+import AuthScreen from "../screens/AuthScreen/AuthScreen";
+import WelcomeScreen from "../screens/WelcomeScreen/WelcomeScreen";
+import AuthLoadingScreen from "../screens/AuthScreen/AuthLoadingScreen";
 
 export default createSwitchNavigator(
   {
@@ -13,9 +13,9 @@ export default createSwitchNavigator(
     AuthLoading: AuthLoadingScreen,
     Welcome: WelcomeScreen,
     Auth: AuthScreen,
-    Main: MainTabNavigator,
+    Main: MainTabNavigator
   },
   {
-    initialRouteName: 'AuthLoading',
+    initialRouteName: "AuthLoading"
   }
 );
