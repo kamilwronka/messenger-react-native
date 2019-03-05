@@ -1,16 +1,16 @@
-import React from 'react';
-import { Image, View, Text } from 'react-native';
-import { BUCKET_URL } from '@/config';
-import { prepareAvatar } from '@/helpers';
-import { AvatarSizes } from '@/constants';
+import React from "react";
+import { Image, View, Text } from "react-native";
+import config from "@/config/api_config";
+import { prepareAvatar } from "@/helpers";
+import { AvatarSizes } from "@/constants";
 
 const getSize = size => {
   switch (size) {
-    case 'small':
+    case "small":
       return AvatarSizes.small;
-    case 'large':
+    case "large":
       return AvatarSizes.large;
-    case 'medium':
+    case "medium":
     default:
       return AvatarSizes.medium;
   }
@@ -23,7 +23,7 @@ const Avatar = ({ imgUrl, name, color, size }) => {
     <Image
       style={{ height: formattedSize, width: formattedSize, borderRadius: 28 }}
       source={{
-        uri: BUCKET_URL + imgUrl,
+        uri: config.BUCKET_URL + imgUrl
       }}
     />
   ) : (
@@ -33,19 +33,20 @@ const Avatar = ({ imgUrl, name, color, size }) => {
         backgroundColor: color,
         height: formattedSize,
         width: formattedSize,
-        alignItems: 'center',
-        justifyContent: 'center',
-      }}>
-      <Text style={{ color: '#fff', fontSize: 24 }}>{prepareAvatar(name)}</Text>
+        alignItems: "center",
+        justifyContent: "center"
+      }}
+    >
+      <Text style={{ color: "#fff", fontSize: 24 }}>{prepareAvatar(name)}</Text>
     </View>
   );
 };
 
 Avatar.defaultProps = {
   imgUrl: null,
-  name: '',
-  color: '#912F56',
-  size: 'medium',
+  name: "",
+  color: "#912F56",
+  size: "medium"
 };
 
 export default Avatar;

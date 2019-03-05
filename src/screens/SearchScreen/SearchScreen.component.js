@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { PureComponent } from "react";
 import {
   Image,
   ActivityIndicator,
@@ -10,38 +10,43 @@ import {
   Text,
   TouchableOpacity,
   TouchableNativeFeedback,
-  RefreshControl,
-} from 'react-native';
+  RefreshControl
+} from "react-native";
 
-import { isNil, get } from 'lodash';
+import { isNil, get } from "lodash";
 
-import { connect } from 'react-redux';
-import { prepareAvatar } from '@/helpers';
-import { Header, HeaderTitle, HeaderIcon, HeaderLeftIcon } from '@/components/Header';
-import BorderedInput from '@/components/Input/BorderedInput';
+import { connect } from "react-redux";
+import { prepareAvatar } from "@/helpers";
+import {
+  Header,
+  HeaderTitle,
+  HeaderIcon,
+  HeaderLeftIcon
+} from "@/components/Header";
+import BorderedInput from "@/components/Input/BorderedInput";
 
 import {
   fetchUserByQuery,
-  sendFriendRequest,
-} from '@/screens/ContactsScreen/actions/contactsScreen.actions';
-import { getUsers } from '@/screens/ContactsScreen/selectors/contactsScreen.selectors';
-import { getUserData } from '@/selectors/user.selectors';
+  sendFriendRequest
+} from "@/screens/ContactsScreen/actions/contactsScreen.actions";
+import { getUsers } from "@/screens/ContactsScreen/selectors/contactsScreen.selectors";
+import { getUserData } from "@/selectors/user.selectors";
 
 class SearchScreen extends PureComponent {
   static navigationOptions = {
-    header: null,
+    header: null
   };
 
   state = {
     isSearchBarOpened: false,
-    searchValue: '',
-    active: false,
+    searchValue: "",
+    active: false
   };
 
-  colorsArr = ['#b0003a', '#6a0080', '#002984', '#00675b'];
+  colorsArr = ["#b0003a", "#6a0080", "#002984", "#00675b"];
 
   componentDidMount() {
-    console.log('search screen', this.props.navigation);
+    console.log("search screen", this.props.navigation);
     this.props.navigation.state.params.callback();
   }
 
@@ -60,7 +65,7 @@ class SearchScreen extends PureComponent {
   };
 
   clearSearchBar = () => {
-    this.setState({ searchValue: '' });
+    this.setState({ searchValue: "" });
   };
 
   handleFriendRequest = userId => {
@@ -72,33 +77,43 @@ class SearchScreen extends PureComponent {
   goToConversation = item => {
     const { navigate } = this.props.navigation;
 
-    navigate('Conversation', {
+    navigate("Conversation", {
       participants: [item],
-      conversationName: item.username,
+      conversationName: item.username
     });
   };
 
   _keyExtractor = (item, index) => index;
 
   _renderItem = ({ item }) => {
+    const showAddBtn = !item.friends.includes(this.props.user.data._id);
+    console.log(showAddBtn);
     return (
       <TouchableNativeFeedback
-        background={Platform.OS === 'android' ? TouchableNativeFeedback.SelectableBackground() : ''}
-        onPress={() => this.goToConversation(item)}>
+        background={
+          Platform.OS === "android"
+            ? TouchableNativeFeedback.SelectableBackground()
+            : ""
+        }
+        onPress={() => this.goToConversation(item)}
+      >
         <View
           style={{
             flex: 1,
-            flexDirection: 'row',
+            flexDirection: "row",
             height: 72,
             paddingHorizontal: 20,
-            alignItems: 'center',
-          }}>
+            alignItems: "center"
+          }}
+        >
           <View>
             {!isNil(item.avatar) ? (
               <Image
                 style={{ height: 56, width: 56, borderRadius: 28 }}
                 source={{
-                  uri: `https://s3.eu-central-1.amazonaws.com/messenger-dev-bucket/${item.avatar}`,
+                  uri: `https://s3.eu-central-1.amazonaws.com/messenger-dev-bucket/${
+                    item.avatar
+                  }`
                 }}
               />
             ) : (
@@ -110,10 +125,13 @@ class SearchScreen extends PureComponent {
                   ],
                   height: 56,
                   width: 56,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}>
-                <Text style={{ color: '#fff', fontSize: 24 }}>{prepareAvatar(item.username)}</Text>
+                  alignItems: "center",
+                  justifyContent: "center"
+                }}
+              >
+                <Text style={{ color: "#fff", fontSize: 24 }}>
+                  {prepareAvatar(item.username)}
+                </Text>
               </View>
             )}
           </View>
@@ -121,16 +139,30 @@ class SearchScreen extends PureComponent {
             style={{
               marginLeft: 20,
               flex: 1,
-              alignContent: 'space-between',
-              flexWrap: 'nowrap',
-            }}>
+              alignContent: "space-between",
+              flexWrap: "nowrap"
+            }}
+          >
             <Text style={{ fontSize: 16 }}>{item.username}</Text>
-            <Text style={{ fontSize: 12, color: '#aaaaaa' }}>3 wspólnych znajomych</Text>
+            <Text style={{ fontSize: 12, color: "#aaaaaa" }}>
+              3 wspólnych znajomych
+            </Text>
           </View>
-          <View style={{ height: 72, flex: 1, alignItems: 'flex-end', justifyContent: 'center' }}>
-            <TouchableOpacity onPress={() => this.handleFriendRequest(item._id)}>
+          <View
+            style={{
+              height: 72,
+              flex: 1,
+              alignItems: "flex-end",
+              justifyContent: "center"
+            }}
+          >
+            {showAddBtn && (
+              <TouchableOpacity
+                onPress={() => this.handleFriendRequest(item._id)}
+              >
                 <Text>ikonka dodawania</Text>
-            </TouchableOpacity>
+              </TouchableOpacity>
+            )}
           </View>
         </View>
       </TouchableNativeFeedback>
@@ -139,7 +171,14 @@ class SearchScreen extends PureComponent {
 
   render() {
     return (
-      <View style={{ flex: 1, backgroundColor: '#ffffff', flexDirection: 'column', flexGrow: 1 }}>
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: "#ffffff",
+          flexDirection: "column",
+          flexGrow: 1
+        }}
+      >
         <Header>
           <HeaderLeftIcon />
           <HeaderTitle>Szukaj</HeaderTitle>
@@ -155,14 +194,21 @@ class SearchScreen extends PureComponent {
         {!this.props.users.fetching ? (
           <ScrollView>
             <FlatList
-              style={{ width: '100%' }}
+              style={{ width: "100%" }}
               data={this.props.users.data}
               keyExtractor={this._keyExtractor}
               renderItem={this._renderItem}
             />
           </ScrollView>
         ) : (
-          <View style={{ flex: 1, flexGrow: 1, justifyContent: 'center', alignItems: 'center' }}>
+          <View
+            style={{
+              flex: 1,
+              flexGrow: 1,
+              justifyContent: "center",
+              alignItems: "center"
+            }}
+          >
             <ActivityIndicator size="large" />
           </View>
         )}
@@ -173,14 +219,15 @@ class SearchScreen extends PureComponent {
 
 const mapStateToProps = state => {
   return {
+    user: getUserData(state),
     users: getUsers(state),
-    userData: getUserData(state),
+    userData: getUserData(state)
   };
 };
 
 const mapDispatchToProps = {
   fetchUserByQuery,
-  sendFriendRequest,
+  sendFriendRequest
 };
 
 export default connect(

@@ -1,10 +1,10 @@
-import { ACTIONS } from '../actions/contactsScreen.actions';
+import { ACTIONS } from "../actions/contactsScreen.actions";
 
 const INITIAL_STATE = {
   data: null,
   error: null,
   fetching: false,
-  intact: true,
+  intact: true
 };
 
 const friendsReducer = (state = INITIAL_STATE, action) => {
@@ -16,14 +16,14 @@ const friendsReducer = (state = INITIAL_STATE, action) => {
         ...state,
         data: action.payload.data,
         intact: false,
-        fetching: false,
+        fetching: false
       };
     case `${ACTIONS.FETCH_USER_FRIENDS}_REJECTED`:
       return {
         ...state,
         error: action.payload.data,
         intact: false,
-        fetching: false,
+        fetching: false
       };
     default:
       return state;

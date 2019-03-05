@@ -1,6 +1,5 @@
 import React, { PureComponent } from "react";
 import {
-  ScrollView,
   CameraRoll as Camera,
   PermissionsAndroid,
   FlatList
@@ -9,13 +8,22 @@ import CameraRollImage from "./CameraRollImage";
 
 class CameraRoll extends PureComponent {
   state = {
-    photos: []
+    photos: [],
+    selectedIndex: null
   };
 
   async componentDidMount() {
     await this.requestCameraPermission();
-    this.loadImages();
+    this.loadCameraRoll();
   }
+
+  selectImage = index => {
+    if (this.state.selectedIndex === index) {
+      this.setState({ selectedIndex: null });
+    } else {
+      this.setState({ selectedIndex: index });
+    }
+  };
 
   requestCameraPermission = async () => {
     try {
@@ -43,31 +51,49 @@ class CameraRoll extends PureComponent {
 
   _keyExtractor = (item, index) => `${index}`;
 
-  _renderPhoto = ({ item }) => {
-    const { width, height, uri } = item.node.image;
+  _renderPhoto = ({ item, index }) => {
+    const { handleImageSend } = this.props;
 
-    return <CameraRollImage width={width} height={height} uri={uri} />;
+    return (
+      <CameraRollImage
+        selected={index === this.state.selectedIndex}
+        selectImage={() => this.selectImage(index)}
+        photo={item.node.image}
+        handleImageSend={handleImageSend}
+      />
+    );
   };
 
-  loadImages = () => {
-    Camera.getPhotos({
+  getCameraPhotos = async () => {
+    return await Camera.getPhotos({
       first: 20,
       assetType: "Photos"
-    })
-      .then(r => {
-        console.log(r);
-        this.setState({ photos: r.edges });
-      })
-      .catch(err => {
-        //Error Loading Images
-        console.log(err);
-      });
+    });
+  };
+
+  getVideos = async () => {
+    return await Camera.getPhotos({
+      first: 20,
+      assetType: "Videos"
+    });
+  };
+
+  loadCameraRoll = async () => {
+    let [photos, videos] = await Promise.all([
+      this.getCameraPhotos(),
+      this.getVideos()
+    ]);
+
+    console.log(videos);
+
+    this.setState({ photos: [...photos.edges, ...videos.edges] });
   };
 
   render() {
     return (
       <FlatList
         data={this.state.photos}
+        extraData={this.state.selectedIndex}
         keyExtractor={this._keyExtractor}
         renderItem={this._renderPhoto}
         horizontal={true}

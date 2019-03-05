@@ -1,42 +1,113 @@
 import React, { PureComponent } from "react";
-import {
-  ImageBackground,
-  View,
-  Button,
-  TouchableWithoutFeedback
-} from "react-native";
+import { View, Text, TouchableWithoutFeedback, Animated } from "react-native";
 
 class CameraRollImage extends PureComponent {
   state = {
-    selected: false
+    selected: false,
+    opacity: new Animated.Value(0)
   };
 
-  toggleSelect = () => {
-    this.setState({ selected: !this.state.selected });
+  componentWillReceiveProps(nextProps) {
+    console.log(this.props.selected, nextProps.selected);
+    if (this.props.selected !== nextProps.selected) {
+      if (nextProps.selected) {
+        Animated.timing(this.state.opacity, {
+          toValue: 1,
+          duration: 300,
+          useNativeDriver: true
+        }).start();
+      } else {
+        Animated.timing(this.state.opacity, {
+          toValue: 0,
+          duration: 300,
+          useNativeDriver: true
+        }).start();
+      }
+    }
+  }
+
+  handleSendPhoto = () => {
+    const { photo, handleImageSend, selectImage } = this.props;
+    handleImageSend(photo);
+    selectImage();
   };
 
   render() {
-    const { width, uri, height } = this.props;
-    const imgRatio = width / height;
-    const fixedHeight = 200;
-    const calculatedWidth = fixedHeight * imgRatio;
+    const {
+      selectImage,
+      photo: { uri }
+    } = this.props;
+    const height = 250;
+    const width = 280;
 
     return (
-      <View style={{ borderRightWidth: 2, borderColor: "#fff" }}>
-        <TouchableWithoutFeedback onPress={this.toggleSelect}>
-          <ImageBackground
-            style={{
-              width: calculatedWidth,
-              height: fixedHeight
-            }}
-            source={{ uri }}
-          >
-            {this.state.selected && (
-              <View style={{ flex: 1 }}>
-                <Button title="Wyślij" />
-              </View>
-            )}
-          </ImageBackground>
+      <View
+        style={{
+          borderRightWidth: 2,
+          borderColor: "#f0f0f0"
+        }}
+      >
+        <TouchableWithoutFeedback onPress={selectImage}>
+          <View style={{ backgroundColor: "#000", height, width }}>
+            <Animated.Image
+              resizeMode="cover"
+              style={[
+                {
+                  opacity: this.state.opacity.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [1, 0.45]
+                  }),
+                  transform: [
+                    {
+                      scale: this.state.opacity.interpolate({
+                        inputRange: [0, 1],
+                        outputRange: [1, 1.2]
+                      })
+                    }
+                  ]
+                },
+                {
+                  flex: 1,
+                  width: null,
+                  height: null
+                }
+              ]}
+              source={{ uri }}
+            />
+            <Animated.View
+              style={[
+                {
+                  opacity: this.state.opacity
+                },
+                {
+                  position: "absolute",
+                  bottom: 83,
+                  alignSelf: "center"
+                }
+              ]}
+            >
+              <TouchableWithoutFeedback
+                onPress={
+                  this.props.selected ? this.handleSendPhoto : selectImage
+                }
+              >
+                <View
+                  style={{
+                    justifyContent: "center",
+                    alignItems: "center",
+                    width: 84,
+                    height: 84,
+                    borderRadius: 42,
+                    borderWidth: 2,
+                    borderColor: "#ffffff",
+                    backgroundColor: "transparent"
+                  }}
+                >
+                  <Text style={{ fontSize: 16, color: "#ffffff" }}>Wyślij</Text>
+                </View>
+              </TouchableWithoutFeedback>
+            </Animated.View>
+          </View>
         </TouchableWithoutFeedback>
       </View>
     );

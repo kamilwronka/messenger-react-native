@@ -26,7 +26,7 @@ class ConversationBottomBar extends PureComponent {
 
     switch (this.state.selectedTab) {
       case "cameraRoll":
-        desiredTab = <CameraRoll />;
+        desiredTab = <CameraRoll {...this.props} />;
         break;
       default:
         desiredTab = null;

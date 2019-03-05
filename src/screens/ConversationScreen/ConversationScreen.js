@@ -178,33 +178,32 @@ class ConversationScreen extends React.Component {
     );
   };
 
-  // _pickImage = async () => {
-  //   const { status: cameraRollPerm } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
-  //   const {
-  //     state: {
-  //       params: { participants, conversationId },
-  //     },
-  //   } = this.props.navigation;
-  //   const { socket } = this.props;
-  //
-  //   // only if user allows permission to camera roll
-  //   if (cameraRollPerm === 'granted') {
-  //     let pickerResult = await ImagePicker.launchImageLibraryAsync({ allowsEditing: true });
-  //     console.log(pickerResult);
-  //     // this.props.setUserAvatar(pickerResult);
-  //     let data = await this.props.sendPhoto(pickerResult);
-  //     const message = {
-  //       userId: this.props.user.data._id,
-  //       messageType: 'photo',
-  //       messageContent: data.key,
-  //       metadata: {
-  //         width: data.width,
-  //         height: data.height,
-  //       },
-  //     };
-  //     socket.emit('message', conversationId, message, participants.map(elem => elem._id));
-  //   }
-  // };
+  handleImageSend = async pickerResult => {
+    const {
+      state: {
+        params: { participants, conversationId }
+      }
+    } = this.props.navigation;
+    const { socket } = this.props;
+    let data = await this.props.sendPhoto(pickerResult);
+
+    const message = {
+      userId: this.props.user.data._id,
+      messageType: "photo",
+      messageContent: data.key,
+      metadata: {
+        width: data.width,
+        height: data.height
+      }
+    };
+
+    socket.emit(
+      "message",
+      conversationId,
+      message,
+      participants.map(elem => elem._id)
+    );
+  };
 
   navigateToConversationInfo = () => {
     const {
@@ -275,6 +274,7 @@ class ConversationScreen extends React.Component {
           handleChangeInput={this.handleChangeInput}
           handleEmojiSend={this.handleEmojiSend}
           emoji={emoji}
+          handleImageSend={this.handleImageSend}
         />
       </View>
     );

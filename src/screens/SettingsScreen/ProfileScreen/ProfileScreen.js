@@ -1,5 +1,11 @@
-import React, { Component } from 'react';
-import { CameraRoll, ScrollView, Image, PermissionsAndroid, TouchableOpacity } from 'react-native';
+import React, { Component } from "react";
+import {
+  CameraRoll,
+  ScrollView,
+  Image,
+  PermissionsAndroid,
+  TouchableOpacity
+} from "react-native";
 import {
   Container,
   Content,
@@ -15,29 +21,33 @@ import {
   Header,
   Title,
   Thumbnail,
-  H2,
-} from 'native-base';
-import { Permissions, ImagePicker } from 'expo';
-import { connect } from 'react-redux';
+  H2
+} from "native-base";
+import { Permissions, ImagePicker } from "expo";
+import { connect } from "react-redux";
 
-import { setUserAvatar } from './actions/profile.actions';
-import { getUserData } from '../../../selectors/user.selectors';
+import { setUserAvatar } from "./actions/profile.actions";
+import { getUserData } from "../../../selectors/user.selectors";
 
 class SettingsScreen extends Component {
   static navigationOptions = {
-    header: null,
+    header: null
   };
 
   state = {
-    image: null,
+    image: null
   };
 
   _pickImage = async () => {
-    const { status: cameraRollPerm } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+    const { status: cameraRollPerm } = await Permissions.askAsync(
+      Permissions.CAMERA_ROLL
+    );
     // only if user allows permission to camera roll
 
-    if (cameraRollPerm === 'granted') {
-      let pickerResult = await ImagePicker.launchImageLibraryAsync({ allowsEditing: true });
+    if (cameraRollPerm === "granted") {
+      let pickerResult = await ImagePicker.launchImageLibraryAsync({
+        allowsEditing: true
+      });
 
       this.props.setUserAvatar(pickerResult);
     }
@@ -46,8 +56,8 @@ class SettingsScreen extends Component {
   render() {
     const {
       userData: {
-        data: { avatar, username },
-      },
+        data: { avatar, username }
+      }
     } = this.props;
 
     return (
@@ -71,13 +81,13 @@ class SettingsScreen extends Component {
                   flex: 1,
                   width: 128,
                   height: 128,
-                  resizeMode: 'contain',
-                  borderRadius: 64,
+                  resizeMode: "contain",
+                  borderRadius: 64
                 }}
                 source={{
                   uri: avatar
                     ? `https://s3.eu-central-1.amazonaws.com/messenger-dev-bucket/${avatar}`
-                    : 'http://icons.iconarchive.com/icons/paomedia/small-n-flat/512/user-male-icon.png',
+                    : "http://icons.iconarchive.com/icons/paomedia/small-n-flat/512/user-male-icon.png"
                 }}
               />
             </TouchableOpacity>
@@ -93,12 +103,12 @@ class SettingsScreen extends Component {
 
 const mapStateToProps = state => {
   return {
-    userData: getUserData(state),
+    userData: getUserData(state)
   };
 };
 
 const mapDispatchToProps = {
-  setUserAvatar,
+  setUserAvatar
 };
 
 export default connect(

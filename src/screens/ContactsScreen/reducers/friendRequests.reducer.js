@@ -1,10 +1,10 @@
-import { ACTIONS } from '../actions/contactsScreen.actions';
+import { ACTIONS } from "../actions/contactsScreen.actions";
 
 const INITIAL_STATE = {
   data: null,
   error: null,
   fetching: false,
-  intact: true,
+  intact: true
 };
 
 const requestsReducer = (state = INITIAL_STATE, action) => {
@@ -16,14 +16,14 @@ const requestsReducer = (state = INITIAL_STATE, action) => {
         ...state,
         data: action.payload.data,
         intact: false,
-        fetching: false,
+        fetching: false
       };
     case `${ACTIONS.FETCH_USER_REQUESTS}_REJECTED`:
       return {
         ...state,
         error: action.payload.data,
         intact: false,
-        fetching: false,
+        fetching: false
       };
     default:
       return state;

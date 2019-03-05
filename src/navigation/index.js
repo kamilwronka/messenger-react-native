@@ -2,6 +2,7 @@ import React from "react";
 import { createStackNavigator, createAppContainer } from "react-navigation";
 import CameraScreen from "../screens/CameraScreen/CameraScreen";
 import SearchScreen from "../screens/SearchScreen/SearchScreen.component";
+import PhotoScreen from "../screens/PhotoScreen/PhotoScreen";
 
 import AuthScreen from "../screens/AuthScreen/AuthScreen";
 import WelcomeScreen from "../screens/WelcomeScreen/WelcomeScreen";
@@ -60,10 +61,6 @@ const ModalStack = createStackNavigator(
         gesturesEnabled: false,
         header: null
       })
-    },
-    CameraScreen: {
-      screen: CameraScreen,
-      navigationOptions: { gesturesEnabled: false, header: null }
     }
   },
   {
@@ -93,6 +90,14 @@ const MessengerApp = createStackNavigator(
     },
     ConversationStack: {
       screen: ConversationStack,
+      navigationOptions: { gesturesEnabled: false, header: null }
+    },
+    CameraScreen: {
+      screen: CameraScreen,
+      navigationOptions: { gesturesEnabled: false, header: null }
+    },
+    PhotoScreen: {
+      screen: PhotoScreen,
       navigationOptions: { gesturesEnabled: false, header: null }
     }
   },

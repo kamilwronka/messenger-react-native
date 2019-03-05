@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import {
   Text,
   View,
@@ -10,13 +10,13 @@ import {
   Animated,
   UIManager,
   LayoutAnimation,
-  Dimensions,
-} from 'react-native';
+  Dimensions
+} from "react-native";
 // import { Camera, Permissions } from 'expo';
-import { isNil } from 'lodash';
+import { isNil } from "lodash";
 // import { MaterialCommunityIcons, Feather, MaterialIcons } from '@expo/vector-icons';
 
-const SCREEN_WIDTH = Dimensions.get('window').width;
+const SCREEN_WIDTH = Dimensions.get("window").width;
 
 export default class ConversationPhotoScreen extends React.Component {
   constructor(props) {
@@ -40,12 +40,13 @@ export default class ConversationPhotoScreen extends React.Component {
         // The accumulated gesture distance since becoming responder is
         // gestureState.d{x,y}
         const { numberActiveTouches, dx, dy } = gestureState;
+        const { nativeEvent, target, type } = evt;
+
+        console.log(nativeEvent);
 
         if (numberActiveTouches === 2) {
           const distance = dx + dy;
-          console.log(position);
           position.setValue(distance);
-          console.log(distance);
         }
       },
       onPanResponderTerminationRequest: (evt, gestureState) => true,
@@ -61,7 +62,7 @@ export default class ConversationPhotoScreen extends React.Component {
         // Returns whether this component should block native components from becoming the JS
         // responder. Returns true by default. Is currently only supported on android.
         return true;
-      },
+      }
     });
     this.state = { panResponder, position, index: 0 };
   }
@@ -73,7 +74,7 @@ export default class ConversationPhotoScreen extends React.Component {
   }
 
   static navigationOptions = {
-    header: null,
+    header: null
   };
 
   async componentDidMount() {}
@@ -82,7 +83,7 @@ export default class ConversationPhotoScreen extends React.Component {
     const { position } = this.state;
     const rotate = position.interpolate({
       inputRange: [-SCREEN_WIDTH * 1.5, 0, SCREEN_WIDTH * 1.5],
-      outputRange: ['-120deg', '0deg', '120deg'],
+      outputRange: ["-120deg", "0deg", "120deg"]
     });
 
     console.log(rotate);
@@ -96,8 +97,9 @@ export default class ConversationPhotoScreen extends React.Component {
     // console.log(this.props.navigation.state);
     return (
       <View style={{ flex: 1 }}>
-        <ImageBackground
-          style={[this.getPhotoStyle(), { flex: 1 }]}
+        <Image
+          resizeMode="contain"
+          style={{ flex: 1, height: null, width: null, resizeMode: "contain" }}
           source={{ uri: this.props.navigation.state.params.photoUrl }}
           {...this.state.panResponder.panHandlers}
         />
