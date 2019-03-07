@@ -3,6 +3,7 @@ import { Platform, StyleSheet, StatusBar, Text, View } from "react-native";
 import { Root, Spinner } from "native-base";
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/lib/integration/react";
+import SplashScreen from "react-native-splash-screen";
 
 import AppNavigator from "./src/navigation";
 import AppSocketWrapper from "./src/AppSocketWrapper";
@@ -11,7 +12,7 @@ import { persistor, store } from "./src/store";
 
 export default class App extends Component {
   componentDidMount() {
-    console.log("mount");
+    setTimeout(SplashScreen.hide, 100);
   }
 
   render() {

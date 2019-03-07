@@ -68,40 +68,33 @@ const ModalStack = createStackNavigator(
   }
 );
 
-const MessengerApp = createStackNavigator(
-  {
-    WelcomeScreen: {
-      screen: WelcomeScreen,
-      navigationOptions: { gesturesEnabled: false, header: null }
-    },
-    AuthLoadingScreen: {
-      screen: AuthLoadingScreen
-    },
-    AuthScreen: {
-      screen: AuthScreen,
-      navigationOptions: { header: null }
-    },
-    MainScreen: {
-      screen: ModalStack,
-      navigationOptions: {
-        gesturesEnabled: false,
-        header: null
-      }
-    },
-    ConversationStack: {
-      screen: ConversationStack,
-      navigationOptions: { gesturesEnabled: false, header: null }
-    },
-    CameraScreen: {
-      screen: CameraScreen,
-      navigationOptions: { gesturesEnabled: false, header: null }
-    },
-    PhotoScreen: {
-      screen: PhotoScreen,
-      navigationOptions: { gesturesEnabled: false, header: null }
+const MessengerApp = createStackNavigator({
+  AuthLoadingScreen: {
+    screen: AuthLoadingScreen
+  },
+  AuthScreen: {
+    screen: AuthScreen,
+    navigationOptions: { header: null }
+  },
+  MainScreen: {
+    screen: ModalStack,
+    navigationOptions: {
+      gesturesEnabled: false,
+      header: null
     }
   },
-  { initialRouteName: "AuthLoadingScreen" }
-);
+  ConversationStack: {
+    screen: ConversationStack,
+    navigationOptions: { gesturesEnabled: false, header: null }
+  },
+  CameraScreen: {
+    screen: CameraScreen,
+    navigationOptions: { gesturesEnabled: false, header: null }
+  },
+  PhotoScreen: {
+    screen: PhotoScreen,
+    navigationOptions: { gesturesEnabled: false, header: null }
+  }
+});
 
 export default createAppContainer(MessengerApp);

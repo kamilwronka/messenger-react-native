@@ -1,71 +1,126 @@
-import React, { Component, Fragment } from 'react';
-import { ScrollView, View, Text, Dimensions } from 'react-native';
+import React, { Component, Fragment } from "react";
+import {
+  ScrollView,
+  View,
+  Text,
+  Dimensions,
+  Image,
+  KeyboardAvoidingView,
+  Animated,
+  Keyboard,
+  StyleSheet,
+  ImageBackground
+} from "react-native";
+import SplashScreen from "react-native-splash-screen";
 
-import RegisterScreen from './RegisterScreen';
-import LoginScreen from './LoginScreen';
+import RegisterScreen from "./RegisterScreen";
+import LoginScreen from "./LoginScreen";
 
-import Input from '@/components/Input/Input';
-import { Button } from '@/components/Buttons';
-import { H1, H3 } from '@/components/Typography/Typography';
+import Input from "@/components/Input/Input";
+import { Button } from "@/components/Buttons";
+import { H1, H3 } from "@/components/Typography/Typography";
 
-const SCREEN_WIDTH = Dimensions.get('window').width;
-const SCREEN_HEIGHT = Dimensions.get('window').height;
+const SCREEN_WIDTH = Dimensions.get("window").width;
+const SCREEN_HEIGHT = Dimensions.get("window").height;
 
 class AuthScreen extends Component {
   state = {
-    tabOpened: 'register',
+    imgSize: new Animated.Value(0),
+    keyboardHeight: new Animated.Value(0)
   };
 
-  switchToLogin = () => {
-    this.setState({ tabOpened: 'login' });
+  componentDidMount() {
+    this.keyboardDidShowSub = Keyboard.addListener(
+      "keyboardDidShow",
+      this.keyboardDidShow
+    );
+    this.keyboardDidHideSub = Keyboard.addListener(
+      "keyboardDidHide",
+      this.keyboardDidHide
+    );
+  }
+
+  componentWillUnmount() {
+    this.keyboardDidShowSub.remove();
+    this.keyboardDidHideSub.remove();
+  }
+
+  keyboardDidShow = event => {
+    Animated.parallel([
+      Animated.timing(this.state.keyboardHeight, {
+        duration: 200,
+        toValue: event.endCoordinates.height,
+        useNativeDriver: true
+      }),
+      Animated.timing(this.state.imgSize, {
+        duration: 200,
+        toValue: 1,
+        useNativeDriver: true
+      })
+    ]).start();
   };
 
-  switchToRegister = () => {
-    this.setState({ tabOpened: 'register' });
-  };
-
-  showProperTab = () => {
-    switch (this.state.tabOpened) {
-      case 'login':
-        return <LoginScreen {...this.props} />;
-      case 'register':
-        return <RegisterScreen {...this.props} />;
-      default:
-    }
+  keyboardDidHide = event => {
+    Animated.parallel([
+      Animated.timing(this.state.keyboardHeight, {
+        duration: 200,
+        toValue: 0,
+        useNativeDriver: true
+      }),
+      Animated.timing(this.state.imgSize, {
+        duration: 200,
+        toValue: 0,
+        useNativeDriver: true
+      })
+    ]).start();
   };
 
   render() {
     return (
-      <View style={{ flex: 1 }}>
-        <View style={{ width: '70%', alignSelf: 'center', marginTop: 20 }}>
-          <H3>By móc w pełni korzystać z aplikacji wymagana jest rejestracja lub logowanie.</H3>
-        </View>
-        <View style={{ flexDirection: 'row', marginTop: 20, alignSelf: 'center' }}>
-          <Button
-            onPress={this.switchToLogin}
-            title="Logowanie"
-            bright={this.state.tabOpened === 'register'}
-            medium
-          />
-          <Button
-            onPress={this.switchToRegister}
-            title="Rejestracja"
-            bright={this.state.tabOpened === 'login'}
-            medium
-          />
-        </View>
-        <ScrollView
-          contentContainerStyle={{
-            marginHorizontal: 20,
-            flex: 1,
-            justifyContent: 'center',
+      <ScrollView>
+        <ImageBackground
+          style={{
+            width: SCREEN_WIDTH,
+            height: SCREEN_HEIGHT
           }}
-          style={{}}>
-          {this.showProperTab()}
-        </ScrollView>
-      </View>
+          source={require("@/assets/images/bg.jpg")}
+        >
+          <ScrollView
+            style={{
+              backgroundColor: "rgba(255,255,255,0.95)"
+            }}
+          >
+            <KeyboardAvoidingView>
+              <Animated.Image
+                style={[
+                  {
+                    width: 200,
+                    height: 200,
+                    resizeMode: "contain",
+                    alignSelf: "center",
+                    marginTop: 40
+                  }
+                ]}
+                source={require("@/assets/images/drawable-xxhdpi/logo.png")}
+              />
+              <Text style={styles.logoText}>Messenger</Text>
+              <LoginScreen />
+            </KeyboardAvoidingView>
+          </ScrollView>
+        </ImageBackground>
+      </ScrollView>
     );
   }
 }
+
+const styles = StyleSheet.create({
+  logoText: {
+    fontFamily: "MyriadPro",
+    fontSize: 28,
+    alignSelf: "center",
+    color: "#912F56",
+    fontWeight: "bold"
+  }
+});
 
 export default AuthScreen;
