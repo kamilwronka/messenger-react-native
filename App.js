@@ -22,12 +22,11 @@ export default class App extends Component {
           <PersistGate loading={null} persistor={persistor}>
             <Root>
               <AppSocketWrapper>
-                {Platform.OS === "ios" && (
                   <StatusBar
                     backgroundColor="#ffffff"
+                    transcluent
                     barStyle="dark-content"
                   />
-                )}
                 <AppNavigator />
               </AppSocketWrapper>
             </Root>

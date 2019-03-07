@@ -53,7 +53,11 @@ class AuthLoadingScreen extends React.Component {
   }
 
   render() {
-    return <View />;
+    return (
+      <View style={styles.container}>
+        <StatusBar backgroundColor="#ffffff" barStyle="dark-content" transcluent />
+      </View>
+    );
   }
 }
 
@@ -64,3 +68,12 @@ const mapStateToProps = state => {
 };
 
 export default connect(mapStateToProps)(AuthLoadingScreen);
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});
