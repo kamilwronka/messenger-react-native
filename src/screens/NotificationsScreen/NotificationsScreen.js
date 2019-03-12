@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 import {
   Image,
   ActivityIndicator,
@@ -10,17 +10,17 @@ import {
   Text,
   TouchableOpacity,
   TouchableNativeFeedback,
-  RefreshControl,
-} from 'react-native';
+  RefreshControl
+} from "react-native";
 
-import { isNil } from 'lodash';
+import { isNil } from "lodash";
 
-import { connect } from 'react-redux';
-import { prepareAvatar } from '@/helpers';
-import { Header, HeaderTitle } from '@/components/Header';
-import { Button } from '@/components/Buttons';
+import { connect } from "react-redux";
+import { prepareAvatar } from "@/helpers";
+import { Header, HeaderTitle } from "@/components/Header/HeaderNew";
+import { Button } from "@/components/Buttons";
 // import { MaterialCommunityIcons, Feather, MaterialIcons } from '@expo/vector-icons';
-import BorderedInput from '@/components/Input/BorderedInput';
+import BorderedInput from "@/components/Input/BorderedInput";
 
 // import {
 //   fetchFriendsRequests,
@@ -28,12 +28,16 @@ import BorderedInput from '@/components/Input/BorderedInput';
 //   sendFriendRequest,
 // } from './actions/contactsScreen.actions';
 
-import { fetchNotifications, confirmRequest, ignoreRequest } from './actions/notifications.actions';
-import { getNotifications } from './selectors/notifications.selectors';
+import {
+  fetchNotifications,
+  confirmRequest,
+  ignoreRequest
+} from "./actions/notifications.actions";
+import { getNotifications } from "./selectors/notifications.selectors";
 
 class NotificationsScreen extends Component {
   static navigationOptions = {
-    header: null,
+    header: null
   };
 
   _onRefresh = () => {
@@ -46,13 +50,13 @@ class NotificationsScreen extends Component {
 
   formatMessage = (type, data) => {
     switch (type) {
-      case 'friendsRequest':
+      case "friendsRequest":
         return `Otrzymano zaproszenie do grona znajomych od użytkownika ${data}`;
       default:
     }
   };
 
-  colorsArr = ['#b0003a', '#6a0080', '#002984', '#00675b'];
+  colorsArr = ["#b0003a", "#6a0080", "#002984", "#00675b"];
 
   confirmRequest = async id => {
     await this.props.confirmRequest(id);
@@ -72,22 +76,28 @@ class NotificationsScreen extends Component {
     return (
       <TouchableNativeFeedback
         background={
-          Platform.OS === 'android' ? TouchableNativeFeedback.SelectableBackground() : ''
-        }>
+          Platform.OS === "android"
+            ? TouchableNativeFeedback.SelectableBackground()
+            : ""
+        }
+      >
         <View
           style={{
             flex: 1,
-            flexDirection: 'row',
+            flexDirection: "row",
             height: 108,
             paddingHorizontal: 20,
-            alignItems: 'center',
-          }}>
+            alignItems: "center"
+          }}
+        >
           <View>
             {!isNil(item.fromUser.avatar) ? (
               <Image
                 style={{ height: 56, width: 56, borderRadius: 28 }}
                 source={{
-                  uri: `https://s3.eu-central-1.amazonaws.com/messenger-dev-bucket/${item.avatar}`,
+                  uri: `https://s3.eu-central-1.amazonaws.com/messenger-dev-bucket/${
+                    item.avatar
+                  }`
                 }}
               />
             ) : (
@@ -99,10 +109,11 @@ class NotificationsScreen extends Component {
                   ],
                   height: 56,
                   width: 56,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}>
-                <Text style={{ color: '#fff', fontSize: 24 }}>
+                  alignItems: "center",
+                  justifyContent: "center"
+                }}
+              >
+                <Text style={{ color: "#fff", fontSize: 24 }}>
                   {prepareAvatar(item.fromUser.username)}
                 </Text>
               </View>
@@ -112,22 +123,33 @@ class NotificationsScreen extends Component {
             style={{
               marginLeft: 20,
               flex: 1,
-              alignContent: 'space-between',
-              flexWrap: 'nowrap',
-            }}>
+              alignContent: "space-between",
+              flexWrap: "nowrap"
+            }}
+          >
             <Text style={{ fontSize: 14 }}>
               {this.formatMessage(item.type, item.fromUser.username)}
             </Text>
             <View
               style={{
                 marginTop: 5,
-                justifyContent: 'center',
-                alignItems: 'center',
-                flexWrap: 'nowrap',
-                flexDirection: 'row',
-              }}>
-              <Button title="Potwierdź" small onPress={() => this.confirmRequest(item._id)} />
-              <Button title="Ignoruj" bright small onPress={() => this.ignoreRequest(item._id)} />
+                justifyContent: "center",
+                alignItems: "center",
+                flexWrap: "nowrap",
+                flexDirection: "row"
+              }}
+            >
+              <Button
+                title="Potwierdź"
+                small
+                onPress={() => this.confirmRequest(item._id)}
+              />
+              <Button
+                title="Ignoruj"
+                bright
+                small
+                onPress={() => this.ignoreRequest(item._id)}
+              />
             </View>
           </View>
           {/* <View style={{ height: 48 }}>
@@ -142,9 +164,16 @@ class NotificationsScreen extends Component {
 
   render() {
     return (
-      <View style={{ flex: 1, backgroundColor: '#ffffff', flexDirection: 'column', flexGrow: 1 }}>
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: "#040D16",
+          flexDirection: "column",
+          flexGrow: 1
+        }}
+      >
         <Header>
-          <HeaderTitle>Powiadomienia</HeaderTitle>
+          <HeaderTitle value="Notifications" color="#ffffff" />
         </Header>
         <ScrollView
           refreshControl={
@@ -152,7 +181,8 @@ class NotificationsScreen extends Component {
               refreshing={this.props.notifications.fetching}
               onRefresh={this._onRefresh}
             />
-          }>
+          }
+        >
           <FlatList
             data={this.props.notifications.data}
             keyExtractor={this._keyExtractor}
@@ -166,14 +196,14 @@ class NotificationsScreen extends Component {
 
 const mapStateToProps = state => {
   return {
-    notifications: getNotifications(state),
+    notifications: getNotifications(state)
   };
 };
 
 const mapDispatchToProps = {
   fetchNotifications,
   confirmRequest,
-  ignoreRequest,
+  ignoreRequest
 };
 
 export default connect(

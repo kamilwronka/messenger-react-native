@@ -1,7 +1,5 @@
 import React, { Component } from "react";
-import { connect } from "react-redux";
-import { reduxForm, Field } from "redux-form";
-import { View, ScrollView, KeyboardAvoidingView } from "react-native";
+import { View, Text } from "react-native";
 import { withNavigation } from "react-navigation";
 // import { EMITTER_EVENTS, emitter } from '@/helpers/emitter';
 
@@ -47,7 +45,7 @@ class LoginScreen extends Component {
 
   render() {
     return (
-      <View style={{ marginTop: 80 }}>
+      <View style={{ marginTop: 40 }}>
         <View style={{ marginHorizontal: 40 }}>
           <Field
             name="email"
@@ -76,6 +74,7 @@ class LoginScreen extends Component {
             wide
             onPress={this.props.handleSubmit(this.onSubmit)}
           />
+          <Text>Nie masz konta? Zarejestruj się</Text>
         </View>
       </View>
     );
@@ -92,15 +91,4 @@ const mapDispatchToProps = {
   loginUser
 };
 
-export default reduxForm({
-  form: "loginForm",
-  initialValues: {
-    email: "kamil@kamil.pl",
-    password: "kamilo"
-  }
-})(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(withNavigation(LoginScreen))
-);
+export default LoginScreen;

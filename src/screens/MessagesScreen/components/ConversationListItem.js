@@ -1,18 +1,23 @@
-import React, { PureComponent } from 'react';
-import { Platform, Text, TouchableNativeFeedback, View } from 'react-native';
-import { isEmpty, isNil } from 'lodash';
-import { withNavigation } from 'react-navigation';
+import React, { PureComponent } from "react";
+import { Platform, Text, TouchableNativeFeedback, View } from "react-native";
+import { isEmpty, isNil } from "lodash";
+import { withNavigation } from "react-navigation";
 
 class ConversationListItem extends PureComponent {
   handleConversationSelect = () => {
-    const { item, preparedParticipants, conversationName, navigation } = this.props;
+    const {
+      item,
+      preparedParticipants,
+      conversationName,
+      navigation
+    } = this.props;
     navigation.navigate({
-      routeName: 'ConversationScreen',
+      routeName: "ConversationScreen",
       params: {
         conversationId: item._id,
         participants: preparedParticipants,
-        conversationName,
-      },
+        conversationName
+      }
     });
   };
 
@@ -22,7 +27,7 @@ class ConversationListItem extends PureComponent {
       conversationName,
       children,
       lastMessage,
-      lastMessageDate,
+      lastMessageDate
     } = this.props;
 
     return (
@@ -30,27 +35,37 @@ class ConversationListItem extends PureComponent {
         <TouchableNativeFeedback
           onPress={this.handleConversationSelect}
           background={
-            Platform.OS === 'android' ? TouchableNativeFeedback.SelectableBackground() : ''
-          }>
+            Platform.OS === "android"
+              ? TouchableNativeFeedback.SelectableBackground()
+              : ""
+          }
+        >
           <View
             style={{
               flex: 1,
-              flexDirection: 'row',
+              flexDirection: "row",
               height: 72,
               paddingHorizontal: 25,
-              alignItems: 'center',
-            }}>
+              backgroundColor: "transparent",
+              alignItems: "center"
+            }}
+          >
             <View>{children}</View>
             <View
               style={{
                 marginLeft: 20,
                 flex: 1,
-                alignContent: 'space-between',
-                flexWrap: 'nowrap',
-              }}>
-              <Text style={{ fontSize: 18 }}>{conversationName}</Text>
+                alignContent: "space-between",
+                flexWrap: "nowrap"
+              }}
+            >
+              <Text
+                style={{ fontSize: 18, color: "#ffffff", fontWeight: "bold" }}
+              >
+                {conversationName}
+              </Text>
               {!isNil(lastMessage) && (
-                <Text style={{ fontSize: 14, color: '#aaaaaa' }}>
+                <Text style={{ fontSize: 14, color: "#bbbbbb" }}>
                   {`${lastMessage} \u2022 ${lastMessageDate}`}
                 </Text>
               )}

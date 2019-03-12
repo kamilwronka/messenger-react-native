@@ -12,6 +12,8 @@ import ConversationScreen from "../screens/ConversationScreen/ConversationScreen
 
 import { BottomTabNavigation } from "./BottomTabNavigation";
 import ConversationInfoScreen from "../screens/ConversationInfoScreen/ConversationInfoScreen";
+import LoginScreen from "../screens/LoginScreen/LoginScreen";
+import SignUpScreen from "../screens/SignUpScreen/SignUpScreen";
 
 const SearchStack = createStackNavigator(
   {
@@ -72,9 +74,18 @@ const MessengerApp = createStackNavigator({
   AuthLoadingScreen: {
     screen: AuthLoadingScreen
   },
+  WelcomeScreen: {
+    screen: WelcomeScreen
+  },
   AuthScreen: {
     screen: AuthScreen,
     navigationOptions: { header: null }
+  },
+  LoginScreen: {
+    screen: LoginScreen
+  },
+  SignUpScreen: {
+    screen: SignUpScreen
   },
   MainScreen: {
     screen: ModalStack,

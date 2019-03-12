@@ -31,7 +31,7 @@ class AuthLoadingScreen extends React.Component {
       this.props.navigation.navigate("HomeScreen");
     } else {
       console.log("navigating to welcome screen");
-      this.props.navigation.navigate("AuthScreen");
+      this.props.navigation.navigate("WelcomeScreen");
     }
   }
 
@@ -48,16 +48,12 @@ class AuthLoadingScreen extends React.Component {
     ) {
       this.props.navigation.navigate("HomeScreen");
     } else {
-      this.props.navigation.navigate("AuthScreen");
+      this.props.navigation.navigate("WelcomeScreen");
     }
   }
 
   render() {
-    return (
-      <View style={styles.container}>
-        <StatusBar backgroundColor="#ffffff" barStyle="dark-content" transcluent />
-      </View>
-    );
+    return <View style={styles.container} />;
   }
 }
 
@@ -72,8 +68,8 @@ export default connect(mapStateToProps)(AuthLoadingScreen);
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+    backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "center"
+  }
 });

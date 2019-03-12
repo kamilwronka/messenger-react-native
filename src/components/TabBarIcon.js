@@ -1,9 +1,9 @@
-import React from 'react';
-import { Text } from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import React from "react";
+import { Text } from "react-native";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 // import { Icon } from 'expo';
 
-import Colors from '../constants/Colors';
+import Colors from "../constants/Colors";
 
 export default class TabBarIcon extends React.Component {
   prepareIconColor = () => {
@@ -20,8 +20,6 @@ export default class TabBarIcon extends React.Component {
   render() {
     const { size, name } = this.props;
 
-    return (
-      <Icon name={name} size={size} color={this.prepareIconColor()} />
-    );
+    return <Icon name={name} size={size} color={this.prepareIconColor()} />;
   }
 }

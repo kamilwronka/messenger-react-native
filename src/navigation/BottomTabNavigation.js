@@ -21,7 +21,7 @@ const CameraTabIcon = ({ focused }) => (
     style={{
       height: 64,
       width: 64,
-      backgroundColor: "#eeeeee",
+      backgroundColor: "#5D2E46",
       borderRadius: 32,
       alignItems: "center",
       justifyContent: "center"
@@ -31,7 +31,7 @@ const CameraTabIcon = ({ focused }) => (
       name="camera"
       focused={focused}
       size={36}
-      color="#000000"
+      color="#ffffff"
       centered
     />
   </View>
@@ -89,10 +89,10 @@ export const BottomTabNavigation = createBottomTabNavigator(
     tabBarOptions: {
       showLabel: false,
       style: {
-        backgroundColor: "#FFFFFF",
+        backgroundColor: "#040D16",
         borderWidth: 0,
         height: 72,
-        borderTopColor: "#ffffff",
+        borderTopColor: "transparent",
         borderTopWidth: 0
       }
     }

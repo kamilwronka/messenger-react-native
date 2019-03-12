@@ -20,16 +20,10 @@ export default class App extends Component {
       <View style={{ flex: 1, backgroundColor: "#ffffff" }}>
         <Provider store={store}>
           <PersistGate loading={null} persistor={persistor}>
-            <Root>
               <AppSocketWrapper>
-                  <StatusBar
-                    backgroundColor="#ffffff"
-                    transcluent
-                    barStyle="dark-content"
-                  />
+                <StatusBar barStyle="light-content"/>
                 <AppNavigator />
               </AppSocketWrapper>
-            </Root>
           </PersistGate>
         </Provider>
       </View>

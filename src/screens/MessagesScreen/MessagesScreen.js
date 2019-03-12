@@ -1,32 +1,26 @@
-import React, { PureComponent } from 'react';
+import React, { PureComponent } from "react";
 import {
-  Platform,
   StatusBar,
-  StyleSheet,
   View,
   RefreshControl,
   ScrollView,
-  FlatList,
-  Text,
-  Image,
-  TouchableOpacity,
-  TouchableNativeFeedback,
-} from 'react-native';
-import { isNil, isArray, get, isEmpty } from 'lodash';
+  FlatList
+} from "react-native";
+import { isNil, isArray, get, isEmpty } from "lodash";
 // import { MaterialCommunityIcons, Feather } from '@expo/vector-icons';
-import { connect } from 'react-redux';
-import SearchHeader from '../../components/SearchHeader';
+import { connect } from "react-redux";
+import SearchHeader from "../../components/SearchHeader";
 
-import SocketContext from '@/helpers/socketContext';
+import SocketContext from "@/helpers/socketContext";
 
-import { prepareAvatar, prepareLastMessage } from '@/helpers';
-import { Header, HeaderTitle, HeaderIcon } from '@/components/Header';
+import { prepareAvatar, prepareLastMessage } from "@/helpers";
+import { Header, HeaderTitle } from "@/components/Header/HeaderNew";
 
-import { fetchConversations } from './actions/homeScreen.actions';
-import { getConversations } from './selectors/homeScreen.selectors';
-import { getUserData } from '../../selectors/user.selectors';
-import Avatar from '../../components/Avatar';
-import ConversationListItem from './components/ConversationListItem';
+import { fetchConversations } from "./actions/homeScreen.actions";
+import { getConversations } from "./selectors/homeScreen.selectors";
+import { getUserData } from "../../selectors/user.selectors";
+import Avatar from "../../components/Avatar";
+import ConversationListItem from "./components/ConversationListItem";
 
 class MessagesScreen extends PureComponent {
   componentDidMount() {
@@ -35,8 +29,8 @@ class MessagesScreen extends PureComponent {
 
   state = {
     isSearchBarOpened: false,
-    searchValue: '',
-    refreshing: false,
+    searchValue: "",
+    refreshing: false
   };
 
   _onRefresh = () => {
@@ -53,13 +47,13 @@ class MessagesScreen extends PureComponent {
     );
 
     if (preparedParticipants.length > 1 && isArray(preparedParticipants)) {
-      let preparedName = '';
+      let preparedName = "";
       preparedParticipants.map(participant => {
-        preparedName = preparedName + participant.username + ', ';
+        preparedName = preparedName + participant.username + ", ";
       });
       return preparedName;
     } else {
-      return get(preparedParticipants, '[0].username');
+      return get(preparedParticipants, "[0].username");
     }
   };
 
@@ -84,16 +78,25 @@ class MessagesScreen extends PureComponent {
     );
 
     if (preparedParticipants.length === 1) {
-      const desiredParticipant = get(preparedParticipants, '[0]');
+      const desiredParticipant = get(preparedParticipants, "[0]");
 
-      return <Avatar name={conversationName} imgUrl={desiredParticipant.avatar} size="medium" />;
+      return (
+        <Avatar
+          name={conversationName}
+          imgUrl={desiredParticipant.avatar}
+          size="medium"
+        />
+      );
     }
   };
 
   _keyExtractor = (item, index) => `${index}`;
 
   _renderItem = ({ item }) => {
-    const conversationName = this.prepareConversationName(item.name, item.participants);
+    const conversationName = this.prepareConversationName(
+      item.name,
+      item.participants
+    );
     const currentUser = this.props.user.data._id;
     const preparedParticipants = item.participants.filter(
       participant => participant._id !== currentUser
@@ -108,7 +111,8 @@ class MessagesScreen extends PureComponent {
         conversationName={conversationName}
         preparedParticipants={preparedParticipants}
         lastMessage={lastMessage}
-        lastMessageDate={lastMessageDate}>
+        lastMessageDate={lastMessageDate}
+      >
         {conversationImage}
       </ConversationListItem>
     );
@@ -116,20 +120,28 @@ class MessagesScreen extends PureComponent {
 
   render() {
     return (
-      <View style={{ flex: 1, backgroundColor: '#ffffff', flexDirection: 'column', flexGrow: 1 }}>
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: "#040D16",
+          flexDirection: "column"
+          // flexGrow: 1
+        }}
+      >
         <Header>
-          <HeaderTitle>Wiadomości</HeaderTitle>
-          {/* <HeaderIcon onPress={() => navigation.navigate('SettingsScreen')}>
-              <MaterialCommunityIcons size={18} name="settings" color="#912F56" />
-            </HeaderIcon> */}
+          <HeaderTitle value="Messages" color="#FFFFFF" />
         </Header>
         <ScrollView
+          contentContainerStyle={{
+            marginTop: 24
+          }}
           refreshControl={
             <RefreshControl
               refreshing={this.props.conversations.fetching}
               onRefresh={this._onRefresh}
             />
-          }>
+          }
+        >
           <SearchHeader />
           <FlatList
             data={this.props.conversations.data}
@@ -144,7 +156,7 @@ class MessagesScreen extends PureComponent {
 
 class MessagesScreenWithSocket extends PureComponent {
   static navigationOptions = {
-    header: null,
+    header: null
   };
 
   render() {
@@ -159,12 +171,12 @@ class MessagesScreenWithSocket extends PureComponent {
 const mapStateToProps = state => {
   return {
     conversations: getConversations(state),
-    user: getUserData(state),
+    user: getUserData(state)
   };
 };
 
 const mapDispatchToProps = {
-  fetchConversations,
+  fetchConversations
 };
 
 export default connect(

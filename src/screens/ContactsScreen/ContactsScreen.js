@@ -136,13 +136,13 @@ class ContactsScreen extends PureComponent {
       <View
         style={{
           flex: 1,
-          backgroundColor: "#ffffff",
+          backgroundColor: "#040D16",
           flexDirection: "column",
           flexGrow: 1
         }}
       >
         <Header>
-          <HeaderTitle>Kontakty</HeaderTitle>
+          <HeaderTitle value="Contacts" color="#ffffff" />
         </Header>
         <SearchHeader />
         <ScrollView

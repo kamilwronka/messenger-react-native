@@ -1,45 +1,67 @@
-import React, { Component } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, Image, Dimensions } from 'react-native';
-import { isNil } from 'lodash';
+import React, { Component } from "react";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  ScrollView,
+  Image,
+  Dimensions
+} from "react-native";
+import { isNil } from "lodash";
 
-import { Header, HeaderTitle, HeaderIcon } from '@/components/Header';
-import { Button } from '@/components/Buttons';
+import {
+  Header,
+  HeaderTitle,
+  HeaderIconRight
+} from "@/components/Header/HeaderNew";
+import { Button } from "@/components/Buttons";
 // import { MaterialCommunityIcons, Feather, MaterialIcons } from '@expo/vector-icons';
 
 // import { Permissions, ImagePicker } from 'expo';
-import { connect } from 'react-redux';
+import { connect } from "react-redux";
 
-import { setUserAvatar, setUserBackgroundImage } from './actions/profile.actions';
-import { getUserData } from '@/selectors/user.selectors';
+import {
+  setUserAvatar,
+  setUserBackgroundImage
+} from "./actions/profile.actions";
+import { getUserData } from "@/selectors/user.selectors";
 
-const SCREEN_WIDTH = Dimensions.get('window').width;
-const SCREEN_HEIGHT = Dimensions.get('window').height;
+const SCREEN_WIDTH = Dimensions.get("window").width;
+const SCREEN_HEIGHT = Dimensions.get("window").height;
 
 class ProfileScreen extends Component {
   static navigationOptions = {
-    header: null,
+    header: null
   };
 
   state = {
-    image: null,
+    image: null
   };
 
   _pickImage = async () => {
-    const { status: cameraRollPerm } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+    const { status: cameraRollPerm } = await Permissions.askAsync(
+      Permissions.CAMERA_ROLL
+    );
 
     // only if user allows permission to camera roll
-    if (cameraRollPerm === 'granted') {
-      let pickerResult = await ImagePicker.launchImageLibraryAsync({ allowsEditing: true });
+    if (cameraRollPerm === "granted") {
+      let pickerResult = await ImagePicker.launchImageLibraryAsync({
+        allowsEditing: true
+      });
 
       this.props.setUserAvatar(pickerResult);
     }
   };
 
   _pickBackgroundImage = async () => {
-    const { status: cameraRollPerm } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+    const { status: cameraRollPerm } = await Permissions.askAsync(
+      Permissions.CAMERA_ROLL
+    );
 
-    if (cameraRollPerm === 'granted') {
-      let pickerResult = await ImagePicker.launchImageLibraryAsync({ allowsEditing: true });
+    if (cameraRollPerm === "granted") {
+      let pickerResult = await ImagePicker.launchImageLibraryAsync({
+        allowsEditing: true
+      });
 
       this.props.setUserBackgroundImage(pickerResult);
     }
@@ -48,35 +70,49 @@ class ProfileScreen extends Component {
   render() {
     const {
       userData: { data },
-      navigation,
+      navigation
     } = this.props;
 
     return (
       !isNil(data) && (
-        <View style={{ flex: 1, backgroundColor: '#ffffff', flexDirection: 'column', flexGrow: 1 }}>
+        <View
+          style={{
+            flex: 1,
+            backgroundColor: "#040D16",
+            flexDirection: "column",
+            flexGrow: 1
+          }}
+        >
           <Header>
-            <HeaderTitle>Profil</HeaderTitle>
-            <HeaderIcon onPress={() => navigation.navigate('SettingsScreen')}>
-              {/*<MaterialCommunityIcons size={28} name="settings" color="#912F56" />*/}
-              <Text>ustawienia</Text>
-            </HeaderIcon>
+            <HeaderTitle value="Profile" color="#ffffff" />
+            <HeaderIconRight
+              iconName="settings"
+              size={28}
+              color="#ffffff"
+              onPress={() => navigation.navigate("SettingsScreen")}
+            />
           </Header>
           <ScrollView>
-            <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center' }}>
-              <TouchableOpacity style={{ flex: 1 }} onPress={this._pickBackgroundImage}>
+            <View
+              style={{ flex: 1, flexDirection: "column", alignItems: "center" }}
+            >
+              <TouchableOpacity
+                style={{ flex: 1 }}
+                onPress={this._pickBackgroundImage}
+              >
                 <Image
                   style={{
                     flex: 1,
-                    resizeMode: 'cover',
+                    resizeMode: "cover",
                     height: SCREEN_WIDTH / 2.5,
-                    width: SCREEN_WIDTH,
+                    width: SCREEN_WIDTH
                   }}
                   source={{
                     uri: data.backgroundImage
                       ? `https://s3.eu-central-1.amazonaws.com/messenger-dev-bucket/${
                           data.backgroundImage
                         }`
-                      : 'https://media.boingboing.net/wp-content/uploads/2018/05/cool-background1.png',
+                      : "https://media.boingboing.net/wp-content/uploads/2018/05/cool-background1.png"
                   }}
                 />
               </TouchableOpacity>
@@ -86,17 +122,17 @@ class ProfileScreen extends Component {
                     style={{
                       width: 112,
                       height: 112,
-                      resizeMode: 'cover',
+                      resizeMode: "cover",
                       borderRadius: 56,
                       borderWidth: 5,
-                      borderColor: '#ffffff',
+                      borderColor: "#ffffff"
                     }}
                     source={{
                       uri: data.avatar
                         ? `https://s3.eu-central-1.amazonaws.com/messenger-dev-bucket/${
                             data.avatar
                           }`
-                        : 'http://icons.iconarchive.com/icons/paomedia/small-n-flat/512/user-male-icon.png',
+                        : "http://icons.iconarchive.com/icons/paomedia/small-n-flat/512/user-male-icon.png"
                     }}
                   />
                 </TouchableOpacity>
@@ -104,9 +140,11 @@ class ProfileScreen extends Component {
                   style={{
                     fontSize: 26,
                     marginVertical: 10,
-                    fontWeight: 'bold',
-                    alignSelf: 'center',
-                  }}>
+                    fontWeight: "bold",
+                    alignSelf: "center",
+                    color: "#ffffff"
+                  }}
+                >
                   {data.username}
                 </Text>
               </View>
@@ -120,13 +158,13 @@ class ProfileScreen extends Component {
 
 const mapStateToProps = state => {
   return {
-    userData: getUserData(state),
+    userData: getUserData(state)
   };
 };
 
 const mapDispatchToProps = {
   setUserAvatar,
-  setUserBackgroundImage,
+  setUserBackgroundImage
 };
 
 export default connect(

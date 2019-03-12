@@ -30,14 +30,11 @@ export default Input;
 const styles = StyleSheet.create({
   container: {
     height: 48,
-    backgroundColor: "transparent",
+    backgroundColor: "#f0f0f0",
     borderRadius: 24,
     flexDirection: "row",
     alignItems: "center",
     marginVertical: 10,
-    borderWidth: 2,
-    // borderColor: "#912F56"
-    borderColor: "#dddddd"
   },
   input: {
     height: 48,

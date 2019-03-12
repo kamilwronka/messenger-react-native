@@ -16,9 +16,9 @@ import { prepareAvatar } from "../../helpers";
 import {
   Header,
   HeaderTitle,
-  HeaderIcon,
-  HeaderLeftIcon
-} from "@/components/Header";
+  HeaderIconRight,
+  HeaderIconLeft
+} from "@/components/Header/HeaderNew";
 import { Footer } from "@/components/Footer";
 import SocketContext from "@/helpers/socketContext";
 import ConvListItem from "./components/ConvListItem";
@@ -243,19 +243,25 @@ class ConversationScreen extends React.Component {
       <View
         style={{
           flex: 1,
-          backgroundColor: "#ffffff",
+          backgroundColor: "#040D16",
           flexDirection: "column",
           flexGrow: 1
         }}
       >
         <Header>
-          <HeaderLeftIcon onPress={() => goBack(null)}>
-            <Icon name="arrow-left" size={28} color={color} />
-          </HeaderLeftIcon>
-          <HeaderTitle color={color}>{conversationName}</HeaderTitle>
-          <HeaderIcon onPress={this.navigateToConversationInfo}>
-            <Icon name="dots-vertical" size={28} color={color} />
-          </HeaderIcon>
+          <HeaderIconLeft
+            iconName="chevron-left"
+            onPress={() => goBack(null)}
+            color={color}
+            size={28}
+          />
+          <HeaderTitle value={conversationName} color={color} />
+          <HeaderIconRight
+            iconName="dots-vertical"
+            size={28}
+            color={color}
+            onPress={this.navigateToConversationInfo}
+          />
         </Header>
         <ScrollView ref="scrollView">
           <FlatList

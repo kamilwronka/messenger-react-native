@@ -19,25 +19,46 @@ const getSize = size => {
 const Avatar = ({ imgUrl, name, color, size }) => {
   const formattedSize = getSize(size);
 
-  return imgUrl ? (
-    <Image
-      style={{ height: formattedSize, width: formattedSize, borderRadius: 28 }}
-      source={{
-        uri: config.BUCKET_URL + imgUrl
-      }}
-    />
-  ) : (
-    <View
-      style={{
-        borderRadius: 28,
-        backgroundColor: color,
-        height: formattedSize,
-        width: formattedSize,
-        alignItems: "center",
-        justifyContent: "center"
-      }}
-    >
-      <Text style={{ color: "#fff", fontSize: 24 }}>{prepareAvatar(name)}</Text>
+  return (
+    <View>
+      {imgUrl ? (
+        <Image
+          style={{
+            height: formattedSize,
+            width: formattedSize,
+            borderRadius: 28
+          }}
+          source={{
+            uri: config.BUCKET_URL + imgUrl
+          }}
+        />
+      ) : (
+        <View
+          style={{
+            borderRadius: 28,
+            backgroundColor: color,
+            height: formattedSize,
+            width: formattedSize,
+            alignItems: "center",
+            justifyContent: "center"
+          }}
+        >
+          <Text style={{ color: "#fff", fontSize: 24 }}>
+            {prepareAvatar(name)}
+          </Text>
+        </View>
+      )}
+      <View
+        style={{
+          position: "absolute",
+          backgroundColor: "#00FF11",
+          height: 14,
+          width: 14,
+          borderRadius: 7,
+          right: 2,
+          bottom: 2
+        }}
+      />
     </View>
   );
 };

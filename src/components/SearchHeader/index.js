@@ -1,30 +1,36 @@
 import React, { Component } from "react";
-import { View, StyleSheet, TouchableWithoutFeedback, Text } from "react-native";
+import {
+  View,
+  StyleSheet,
+  TouchableWithoutFeedback,
+  Text,
+  Dimensions
+} from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { withNavigation } from "react-navigation";
 
+const { width } = Dimensions.get("window");
+
 const styles = StyleSheet.create({
   container: {
-    // borderColor: '#cccccc',
-    // borderWidth: 1,
-    height: 42,
+    height: 48,
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: "#f0f0f0",
-    borderRadius: 21,
-    paddingHorizontal: 15,
+    borderRadius: 24,
     marginBottom: 20,
-    marginHorizontal: 25
+    marginHorizontal: 25,
+    width: width - 64
   },
   search: {
     flex: 1,
     justifyContent: "center",
-    height: 42,
-    paddingLeft: 25
+    height: 48,
+    paddingLeft: 16
   },
   text: {
     fontSize: 16,
-    color: "#cccccc"
+    color: "#bbbbbb"
   },
   icon: {
     left: 10

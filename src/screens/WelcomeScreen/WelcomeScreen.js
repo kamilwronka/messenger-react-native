@@ -1,125 +1,116 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 import {
   View,
   Dimensions,
-  ScrollView,
-  Text,
-  Animated,
-  TextInput,
-  KeyboardAvoidingView,
-} from 'react-native';
-import { Button } from '@/components/Buttons';
+  ImageBackground,
+  Image,
+  StatusBar,
+  TouchableWithoutFeedback,
+  ActivityIndicator,
+  TouchableNativeFeedback,
+  Text
+} from "react-native";
+import { Button } from "@/components/Buttons";
 
-import InitialScreen from './InitialScreen';
+import InitialScreen from "./InitialScreen";
 
-const SCREEN_WIDTH = Dimensions.get('window').width;
-const SCREEN_HEIGHT = Dimensions.get('window').height;
+const SCREEN_WIDTH = Dimensions.get("window").width;
+const SCREEN_HEIGHT = Dimensions.get("window").height;
 
 class WelcomeScreen extends Component {
   static navigationOptions = {
-    header: null,
+    header: null
   };
 
-  state = {
-    currentScreenIndex: 1,
+  onSignInPress = () => {
+    this.props.navigation.navigate("LoginScreen");
   };
 
-  screens = [<InitialScreen />, <InitialScreen />, <InitialScreen />];
-
-  componentDidMount() {
-    console.log('welcome screen appear!');
-  }
-
-  updatePage = event => {
-    let newPage = Math.round(event.nativeEvent.contentOffset.x / SCREEN_WIDTH + 1);
-
-    if (newPage !== this.state.currentPage) {
-      this.setState({ currentScreenIndex: newPage });
-    }
-  };
-
-  checkIfLastSlide = () => {
-    return this.state.currentScreenIndex === this.screens.length;
-  };
-
-  handleNextStep = () => {
-    this.props.navigation.navigate('AuthScreen');
+  onSignUpPress = () => {
+    this.props.navigation.navigate("SignUpScreen");
   };
 
   render() {
     return (
-      <ScrollView
-        contentContainerStyle={{
-          flexGrow: 1,
-          flexDirection: 'column',
-          justifyContent: 'space-between',
-        }}
-        style={{ flex: 1, backgroundColor: '#FFFFFF' }}>
-        <ScrollView
-          ref="scrollView"
-          horizontal
-          pagingEnabled
-          onScroll={this.updatePage}
-          scrollEventThrottle={16}
-          showsHorizontalScrollIndicator={false}
-          scrollEnabled={true}>
-          {this.screens.map((elem, index) => {
-            return (
-              <View key={index} style={{ width: SCREEN_WIDTH }}>
-                {elem}
-              </View>
-            );
-          })}
-        </ScrollView>
-        <View
-          style={{
-            alignSelf: 'flex-end',
-            width: SCREEN_WIDTH,
-          }}>
+      <View style={{ flex: 1 }}>
+        <StatusBar barStyle="light-content" />
+        <ImageBackground
+          style={{ flex: 1 }}
+          source={require("../../assets/images/drawable-xxxhdpi/background.png")}
+        >
           <View
             style={{
               flex: 1,
-              flexDirection: 'row',
-              justifyContent: 'center',
-              marginVertical: 20,
-            }}>
-            {this.screens.map((screen, index) => {
-              if (index === this.state.currentScreenIndex - 1) {
-                return (
-                  <Animated.View
-                    key={index}
-                    style={{
-                      height: 6,
-                      width: 6,
-                      borderRadius: 3,
-                      backgroundColor: '#912F56',
-                      marginHorizontal: 5,
-                    }}
-                  />
-                );
-              } else {
-                return (
-                  <Animated.View
-                    key={index}
-                    style={{
-                      height: 6,
-                      width: 6,
-                      borderRadius: 3,
-                      backgroundColor: '#BEBBBB',
-                      marginHorizontal: 5,
-                    }}
-                  />
-                );
-              }
-            })}
+              flexDirection: "column",
+              alignItems: "center",
+              backgroundColor: "rgba(4, 13, 22, 0.3)"
+            }}
+          >
+            <Image
+              style={{
+                height: SCREEN_WIDTH / 1.5,
+                width: SCREEN_WIDTH / 1.5,
+                marginTop: 50,
+                shadowOffset: { width: 10, height: 10 },
+                shadowColor: "#ffffff",
+                shadowOpacity: 1
+              }}
+              source={require("../../assets/images/drawable-xhdpi/gnojek.png")}
+            />
+            <View
+              style={{
+                alignItems: "center",
+                position: "absolute",
+                bottom: 0,
+                width: SCREEN_WIDTH
+              }}
+            >
+              <TouchableNativeFeedback
+                onPress={this.onSignInPress}
+                style={{
+                  marginBottom: 20
+                }}
+              >
+                <View
+                  style={{
+                    height: 48,
+                    width: SCREEN_WIDTH - 64,
+                    alignItems: "center",
+                    justifyContent: "center",
+                    borderRadius: 24,
+                    backgroundColor: "#AD6A6C",
+                    marginBottom: 20,
+                    flexDirection: "row"
+                  }}
+                >
+                  <Text style={{ color: "#ffffff" }}>SIGN IN</Text>
+                </View>
+              </TouchableNativeFeedback>
+              <TouchableNativeFeedback
+                onPress={this.onSignUpPress}
+                style={{
+                  marginBottom: 40
+                }}
+              >
+                <View
+                  style={{
+                    width: SCREEN_WIDTH - 64,
+                    alignItems: "center",
+                    justifyContent: "center",
+                    height: 48,
+                    borderRadius: 24,
+                    backgroundColor: "#5D2E46",
+                    marginBottom: 40,
+                    flexDirection: "row"
+                  }}
+                >
+                  <Text style={{ color: "#ffffff" }}>SIGN UP</Text>
+                </View>
+              </TouchableNativeFeedback>
+            </View>
           </View>
-          <View style={{ marginHorizontal: 10 }}>
-            {this.checkIfLastSlide() && (
-              <Button title="Zaczynajmy!" onPress={this.handleNextStep} wide />
-            )}
-          </View>
-        </View>
-      </ScrollView>
+        </ImageBackground>
+      </View>
     );
   }
 }
