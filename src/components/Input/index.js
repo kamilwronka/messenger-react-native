@@ -1,5 +1,5 @@
-import React from 'react';
-import { TextInput, StyleSheet, PixelRatio } from 'react-native';
+import React from "react";
+import { TextInput, StyleSheet, PixelRatio } from "react-native";
 
 const Input = props => {
   return (
@@ -17,10 +17,10 @@ export default Input;
 const styles = StyleSheet.create({
   input: {
     height: 48,
-    color: '#912F56',
+    color: "#912F56",
     paddingLeft: 15,
     marginHorizontal: 20,
-    borderBottomColor: '#912F56',
-    borderBottomWidth: 2,
-  },
+    borderBottomColor: "#912F56",
+    borderBottomWidth: 2
+  }
 });

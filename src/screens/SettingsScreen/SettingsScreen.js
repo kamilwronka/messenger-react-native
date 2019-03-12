@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 import {
   Container,
   Content,
@@ -12,26 +12,26 @@ import {
   Button,
   Toast,
   Header,
-  Title,
-} from 'native-base';
-import { connect } from 'react-redux';
+  Title
+} from "native-base";
+import { connect } from "react-redux";
 
-import { logoutUser } from '../../actions/auth.actions';
+import { logoutUser } from "../../actions/auth.actions";
 
 class SettingsScreen extends Component {
   static navigationOptions = {
-    header: null,
+    header: null
   };
 
   handleLogout = () => {
     this.props
       .logoutUser()
       .then(() => {
-        Toast.show({ text: 'Pomyślnie wylogowano' });
-        this.props.navigation.navigate('AuthLoading');
+        Toast.show({ text: "Pomyślnie wylogowano" });
+        this.props.navigation.navigate("AuthLoading");
       })
       .catch(() => {
-        Toast.show({ text: 'Nie udało się wylogować', buttonText: 'OK' });
+        Toast.show({ text: "Nie udało się wylogować", buttonText: "OK" });
       });
   };
 
@@ -49,9 +49,12 @@ class SettingsScreen extends Component {
             <ListItem itemDivider>
               <Text>Personalizacja</Text>
             </ListItem>
-            <ListItem onPress={() => this.props.navigation.navigate('Profile')} icon>
+            <ListItem
+              onPress={() => this.props.navigation.navigate("Profile")}
+              icon
+            >
               <Left>
-                <Button style={{ backgroundColor: '#FF9501' }}>
+                <Button style={{ backgroundColor: "#FF9501" }}>
                   <Icon active name="person" />
                 </Button>
               </Left>
@@ -61,7 +64,7 @@ class SettingsScreen extends Component {
             </ListItem>
             <ListItem icon>
               <Left>
-                <Button style={{ backgroundColor: '#FF9501' }}>
+                <Button style={{ backgroundColor: "#FF9501" }}>
                   <Icon active name="brush" />
                 </Button>
               </Left>
@@ -71,7 +74,7 @@ class SettingsScreen extends Component {
             </ListItem>
             <ListItem icon>
               <Left>
-                <Button style={{ backgroundColor: '#FF9501' }}>
+                <Button style={{ backgroundColor: "#FF9501" }}>
                   <Icon active name="musical-note" />
                 </Button>
               </Left>
@@ -84,7 +87,7 @@ class SettingsScreen extends Component {
             </ListItem>
             <ListItem icon>
               <Left>
-                <Button style={{ backgroundColor: 'blue' }}>
+                <Button style={{ backgroundColor: "blue" }}>
                   <Icon active name="key" />
                 </Button>
               </Left>
@@ -95,7 +98,7 @@ class SettingsScreen extends Component {
             <ListItem itemDivider />
             <ListItem icon onPress={this.handleLogout}>
               <Left>
-                <Button style={{ backgroundColor: 'blue' }}>
+                <Button style={{ backgroundColor: "blue" }}>
                   <Icon active name="hand" />
                 </Button>
               </Left>
@@ -111,7 +114,7 @@ class SettingsScreen extends Component {
 }
 
 const mapDispatchToProps = {
-  logoutUser,
+  logoutUser
 };
 
 export default connect(

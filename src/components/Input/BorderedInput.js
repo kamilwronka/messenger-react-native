@@ -1,5 +1,5 @@
-import React from 'react';
-import { TextInput, StyleSheet, View, TouchableOpacity } from 'react-native';
+import React from "react";
+import { TextInput, StyleSheet, View, TouchableOpacity } from "react-native";
 // import { Ionicons, Feather } from '@expo/vector-icons';
 
 const BorderedInput = props => {
@@ -15,7 +15,10 @@ const BorderedInput = props => {
         {...props}
       />
       {props.value.length > 0 && (
-        <TouchableOpacity style={styles.iconRight} onPress={props.handleIconPress}>
+        <TouchableOpacity
+          style={styles.iconRight}
+          onPress={props.handleIconPress}
+        >
           {/*<Ionicons name="md-close" size={20} color="#bbbbbb" />*/}
         </TouchableOpacity>
       )}
@@ -27,22 +30,22 @@ export default BorderedInput;
 
 const styles = StyleSheet.create({
   container: {
-    borderColor: '#cccccc',
+    borderColor: "#cccccc",
     borderWidth: 1,
     height: 48,
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center"
   },
   input: {
     flex: 1,
     height: 48,
     paddingLeft: 24,
-    color: '#912F56',
+    color: "#912F56"
   },
   icon: {
-    left: 10,
+    left: 10
   },
   iconRight: {
-    right: 15,
-  },
+    right: 15
+  }
 });
