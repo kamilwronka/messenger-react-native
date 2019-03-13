@@ -1,11 +1,11 @@
-import { isNil, get } from 'lodash';
-import { ACTIONS } from '../actions/homeScreen.actions';
+import { isNil, get } from "lodash";
+import { ACTIONS } from "../actions/homeScreen.actions";
 
 const INITIAL_STATE = {
   data: null,
   error: null,
   fetching: false,
-  intact: true,
+  intact: true
 };
 
 const conversationReducer = (state = INITIAL_STATE, action) => {
@@ -17,19 +17,19 @@ const conversationReducer = (state = INITIAL_STATE, action) => {
         ...state,
         data: action.payload.data,
         intact: false,
-        fetching: false,
+        fetching: false
       };
     case `${ACTIONS.FETCH_CONVERSATION}_REJECTED`:
       return {
         ...state,
         error: action.payload.data,
         intact: false,
-        fetching: false,
+        fetching: false
       };
     case `${ACTIONS.SET_CONVERSATION_COLOR}_FULFILLED`:
       return {
         ...state,
-        data: { ...state.data, color: get(action.payload, 'data.color') },
+        data: { ...state.data, color: get(action.payload, "data.color") }
       };
     case `${ACTIONS.CLEAR_CONVERSATION}`:
       return INITIAL_STATE;
@@ -38,10 +38,10 @@ const conversationReducer = (state = INITIAL_STATE, action) => {
         ...state,
         data: {
           ...state.data,
-          messages: !isNil(get(state.data, 'messages'))
+          messages: !isNil(get(state.data, "messages"))
             ? [...state.data.messages, action.payload]
-            : [action.payload],
-        },
+            : [action.payload]
+        }
       };
     default:
       return state;

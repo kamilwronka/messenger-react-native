@@ -1,11 +1,11 @@
-import axios from 'axios';
-import { getUserData } from '@/selectors/user.selectors';
-import apiConfig from '@/config/api_config';
+import axios from "axios";
+import { getUserData } from "@/selectors/user.selectors";
+import apiConfig from "@/config/api_config";
 
 export const ACTIONS = {
-  SET_USER_AVATAR: 'SET_USER_AVATAR',
-  GET_PRESIGNED_URL: 'GET_PRESIGNED_URL',
-  SET_USER_BACKGROUND_IMAGE: 'SET_USER_BACKGROUND_IMAGE',
+  SET_USER_AVATAR: "SET_USER_AVATAR",
+  GET_PRESIGNED_URL: "GET_PRESIGNED_URL",
+  SET_USER_BACKGROUND_IMAGE: "SET_USER_BACKGROUND_IMAGE"
 };
 
 export const setUserAvatar = file => async (dispatch, getState) => {
@@ -13,7 +13,7 @@ export const setUserAvatar = file => async (dispatch, getState) => {
 
   try {
     const {
-      data: { url, key },
+      data: { url, key }
     } = await getPresignedUrl(user.token);
     await uploadToS3(url, key, file);
     return pushImgUrl(key, user.token, dispatch);
@@ -27,7 +27,7 @@ export const setUserBackgroundImage = file => async (dispatch, getState) => {
 
   try {
     const {
-      data: { url, key },
+      data: { url, key }
     } = await getPresignedUrl(user.token);
     await uploadToS3(url, key, file);
     return pushBackgroundImgUrl(key, user.token, dispatch);
@@ -41,10 +41,10 @@ const pushBackgroundImgUrl = (url, token, dispatch) => {
     type: ACTIONS.SET_USER_BACKGROUND_IMAGE,
     payload: axios({
       url: `${apiConfig.ROOT_URL}/api/users/backgroundImage`,
-      method: 'post',
+      method: "post",
       data: { url },
-      headers: { Authorization: token },
-    }),
+      headers: { Authorization: token }
+    })
   }).then(res => console.log(res));
 };
 
@@ -53,29 +53,29 @@ const pushImgUrl = (url, token, dispatch) => {
     type: ACTIONS.SET_USER_AVATAR,
     payload: axios({
       url: `${apiConfig.ROOT_URL}/api/users/avatar`,
-      method: 'post',
+      method: "post",
       data: { url },
-      headers: { Authorization: token },
-    }),
+      headers: { Authorization: token }
+    })
   });
 };
 
 const getPresignedUrl = token => {
   return axios({
     url: `${apiConfig.ROOT_URL}/api/upload`,
-    method: 'get',
-    headers: { Authorization: token },
+    method: "get",
+    headers: { Authorization: token }
   });
 };
 
 const uploadToS3 = async (url, key, file) => {
-  let uriParts = file.uri.split('.');
+  let uriParts = file.uri.split(".");
   let fileType = uriParts[uriParts.length - 1];
 
   const photo = {
     uri: file.uri,
     name: key,
-    type: `image/${fileType}`,
+    type: `image/${fileType}`
   };
 
   await imageUploadRequest({ url, key, photo });
@@ -85,7 +85,7 @@ const imageUploadRequest = data => {
   return new Promise((resolve, reject) => {
     //eslint-disable-next-line
     const xhr = new XMLHttpRequest();
-    xhr.open('PUT', data.url);
+    xhr.open("PUT", data.url);
     xhr.onreadystatechange = function() {
       if (xhr.readyState === 4) {
         if (xhr.status === 200) {
@@ -95,7 +95,7 @@ const imageUploadRequest = data => {
         }
       }
     };
-    xhr.setRequestHeader('Content-Type', data.photo.type);
+    xhr.setRequestHeader("Content-Type", data.photo.type);
     xhr.send(data.photo);
   });
 };

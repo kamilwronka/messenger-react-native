@@ -1,3 +1,4 @@
-import { get } from 'lodash';
+import { get } from "lodash";
 
-export const getNotifications = state => get(state, 'notificationsScreen.notifications');
+export const getNotifications = state =>
+  get(state, "notificationsScreen.notifications");

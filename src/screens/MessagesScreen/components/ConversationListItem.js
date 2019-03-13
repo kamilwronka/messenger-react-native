@@ -1,5 +1,5 @@
 import React, { PureComponent } from "react";
-import { Platform, Text, TouchableNativeFeedback, View } from "react-native";
+import { Platform, Text, TouchableWithoutFeedback, View } from "react-native";
 import { isEmpty, isNil } from "lodash";
 import { withNavigation } from "react-navigation";
 
@@ -32,7 +32,7 @@ class ConversationListItem extends PureComponent {
 
     return (
       !isEmpty(preparedParticipants) && (
-        <TouchableNativeFeedback
+        <TouchableWithoutFeedback
           onPress={this.handleConversationSelect}
           background={
             Platform.OS === "android"
@@ -74,7 +74,7 @@ class ConversationListItem extends PureComponent {
               {/* <Text style={{ fontSize: 12, color: '#000000' }}>23:15</Text> */}
             </View>
           </View>
-        </TouchableNativeFeedback>
+        </TouchableWithoutFeedback>
       )
     );
   }

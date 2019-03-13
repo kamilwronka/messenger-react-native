@@ -65,7 +65,7 @@ class WelcomeScreen extends Component {
                 width: SCREEN_WIDTH
               }}
             >
-              <TouchableNativeFeedback
+              <TouchableWithoutFeedback
                 onPress={this.onSignInPress}
                 style={{
                   marginBottom: 20
@@ -85,8 +85,8 @@ class WelcomeScreen extends Component {
                 >
                   <Text style={{ color: "#ffffff" }}>SIGN IN</Text>
                 </View>
-              </TouchableNativeFeedback>
-              <TouchableNativeFeedback
+              </TouchableWithoutFeedback>
+              <TouchableWithoutFeedback
                 onPress={this.onSignUpPress}
                 style={{
                   marginBottom: 40
@@ -106,7 +106,7 @@ class WelcomeScreen extends Component {
                 >
                   <Text style={{ color: "#ffffff" }}>SIGN UP</Text>
                 </View>
-              </TouchableNativeFeedback>
+              </TouchableWithoutFeedback>
             </View>
           </View>
         </ImageBackground>

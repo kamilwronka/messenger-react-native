@@ -1,25 +1,31 @@
-import React, { Component } from 'react';
-import { View, Text, TouchableWithoutFeedback, Image, Dimensions } from 'react-native';
-import { connect } from 'react-redux';
-import { isNil, find } from 'lodash';
+import React, { Component } from "react";
+import {
+  View,
+  Text,
+  TouchableWithoutFeedback,
+  Image,
+  Dimensions
+} from "react-native";
+import { connect } from "react-redux";
+import { isNil, find } from "lodash";
 
-import { prepareAvatar } from '@/helpers';
-import { getUserData } from '@/selectors/user.selectors';
-import ConversationPhoto from './ConversationPhoto';
+import { prepareAvatar } from "@/helpers";
+import { getUserData } from "@/selectors/user.selectors";
+import ConversationPhoto from "./ConversationPhoto";
 
-const SCREEN_WIDTH = Dimensions.get('window').width;
-const SCREEN_HEIGHT = Dimensions.get('window').height;
+const SCREEN_WIDTH = Dimensions.get("window").width;
+const SCREEN_HEIGHT = Dimensions.get("window").height;
 
 class ConvListItem extends Component {
   state = {
-    opened: false,
+    opened: false
   };
 
   handleClick = () => {
     this.setState({ opened: !this.state.opened });
   };
 
-  colorsArr = ['#b0003a'];
+  colorsArr = ["#b0003a"];
 
   prepareMessageAvatar = (item, participants) => {
     const preparedUser = find(participants, { _id: item.userId });
@@ -32,7 +38,7 @@ class ConvListItem extends Component {
             source={{
               uri: `https://s3.eu-central-1.amazonaws.com/messenger-dev-bucket/${
                 preparedUser.avatar
-              }`,
+              }`
             }}
           />
         );
@@ -41,14 +47,17 @@ class ConvListItem extends Component {
           <View
             style={{
               borderRadius: 18,
-              backgroundColor: this.colorsArr[Math.floor(Math.random() * this.colorsArr.length)],
+              backgroundColor: this.colorsArr[
+                Math.floor(Math.random() * this.colorsArr.length)
+              ],
               height: 36,
               width: 36,
-              alignItems: 'center',
-              justifyContent: 'center',
-              marginRight: 10,
-            }}>
-            <Text style={{ color: '#fff', fontSize: 24 }}>
+              alignItems: "center",
+              justifyContent: "center",
+              marginRight: 10
+            }}
+          >
+            <Text style={{ color: "#fff", fontSize: 24 }}>
               {prepareAvatar(preparedUser.username)}
             </Text>
           </View>
@@ -62,37 +71,41 @@ class ConvListItem extends Component {
       item,
       participants,
       user: {
-        data: { _id },
-      },
+        data: { _id }
+      }
     } = this.props;
 
     switch (item.messageType) {
-      case 'text':
+      case "text":
         return (
           <TouchableWithoutFeedback onPress={this.handleClick}>
             <View style={{ marginHorizontal: 20, flex: 1 }}>
               <View
                 style={{
-                  alignSelf: item.userId === _id ? 'flex-end' : 'flex-start',
-                  flexDirection: 'row',
-                }}>
+                  alignSelf: item.userId === _id ? "flex-end" : "flex-start",
+                  flexDirection: "row"
+                }}
+              >
                 {this.prepareMessageAvatar(item, participants)}
                 <View
                   style={{
                     height: 36,
-                    alignSelf: item.userId === _id ? 'flex-end' : 'flex-start',
-                    backgroundColor: item.userId !== _id ? '#cccccc' : this.props.color,
+                    alignSelf: item.userId === _id ? "flex-end" : "flex-start",
+                    backgroundColor:
+                      item.userId !== _id ? "#cccccc" : this.props.color,
                     marginTop: 2,
-                    alignItems: 'center',
-                    justifyContent: 'center',
+                    alignItems: "center",
+                    justifyContent: "center",
                     borderRadius: 10,
-                    paddingHorizontal: 10,
-                  }}>
+                    paddingHorizontal: 10
+                  }}
+                >
                   <Text
                     style={{
                       fontSize: 14,
-                      color: item.userId !== _id ? '#000000' : '#FFFFFF',
-                    }}>
+                      color: item.userId !== _id ? "#000000" : "#FFFFFF"
+                    }}
+                  >
                     {item.messageContent}
                   </Text>
                 </View>
@@ -100,35 +113,41 @@ class ConvListItem extends Component {
               {this.state.opened ? (
                 <Text
                   style={{
-                    alignSelf: item.userId === _id ? 'flex-end' : 'flex-start',
+                    alignSelf: item.userId === _id ? "flex-end" : "flex-start",
                     fontSize: 10,
-                    color: '#cccccc',
-                  }}>
+                    color: "#cccccc"
+                  }}
+                >
                   {item.date}
                 </Text>
               ) : (
                 <Text
                   style={{
-                    alignSelf: item.userId === _id ? 'flex-end' : 'flex-start',
+                    alignSelf: item.userId === _id ? "flex-end" : "flex-start",
                     fontSize: 10,
-                    color: '#cccccc',
-                  }}>
+                    color: "#cccccc"
+                  }}
+                >
                   &nbsp;
                 </Text>
               )}
             </View>
           </TouchableWithoutFeedback>
         );
-      case 'emoji':
+      case "emoji":
         return (
           <View style={{ marginHorizontal: 20, flex: 1 }}>
             <Text
-              style={{ fontSize: 48, alignSelf: item.userId === _id ? 'flex-end' : 'flex-start' }}>
+              style={{
+                fontSize: 48,
+                alignSelf: item.userId === _id ? "flex-end" : "flex-start"
+              }}
+            >
               {item.messageContent}
             </Text>
           </View>
         );
-      case 'photo':
+      case "photo":
         const { height, width } = item.metadata;
         const ratio = height / width;
 
@@ -141,7 +160,7 @@ class ConvListItem extends Component {
 
 const mapStateToProps = state => {
   return {
-    user: getUserData(state),
+    user: getUserData(state)
   };
 };
 

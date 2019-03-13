@@ -10,6 +10,7 @@ import {
   Text,
   TouchableOpacity,
   TouchableNativeFeedback,
+  TouchableWithoutFeedback,
   RefreshControl
 } from "react-native";
 
@@ -20,9 +21,8 @@ import { prepareAvatar } from "@/helpers";
 import {
   Header,
   HeaderTitle,
-  HeaderIcon,
-  HeaderLeftIcon
-} from "@/components/Header";
+  HeaderIconLeft
+} from "@/components/Header/HeaderNew";
 import BorderedInput from "@/components/Input/BorderedInput";
 
 import {
@@ -89,14 +89,7 @@ class SearchScreen extends PureComponent {
     const showAddBtn = !item.friends.includes(this.props.user.data._id);
     console.log(showAddBtn);
     return (
-      <TouchableNativeFeedback
-        background={
-          Platform.OS === "android"
-            ? TouchableNativeFeedback.SelectableBackground()
-            : ""
-        }
-        onPress={() => this.goToConversation(item)}
-      >
+      <TouchableWithoutFeedback onPress={() => this.goToConversation(item)}>
         <View
           style={{
             flex: 1,
@@ -165,7 +158,7 @@ class SearchScreen extends PureComponent {
             )}
           </View>
         </View>
-      </TouchableNativeFeedback>
+      </TouchableWithoutFeedback>
     );
   };
 
@@ -174,14 +167,19 @@ class SearchScreen extends PureComponent {
       <View
         style={{
           flex: 1,
-          backgroundColor: "#ffffff",
+          backgroundColor: "#040D16",
           flexDirection: "column",
           flexGrow: 1
         }}
       >
         <Header>
-          <HeaderLeftIcon />
-          <HeaderTitle>Szukaj</HeaderTitle>
+          <HeaderIconLeft
+            iconName="chevron-left"
+            onPress={() => this.props.navigation.goBack()}
+            color="#ffffff"
+            size={28}
+          />
+          <HeaderTitle color="#ffffff" value="Szukaj" />
         </Header>
         <View style={{ marginVertical: 10, marginHorizontal: 20 }}>
           <BorderedInput

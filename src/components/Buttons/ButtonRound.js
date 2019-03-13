@@ -3,6 +3,7 @@ import {
   ActivityIndicator,
   Text,
   TouchableNativeFeedback,
+  TouchableWithoutFeedback,
   View
 } from "react-native";
 
@@ -15,7 +16,7 @@ const ButtonRound = ({
   textColor
 }) => {
   return (
-    <TouchableNativeFeedback onPress={onPress} style={{ flex: 1 }}>
+    <TouchableWithoutFeedback onPress={onPress} style={{ flex: 1 }}>
       <View
         style={[
           {
@@ -32,7 +33,7 @@ const ButtonRound = ({
           {indicatorActive && <ActivityIndicator color={indicatorColor} />}
         </View>
       </View>
-    </TouchableNativeFeedback>
+    </TouchableWithoutFeedback>
   );
 };
 

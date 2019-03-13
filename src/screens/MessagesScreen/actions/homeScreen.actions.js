@@ -1,16 +1,16 @@
-import axios from 'axios';
-import { apiConfig } from '@/config';
-import { getUserData } from '../../../selectors/user.selectors';
+import axios from "axios";
+import { apiConfig } from "@/config";
+import { getUserData } from "../../../selectors/user.selectors";
 
 export const ACTIONS = {
-  FETCH_USER_CONVERSATIONS: 'FETCH_USER_CONVERSATIONS',
-  FETCH_CONVERSATION: 'FETCH_CONVERSATION',
-  PUSH_NEW_MESSAGE: 'PUSH_NEW_MESSAGE',
-  FETCH_CONVERSATION_INFO: 'FETCH_CONVERSATION_INFO',
-  GET_PRESIGNED_URL: 'GET_PRESIGNED_URL',
-  PUSH_IMG_TO_MESSAGE: 'PUSH_IMG_TO_MESSAGE',
-  CLEAR_CONVERSATION: 'CLEAR_CONVERSATIONs',
-  SET_CONVERSATION_COLOR: 'SET_CONVERSATION_COLOR',
+  FETCH_USER_CONVERSATIONS: "FETCH_USER_CONVERSATIONS",
+  FETCH_CONVERSATION: "FETCH_CONVERSATION",
+  PUSH_NEW_MESSAGE: "PUSH_NEW_MESSAGE",
+  FETCH_CONVERSATION_INFO: "FETCH_CONVERSATION_INFO",
+  GET_PRESIGNED_URL: "GET_PRESIGNED_URL",
+  PUSH_IMG_TO_MESSAGE: "PUSH_IMG_TO_MESSAGE",
+  CLEAR_CONVERSATION: "CLEAR_CONVERSATIONs",
+  SET_CONVERSATION_COLOR: "SET_CONVERSATION_COLOR"
 };
 
 export const fetchConversations = () => (dispatch, getState) => {
@@ -20,15 +20,15 @@ export const fetchConversations = () => (dispatch, getState) => {
     type: ACTIONS.FETCH_USER_CONVERSATIONS,
     payload: axios({
       url: `${apiConfig.ROOT_URL}/api/users/conversations`,
-      method: 'get',
-      headers: { Authorization: user.token },
-    }),
+      method: "get",
+      headers: { Authorization: user.token }
+    })
   });
 };
 
 export const clearConversation = () => {
   return {
-    type: ACTIONS.CLEAR_CONVERSATION,
+    type: ACTIONS.CLEAR_CONVERSATION
   };
 };
 
@@ -39,9 +39,9 @@ export const fetchConversation = id => (dispatch, getState) => {
     type: ACTIONS.FETCH_CONVERSATION,
     payload: axios({
       url: `${apiConfig.ROOT_URL}/api/conversations/${id}`,
-      method: 'get',
-      headers: { Authorization: user.token },
-    }),
+      method: "get",
+      headers: { Authorization: user.token }
+    })
   });
 };
 
@@ -52,9 +52,9 @@ export const fetchConversationInfo = id => (dispatch, getState) => {
     type: ACTIONS.FETCH_CONVERSATION_INFO,
     payload: axios({
       url: `${apiConfig.ROOT_URL}/api/conversations/${id}/info`,
-      method: 'get',
-      headers: { Authorization: user.token },
-    }),
+      method: "get",
+      headers: { Authorization: user.token }
+    })
   });
 };
 
@@ -65,19 +65,19 @@ export const setConversationColor = (id, color) => (dispatch, getState) => {
     type: ACTIONS.SET_CONVERSATION_COLOR,
     payload: axios({
       url: `${apiConfig.ROOT_URL}/api/conversations/${id}/color`,
-      method: 'post',
+      method: "post",
       headers: { Authorization: user.token },
       data: {
-        color,
-      },
-    }),
+        color
+      }
+    })
   });
 };
 
 export const pushNewMessage = msg => {
   return {
     type: ACTIONS.PUSH_NEW_MESSAGE,
-    payload: msg,
+    payload: msg
   };
 };
 
@@ -86,7 +86,7 @@ export const sendPhoto = file => async (dispatch, getState) => {
 
   try {
     const {
-      data: { url, key },
+      data: { url, key }
     } = await getPresignedUrl(user.token);
     await uploadToS3(url, key, file);
     return Promise.resolve({ key, height: file.height, width: file.width });
@@ -99,19 +99,19 @@ export const sendPhoto = file => async (dispatch, getState) => {
 const getPresignedUrl = token => {
   return axios({
     url: `${apiConfig.ROOT_URL}/api/upload`,
-    method: 'get',
-    headers: { Authorization: token },
+    method: "get",
+    headers: { Authorization: token }
   });
 };
 
 const uploadToS3 = async (url, key, file) => {
-  let uriParts = file.uri.split('.');
+  let uriParts = file.uri.split(".");
   let fileType = uriParts[uriParts.length - 1];
 
   const photo = {
     uri: file.uri,
     name: key,
-    type: `image/${fileType}`,
+    type: `image/${fileType}`
   };
 
   await imageUploadRequest({ url, key, photo });
@@ -121,7 +121,7 @@ const imageUploadRequest = data => {
   return new Promise((resolve, reject) => {
     //eslint-disable-next-line
     const xhr = new XMLHttpRequest();
-    xhr.open('PUT', data.url);
+    xhr.open("PUT", data.url);
     xhr.onreadystatechange = function() {
       if (xhr.readyState === 4) {
         if (xhr.status === 200) {
@@ -131,7 +131,7 @@ const imageUploadRequest = data => {
         }
       }
     };
-    xhr.setRequestHeader('Content-Type', data.photo.type);
+    xhr.setRequestHeader("Content-Type", data.photo.type);
     xhr.send(data.photo);
   });
 };

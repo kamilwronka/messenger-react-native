@@ -1,5 +1,11 @@
 import React from "react";
-import { Text, TouchableNativeFeedback, View, Dimensions } from "react-native";
+import {
+  Text,
+  TouchableNativeFeedback,
+  View,
+  Dimensions,
+  TouchableWithoutFeedback
+} from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
 const { width } = Dimensions.get("window");
@@ -38,9 +44,9 @@ export const HeaderTitle = ({ value, color }) => {
 export const HeaderIconLeft = ({ iconName, size, color, onPress }) => {
   return (
     <View style={{ position: "absolute", left: 32 }}>
-      <TouchableNativeFeedback onPress={onPress}>
+      <TouchableWithoutFeedback onPress={onPress}>
         <Icon name={iconName} size={size} color={color ? color : "#ffffff"} />
-      </TouchableNativeFeedback>
+      </TouchableWithoutFeedback>
     </View>
   );
 };
@@ -48,9 +54,9 @@ export const HeaderIconLeft = ({ iconName, size, color, onPress }) => {
 export const HeaderIconRight = ({ iconName, size, color, onPress }) => {
   return (
     <View style={{ position: "absolute", right: 32 }}>
-      <TouchableNativeFeedback onPress={onPress}>
+      <TouchableWithoutFeedback onPress={onPress}>
         <Icon name={iconName} size={size} color={color ? color : "#ffffff"} />
-      </TouchableNativeFeedback>
+      </TouchableWithoutFeedback>
     </View>
   );
 };
