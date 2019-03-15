@@ -1,20 +1,19 @@
 import React from "react";
 import {
-  Text,
   View,
-  TouchableOpacity,
   Image,
-  BackHandler,
-  ImageBackground,
   PanResponder,
   Animated,
   UIManager,
   LayoutAnimation,
   Dimensions
 } from "react-native";
-// import { Camera, Permissions } from 'expo';
-import { isNil } from "lodash";
-// import { MaterialCommunityIcons, Feather, MaterialIcons } from '@expo/vector-icons';
+import {
+  Header,
+  HeaderTitle,
+  HeaderIconRight,
+  HeaderIconLeft
+} from "@/components/Header/HeaderNew";
 
 const SCREEN_WIDTH = Dimensions.get("window").width;
 
@@ -97,6 +96,20 @@ export default class ConversationPhotoScreen extends React.Component {
     // console.log(this.props.navigation.state);
     return (
       <View style={{ flex: 1 }}>
+        <Header>
+          <HeaderIconLeft
+            iconName="chevron-left"
+            onPress={() => goBack(null)}
+            color="red"
+            size={28}
+          />
+          <HeaderIconRight
+            iconName="dots-vertical"
+            size={28}
+            color="red"
+            onPress={this.navigateToConversationInfo}
+          />
+        </Header>
         <Image
           resizeMode="contain"
           style={{ flex: 1, height: null, width: null, resizeMode: "contain" }}
