@@ -1,24 +1,20 @@
 import React, { PureComponent } from "react";
 import {
   Image,
-  ActivityIndicator,
   Platform,
-  StyleSheet,
   View,
   ScrollView,
   FlatList,
   Text,
-  TouchableOpacity,
-  TouchableNativeFeedback,
+  TouchableWithoutFeedback,
   RefreshControl
 } from "react-native";
 import SearchHeader from "@/components/SearchHeader";
 import { isNil } from "lodash";
 
 import { connect } from "react-redux";
-// import { Feather, MaterialIcons } from '@expo/vector-icons';
 import { prepareAvatar } from "../../helpers";
-import { Header, HeaderTitle, HeaderIcon } from "@/components/Header";
+import { Header, HeaderTitle } from "@/components/Header/HeaderNew";
 
 import { fetchFriends } from "./actions/contactsScreen.actions";
 import { getFriends } from "./selectors/contactsScreen.selectors";
@@ -67,12 +63,7 @@ class ContactsScreen extends PureComponent {
 
   _renderItem = ({ item }) => {
     return (
-      <TouchableNativeFeedback
-        background={
-          Platform.OS === "android"
-            ? TouchableNativeFeedback.SelectableBackground()
-            : ""
-        }
+      <TouchableWithoutFeedback
         onPress={() => this.goToConversation(item)}
       >
         <View
@@ -127,7 +118,7 @@ class ContactsScreen extends PureComponent {
             </Text>
           </View>
         </View>
-      </TouchableNativeFeedback>
+      </TouchableWithoutFeedback>
     );
   };
 

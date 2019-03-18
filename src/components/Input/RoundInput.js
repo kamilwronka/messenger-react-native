@@ -23,7 +23,7 @@ const RoundInput = props => {
     >
       {icon && <Icon name={iconName} size={iconSize} color={iconColor} />}
       <TextInput
-        style={{ paddingLeft: 6, height: 48 }}
+        style={{ paddingLeft: 6, height: 48, flex: 1 }}
         {...input}
         {...omit(props, ["meta", "input"])}
       />

@@ -19,8 +19,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#f0f0f0",
     borderRadius: 24,
     marginBottom: 20,
-    marginHorizontal: 25,
-    width: width - 64
+    marginHorizontal: 32,
   },
   search: {
     flex: 1,
