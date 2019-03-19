@@ -2,12 +2,13 @@ import React from "react";
 import {
   View,
   Image,
-  PanResponder,
   Animated,
-  UIManager,
-  LayoutAnimation,
-  Dimensions
+  Dimensions,
+  StatusBar,
+  TouchableWithoutFeedback
 } from "react-native";
+import LinearGradient from "react-native-linear-gradient";
+
 import {
   Header,
   HeaderTitle,
@@ -18,104 +19,85 @@ import {
 const SCREEN_WIDTH = Dimensions.get("window").width;
 
 export default class ConversationPhotoScreen extends React.Component {
-  constructor(props) {
-    super(props);
-
-    const position = new Animated.Value();
-    const panResponder = PanResponder.create({
-      // Ask to be the responder:
-      onStartShouldSetPanResponder: (evt, gestureState) => true,
-      onStartShouldSetPanResponderCapture: (evt, gestureState) => true,
-      onMoveShouldSetPanResponder: (evt, gestureState) => true,
-      onMoveShouldSetPanResponderCapture: (evt, gestureState) => true,
-
-      onPanResponderGrant: (evt, gestureState) => {
-        // The gesture has started. Show visual feedback so the user knows
-        // what is happening!
-        // gestureState.d{x,y} will be set to zero now
-      },
-      onPanResponderMove: (evt, gestureState) => {
-        // The most recent move distance is gestureState.move{X,Y}
-        // The accumulated gesture distance since becoming responder is
-        // gestureState.d{x,y}
-        const { numberActiveTouches, dx, dy } = gestureState;
-        const { nativeEvent, target, type } = evt;
-
-        console.log(nativeEvent);
-
-        if (numberActiveTouches === 2) {
-          const distance = dx + dy;
-          position.setValue(distance);
-        }
-      },
-      onPanResponderTerminationRequest: (evt, gestureState) => true,
-      onPanResponderRelease: (evt, gestureState) => {
-        // The user has released all touches while this view is the
-        // responder. This typically means a gesture has succeeded
-      },
-      onPanResponderTerminate: (evt, gestureState) => {
-        // Another component has become the responder, so this gesture
-        // should be cancelled
-      },
-      onShouldBlockNativeResponder: (evt, gestureState) => {
-        // Returns whether this component should block native components from becoming the JS
-        // responder. Returns true by default. Is currently only supported on android.
-        return true;
-      }
-    });
-    this.state = { panResponder, position, index: 0 };
-  }
-
-  componentWillUpdate() {
-    UIManager.setLayoutAnimationEnabledExperimental &&
-      UIManager.setLayoutAnimationEnabledExperimental(true);
-    LayoutAnimation.spring();
-  }
-
   static navigationOptions = {
     header: null
   };
 
+  state = {
+    headerShow: true,
+    headerPosition: new Animated.Value(0)
+  };
+
   async componentDidMount() {}
 
-  getPhotoStyle() {
-    const { position } = this.state;
-    const rotate = position.interpolate({
-      inputRange: [-SCREEN_WIDTH * 1.5, 0, SCREEN_WIDTH * 1.5],
-      outputRange: ["-120deg", "0deg", "120deg"]
-    });
-
-    console.log(rotate);
-
-    // return {
-    //   transform: [{ rotate }],
-    // };
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.headerShow !== this.state.headerShow) {
+      if (this.state.headerShow) {
+        Animated.timing(this.state.headerPosition, {
+          duration: 100,
+          toValue: 0
+        }).start();
+      } else {
+        Animated.timing(this.state.headerPosition, {
+          duration: 100,
+          toValue: -84
+        }).start();
+      }
+    }
   }
 
+  goBack = () => {
+    this.props.navigation.goBack();
+  };
+
+  onPhotoPress = () => {
+    this.setState({ headerShow: !this.state.headerShow });
+  };
+
   render() {
-    // console.log(this.props.navigation.state);
+    const headerStyles = this.state.headerPosition;
+
     return (
-      <View style={{ flex: 1 }}>
-        <Header>
-          <HeaderIconLeft
-            iconName="chevron-left"
-            onPress={() => goBack(null)}
-            color="red"
-            size={28}
+      <View style={{ flex: 1, backgroundColor: "#000000" }}>
+        <StatusBar hidden={true} />
+        <Animated.View style={{ top: headerStyles }}>
+          <LinearGradient
+            colors={["rgba(0,0,0,0.4)", "rgba(0,0,0,0)"]}
+            style={{
+              position: "absolute",
+              zIndex: 2,
+              top: -StatusBar.currentHeight
+            }}
+          >
+            <Header>
+              <HeaderIconLeft
+                iconName="chevron-left"
+                onPress={this.goBack}
+                color="#ffffff"
+                size={28}
+              />
+              <HeaderTitle value="nazwa konwersacji" color="#ffffff" />
+              {/* <HeaderIconRight
+              iconName="dots-vertical"
+              size={28}
+              color="#ffffff"
+              onPress={this.navigateToConversationInfo}
+            /> */}
+            </Header>
+          </LinearGradient>
+        </Animated.View>
+        <TouchableWithoutFeedback onPress={this.onPhotoPress}>
+          <Image
+            resizeMode="contain"
+            style={{
+              flex: 1,
+              height: null,
+              width: null,
+              resizeMode: "contain"
+            }}
+            source={{ uri: this.props.navigation.state.params.photoUrl }}
           />
-          <HeaderIconRight
-            iconName="dots-vertical"
-            size={28}
-            color="red"
-            onPress={this.navigateToConversationInfo}
-          />
-        </Header>
-        <Image
-          resizeMode="contain"
-          style={{ flex: 1, height: null, width: null, resizeMode: "contain" }}
-          source={{ uri: this.props.navigation.state.params.photoUrl }}
-          {...this.state.panResponder.panHandlers}
-        />
+        </TouchableWithoutFeedback>
       </View>
     );
   }

@@ -6,6 +6,7 @@
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "ip-small": "react-native run-ios --simulator=\"iPhone 8\"",
     "ip-x": "react-native run-ios --simulator=\"iPhone X\"",
+    "android": "react-native run-android",
     "test": "jest"
   },
   "dependencies": {
@@ -17,6 +18,7 @@
     "react-native": "0.58.5",
     "react-native-camera": "^1.12.0",
     "react-native-gesture-handler": "^1.0.16",
+    "react-native-linear-gradient": "^2.5.4",
     "react-native-splash-screen": "^3.2.0",
     "react-native-vector-icons": "^6.3.0",
     "react-navigation": "^3.3.2",
@@ -43,6 +45,8 @@
     "preset": "react-native"
   },
   "rnpm": {
-    "assets": ["src/assets/fonts/MyriadPro"]
+    "assets": [
+      "src/assets/fonts/MyriadPro"
+    ]
   }
 }

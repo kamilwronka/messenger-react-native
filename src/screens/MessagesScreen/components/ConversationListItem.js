@@ -34,11 +34,6 @@ class ConversationListItem extends PureComponent {
       !isEmpty(preparedParticipants) && (
         <TouchableWithoutFeedback
           onPress={this.handleConversationSelect}
-          background={
-            Platform.OS === "android"
-              ? TouchableNativeFeedback.SelectableBackground()
-              : ""
-          }
         >
           <View
             style={{
