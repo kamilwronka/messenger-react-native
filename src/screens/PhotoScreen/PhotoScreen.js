@@ -1,13 +1,15 @@
 import React from "react";
 import {
   View,
-  Image,
   Animated,
-  Dimensions,
+  StyleSheet,
   StatusBar,
-  TouchableWithoutFeedback
+  Platform,
+  Dimensions,
+  ActionSheetIOS
 } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
+import ImageViewer from "react-native-image-zoom-viewer";
 
 import {
   Header,
@@ -16,7 +18,7 @@ import {
   HeaderIconLeft
 } from "@/components/Header/HeaderNew";
 
-const SCREEN_WIDTH = Dimensions.get("window").width;
+const { width, height } = Dimensions.get("window");
 
 export default class ConversationPhotoScreen extends React.Component {
   static navigationOptions = {
@@ -25,13 +27,14 @@ export default class ConversationPhotoScreen extends React.Component {
 
   state = {
     headerShow: true,
-    headerPosition: new Animated.Value(0)
+    headerPosition: new Animated.Value(0),
+    scaled: false
   };
 
   async componentDidMount() {}
 
   componentDidUpdate(prevProps, prevState) {
-    if (prevState.headerShow !== this.state.headerShow) {
+    if (!this.state.scaled && prevState.headerShow !== this.state.headerShow) {
       if (this.state.headerShow) {
         Animated.timing(this.state.headerPosition, {
           duration: 100,
@@ -54,21 +57,45 @@ export default class ConversationPhotoScreen extends React.Component {
     this.setState({ headerShow: !this.state.headerShow });
   };
 
+  handleLongPress = () => {
+    Platform.OS !== "android"
+      ? ActionSheetIOS.showActionSheetWithOptions(
+          {
+            options: ["Cancel", "Save to device"],
+            destructiveButtonIndex: 1,
+            cancelButtonIndex: 0
+          },
+          buttonIndex => {
+            if (buttonIndex === 1) {
+              /* destructive action */
+              alert("Image saved");
+            }
+          }
+        )
+      : alert("Options menu");
+  };
+
   render() {
-    const headerStyles = this.state.headerPosition;
+    const { photoUrl, conversationName } = this.props.navigation.state.params;
+    const headerStyles = { top: this.state.headerPosition };
+    const linearGradientColors = ["rgba(0,0,0,0.4)", "rgba(0,0,0,0)"];
+
+    const images = [
+      {
+        width,
+        height,
+        props: {
+          source: { uri: photoUrl },
+          style: { resizeMode: "contain" }
+        }
+      }
+    ];
 
     return (
       <View style={{ flex: 1, backgroundColor: "#000000" }}>
         <StatusBar hidden={true} />
-        <Animated.View style={{ top: headerStyles }}>
-          <LinearGradient
-            colors={["rgba(0,0,0,0.4)", "rgba(0,0,0,0)"]}
-            style={{
-              position: "absolute",
-              zIndex: 2,
-              top: -StatusBar.currentHeight
-            }}
-          >
+        <Animated.View style={[headerStyles, styles.headerContainer]}>
+          <LinearGradient colors={linearGradientColors} style={styles.gradient}>
             <Header>
               <HeaderIconLeft
                 iconName="chevron-left"
@@ -76,29 +103,37 @@ export default class ConversationPhotoScreen extends React.Component {
                 color="#ffffff"
                 size={28}
               />
-              <HeaderTitle value="nazwa konwersacji" color="#ffffff" />
-              {/* <HeaderIconRight
-              iconName="dots-vertical"
-              size={28}
-              color="#ffffff"
-              onPress={this.navigateToConversationInfo}
-            /> */}
+              <HeaderTitle value={conversationName} color="#ffffff" />
             </Header>
           </LinearGradient>
         </Animated.View>
-        <TouchableWithoutFeedback onPress={this.onPhotoPress}>
-          <Image
-            resizeMode="contain"
-            style={{
-              flex: 1,
-              height: null,
-              width: null,
-              resizeMode: "contain"
-            }}
-            source={{ uri: this.props.navigation.state.params.photoUrl }}
+        <View style={{ flex: 1 }}>
+          <ImageViewer
+            imageUrls={images}
+            renderIndicator={() => <View />}
+            onClick={this.onPhotoPress}
+            minScale={1}
+            maxScale={3}
+            onLongPress={this.handleLongPress}
+            saveToLocalByLongPress={false}
           />
-        </TouchableWithoutFeedback>
+        </View>
       </View>
     );
   }
 }
+
+const styles = StyleSheet.create({
+  photo: {
+    width: 500,
+    height: 500,
+    resizeMode: "contain"
+  },
+  gradient: {
+    position: "absolute",
+    top: Platform.OS === "android" ? -StatusBar.currentHeight : 0
+  },
+  headerContainer: {
+    zIndex: 5
+  }
+});

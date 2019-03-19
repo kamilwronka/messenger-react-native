@@ -32,9 +32,7 @@ class ConversationListItem extends PureComponent {
 
     return (
       !isEmpty(preparedParticipants) && (
-        <TouchableWithoutFeedback
-          onPress={this.handleConversationSelect}
-        >
+        <TouchableWithoutFeedback onPress={this.handleConversationSelect}>
           <View
             style={{
               flex: 1,

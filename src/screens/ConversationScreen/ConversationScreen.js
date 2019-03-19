@@ -5,7 +5,9 @@ import {
   View,
   FlatList,
   Text,
-  TouchableWithoutFeedback
+  TouchableWithoutFeedback,
+  KeyboardAvoidingView,
+  StatusBar
 } from "react-native";
 import { isNil, isEqual, get } from "lodash";
 
@@ -217,11 +219,19 @@ class ConversationScreen extends React.Component {
   };
 
   _renderItem = ({ item }) => {
+    const {
+      state: {
+        params: { participants, conversationId, conversationName }
+      }
+    } = this.props.navigation;
+
     return (
       <ConvListItem
         item={item}
-        participants={this.props.navigation.state.params.participants}
+        participants={participants}
         color={get(this.props.conversation, "data.color", "#912F56")}
+        conversationName={conversationName}
+        conversationId={conversationId}
       />
     );
   };
@@ -244,8 +254,7 @@ class ConversationScreen extends React.Component {
         style={{
           flex: 1,
           backgroundColor: "#040D16",
-          flexDirection: "column",
-          flexGrow: 1
+          flexDirection: "column"
         }}
       >
         <Header>
@@ -272,16 +281,21 @@ class ConversationScreen extends React.Component {
             onContentSizeChange={() => this.refs.scrollView.scrollToEnd()}
           />
         </ScrollView>
-        <ConversationBottomBar
-          goToCamera={this.goToCamera}
-          messageInput={this.state.messageInput}
-          inputColor={color}
-          handleSubmit={this.handleSubmit}
-          handleChangeInput={this.handleChangeInput}
-          handleEmojiSend={this.handleEmojiSend}
-          emoji={emoji}
-          handleImageSend={this.handleImageSend}
-        />
+        <KeyboardAvoidingView behavior="padding">
+          <ConversationBottomBar
+            goToCamera={this.goToCamera}
+            messageInput={this.state.messageInput}
+            onInputFocus={() =>
+              setTimeout(this.refs.scrollView.scrollToEnd, 100)
+            }
+            inputColor={color}
+            handleSubmit={this.handleSubmit}
+            handleChangeInput={this.handleChangeInput}
+            handleEmojiSend={this.handleEmojiSend}
+            emoji={emoji}
+            handleImageSend={this.handleImageSend}
+          />
+        </KeyboardAvoidingView>
       </View>
     );
   }

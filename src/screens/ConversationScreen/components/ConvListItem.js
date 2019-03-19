@@ -151,7 +151,13 @@ class ConvListItem extends Component {
         const { height, width } = item.metadata;
         const ratio = height / width;
 
-        return <ConversationPhoto id={_id} item={item} />;
+        return (
+          <ConversationPhoto
+            id={_id}
+            item={item}
+            conversationName={this.props.conversationName}
+          />
+        );
       default:
         return null;
     }

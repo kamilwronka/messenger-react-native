@@ -37,6 +37,7 @@ class ConversationBottomBar extends PureComponent {
       <Footer>
         <TextMessage
           {...this.props}
+          onInputFocus={this.props.onInputFocus}
           toggleCameraRollTab={this.toggleCameraRollTab}
         />
         {desiredTab}

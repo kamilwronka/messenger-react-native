@@ -14,7 +14,8 @@ class TextMessage extends PureComponent {
       handleEmojiSend,
       handleSubmit,
       emoji,
-      toggleCameraRollTab
+      toggleCameraRollTab,
+      onInputFocus
     } = this.props;
 
     return (
@@ -42,6 +43,7 @@ class TextMessage extends PureComponent {
             value={messageInput}
             onChangeText={handleChangeInput}
             inputColor={inputColor}
+            onFocus={onInputFocus}
           />
         </View>
         <View style={{ marginRight: 10 }}>

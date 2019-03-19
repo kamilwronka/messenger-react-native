@@ -14,14 +14,15 @@ const SCREEN_HEIGHT = Dimensions.get("window").height;
 
 class ConversationPhoto extends PureComponent {
   handlePhotoPress = () => {
-    const { item } = this.props;
+    const { item, conversationName } = this.props;
 
     this.props.navigation.navigate({
       routeName: "PhotoScreen",
       params: {
         photoUrl: `https://s3.eu-central-1.amazonaws.com/messenger-dev-bucket/${
           item.messageContent
-        }`
+        }`,
+        conversationName
       }
     });
   };
