@@ -4,7 +4,8 @@ import { getUserData } from "@/selectors/user.selectors";
 
 export const ACTIONS = {
   FETCH_NOTIFICATIONS: "FETCH_NOTIFICATIONS",
-  IGNORE_REQUEST: "IGNORE_REQUEST"
+  IGNORE_REQUEST: "IGNORE_REQUEST",
+  PUSH_NOTIFICATION: "PUSH_NOTIFICATION"
 };
 
 export const fetchNotifications = () => (dispatch, getState) => {
@@ -17,6 +18,13 @@ export const fetchNotifications = () => (dispatch, getState) => {
       method: "get",
       headers: { Authorization: user.token }
     })
+  });
+};
+
+export const pushNotification = data => dispatch => {
+  return dispatch({
+    type: ACTIONS.PUSH_NOTIFICATION,
+    payload: data
   });
 };
 

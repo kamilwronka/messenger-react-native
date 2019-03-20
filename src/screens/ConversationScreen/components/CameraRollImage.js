@@ -8,18 +8,17 @@ class CameraRollImage extends PureComponent {
   };
 
   componentWillReceiveProps(nextProps) {
-    console.log(this.props.selected, nextProps.selected);
     if (this.props.selected !== nextProps.selected) {
       if (nextProps.selected) {
         Animated.timing(this.state.opacity, {
           toValue: 1,
-          duration: 300,
+          duration: 150,
           useNativeDriver: true
         }).start();
       } else {
         Animated.timing(this.state.opacity, {
           toValue: 0,
-          duration: 300,
+          duration: 150,
           useNativeDriver: true
         }).start();
       }

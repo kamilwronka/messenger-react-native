@@ -8,8 +8,7 @@ import {
   ScrollView,
   FlatList,
   Text,
-  TouchableOpacity,
-  TouchableNativeFeedback,
+  TouchableWithoutFeedback,
   RefreshControl
 } from "react-native";
 
@@ -19,19 +18,13 @@ import { connect } from "react-redux";
 import { prepareAvatar } from "@/helpers";
 import { Header, HeaderTitle } from "@/components/Header/HeaderNew";
 import { Button } from "@/components/Buttons";
-// import { MaterialCommunityIcons, Feather, MaterialIcons } from '@expo/vector-icons';
-import BorderedInput from "@/components/Input/BorderedInput";
-
-// import {
-//   fetchFriendsRequests,
-//   fetchUserByQuery,
-//   sendFriendRequest,
-// } from './actions/contactsScreen.actions';
+import SocketContext from "@/helpers/socketContext";
 
 import {
   fetchNotifications,
   confirmRequest,
-  ignoreRequest
+  ignoreRequest,
+  pushNotification
 } from "./actions/notifications.actions";
 import { getNotifications } from "./selectors/notifications.selectors";
 
@@ -46,6 +39,10 @@ class NotificationsScreen extends Component {
 
   componentDidMount() {
     this.props.fetchNotifications();
+    this.props.socket.on("request", data => {
+      console.log(data);
+      this.props.pushNotification(data);
+    });
   }
 
   formatMessage = (type, data) => {
@@ -74,13 +71,7 @@ class NotificationsScreen extends Component {
     console.log(item);
 
     return (
-      <TouchableNativeFeedback
-        background={
-          Platform.OS === "android"
-            ? TouchableNativeFeedback.SelectableBackground()
-            : ""
-        }
-      >
+      <TouchableWithoutFeedback>
         <View
           style={{
             flex: 1,
@@ -127,7 +118,7 @@ class NotificationsScreen extends Component {
               flexWrap: "nowrap"
             }}
           >
-            <Text style={{ fontSize: 14 }}>
+            <Text style={{ fontSize: 14, color: "#fff" }}>
               {this.formatMessage(item.type, item.fromUser.username)}
             </Text>
             <View
@@ -156,7 +147,7 @@ class NotificationsScreen extends Component {
             <Text style={{ fontSize: 12, color: '#000000', marginLeft: 10 }}>{date}</Text>
           </View> */}
         </View>
-      </TouchableNativeFeedback>
+      </TouchableWithoutFeedback>
     );
   };
 
@@ -194,6 +185,20 @@ class NotificationsScreen extends Component {
   }
 }
 
+class NotificationsScreenWithSocket extends Component {
+  static navigationOptions = {
+    header: null
+  };
+
+  render() {
+    return (
+      <SocketContext.Consumer>
+        {socket => <NotificationsScreen {...this.props} socket={socket} />}
+      </SocketContext.Consumer>
+    );
+  }
+}
+
 const mapStateToProps = state => {
   return {
     notifications: getNotifications(state)
@@ -203,10 +208,11 @@ const mapStateToProps = state => {
 const mapDispatchToProps = {
   fetchNotifications,
   confirmRequest,
-  ignoreRequest
+  ignoreRequest,
+  pushNotification
 };
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(NotificationsScreen);
+)(NotificationsScreenWithSocket);

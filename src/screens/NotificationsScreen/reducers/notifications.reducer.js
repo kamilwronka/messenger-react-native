@@ -1,7 +1,7 @@
 import { ACTIONS } from "../actions/notifications.actions";
 
 const INITIAL_STATE = {
-  data: null,
+  data: [],
   error: null,
   fetching: false,
   intact: true
@@ -24,6 +24,11 @@ const searchUserReducer = (state = INITIAL_STATE, action) => {
         error: action.payload.data,
         intact: false,
         fetching: false
+      };
+    case `${ACTIONS.PUSH_NOTIFICATION}`:
+      return {
+        ...state,
+        data: [...state.data, action.payload]
       };
     default:
       return state;

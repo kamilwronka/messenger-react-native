@@ -58,13 +58,13 @@
 		</dict>
 	</dict>
 	<key>NSCameraUsageDescription</key>
-    <string>Your message to user when the camera is accessed for the first time</string>
+    <string>Grant camera permission.</string>
     <key>NSPhotoLibraryUsageDescription</key>
     <string>Your message to user when the photo library is accessed for the first time</string>
     <key>NSMicrophoneUsageDescription</key>
-    <string>Your message to user when the microphone is accessed for the first time</string>
+    <string>Grant microphone usage permission.</string>
     <key>NSPhotoLibraryAddUsageDescription</key>
-    <string>Your message to user when the photo library is accessed for the first time</string>
+    <string>Grant camera roll permission.</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>AntDesign.ttf</string>

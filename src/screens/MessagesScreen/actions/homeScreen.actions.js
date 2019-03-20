@@ -4,7 +4,7 @@ import { getUserData } from "../../../selectors/user.selectors";
 
 export const ACTIONS = {
   FETCH_USER_CONVERSATIONS: "FETCH_USER_CONVERSATIONS",
-  FETCH_CONVERSATION: "FETCH_CONVERSATION",
+  FETCH_CONVERSATION_MESSAGES: "FETCH_CONVERSATION_MESSAGES",
   PUSH_NEW_MESSAGE: "PUSH_NEW_MESSAGE",
   FETCH_CONVERSATION_INFO: "FETCH_CONVERSATION_INFO",
   GET_PRESIGNED_URL: "GET_PRESIGNED_URL",
@@ -32,18 +32,36 @@ export const clearConversation = () => {
   };
 };
 
-export const fetchConversation = id => (dispatch, getState) => {
+export const fetchConversation = (id, page, pageSize) => (
+  dispatch,
+  getState
+) => {
   const user = getUserData(getState());
 
   return dispatch({
-    type: ACTIONS.FETCH_CONVERSATION,
+    type: ACTIONS.FETCH_CONVERSATION_MESSAGES,
     payload: axios({
-      url: `${apiConfig.ROOT_URL}/api/conversations/${id}`,
+      url: `${
+        apiConfig.ROOT_URL
+      }/api/conversations/${id}?page=${page}&&pageSize=${pageSize}`,
       method: "get",
       headers: { Authorization: user.token }
     })
   });
 };
+
+// export const initialFetchConversation = (id, page, pageSize) => (dispatch, getState) => {
+//   const user = getUserData(getState());
+//
+//   return dispatch({
+//     type: ACTIONS.FETCH_CONVERSATION,
+//     payload: axios({
+//       url: `${apiConfig.ROOT_URL}/api/conversations/${id}?page=${page}&&pageSize=${pageSize}`,
+//       method: "get",
+//       headers: { Authorization: user.token }
+//     })
+//   });
+// };
 
 export const fetchConversationInfo = id => (dispatch, getState) => {
   const user = getUserData(getState());

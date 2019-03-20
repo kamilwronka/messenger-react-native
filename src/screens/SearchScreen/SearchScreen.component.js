@@ -136,7 +136,7 @@ class SearchScreen extends PureComponent {
               flexWrap: "nowrap"
             }}
           >
-            <Text style={{ fontSize: 16 }}>{item.username}</Text>
+            <Text style={{ fontSize: 16, color: "#fff" }}>{item.username}</Text>
             <Text style={{ fontSize: 12, color: "#aaaaaa" }}>
               3 wspólnych znajomych
             </Text>
@@ -153,7 +153,7 @@ class SearchScreen extends PureComponent {
               <TouchableOpacity
                 onPress={() => this.handleFriendRequest(item._id)}
               >
-                <Text>ikonka dodawania</Text>
+                <Text style={{ color: "#fff" }}>ikonka dodawania</Text>
               </TouchableOpacity>
             )}
           </View>

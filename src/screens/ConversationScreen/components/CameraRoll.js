@@ -2,18 +2,21 @@ import React, { PureComponent } from "react";
 import {
   CameraRoll as Camera,
   PermissionsAndroid,
-  FlatList
+  FlatList,
+  Platform,
+  RefreshControl
 } from "react-native";
 import CameraRollImage from "./CameraRollImage";
 
 class CameraRoll extends PureComponent {
   state = {
     photos: [],
-    selectedIndex: null
+    selectedIndex: null,
+    fetchingCameraRoll: false
   };
 
   async componentDidMount() {
-    await this.requestCameraPermission();
+    Platform.OS === "android" && (await this.requestCameraPermission());
     this.loadCameraRoll();
   }
 
@@ -30,10 +33,9 @@ class CameraRoll extends PureComponent {
       const granted = await PermissionsAndroid.request(
         PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
         {
-          title: "Cool Photo App Camera Permission",
+          title: "Messenger App Camera Roll permission",
           message:
-            "Cool Photo App needs access to your camera " +
-            "so you can take awesome pictures.",
+            "In order to use Camera Roll, you have to grant Camera Roll permission.",
           buttonNeutral: "Ask Me Later",
           buttonNegative: "Cancel",
           buttonPositive: "OK"
@@ -67,6 +69,7 @@ class CameraRoll extends PureComponent {
   getCameraPhotos = async () => {
     return await Camera.getPhotos({
       first: 20,
+      groupTypes: "All",
       assetType: "Photos"
     });
   };
@@ -74,24 +77,35 @@ class CameraRoll extends PureComponent {
   getVideos = async () => {
     return await Camera.getPhotos({
       first: 20,
-      assetType: "Videos"
+      groupTypes: "All",
+      assetType: "All"
     });
   };
 
   loadCameraRoll = async () => {
+    this.setState({ fetchingCameraRoll: true });
     let [photos, videos] = await Promise.all([
       this.getCameraPhotos(),
       this.getVideos()
     ]);
 
-    console.log(videos);
+    console.log("refresh");
 
-    this.setState({ photos: [...photos.edges, ...videos.edges] });
+    this.setState({
+      photos: [...photos.edges, ...videos.edges],
+      fetchingCameraRoll: false
+    });
   };
 
   render() {
     return (
       <FlatList
+        refreshControl={
+          <RefreshControl
+            refreshing={this.state.fetchingCameraRoll}
+            onRefresh={this.loadCameraRoll}
+          />
+        }
         data={this.state.photos}
         extraData={this.state.selectedIndex}
         keyExtractor={this._keyExtractor}

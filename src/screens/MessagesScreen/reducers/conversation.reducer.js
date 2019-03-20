@@ -10,16 +10,44 @@ const INITIAL_STATE = {
 
 const conversationReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
-    case `${ACTIONS.FETCH_CONVERSATION}_PENDING`:
+    case `${ACTIONS.FETCH_CONVERSATION_INFO}_PENDING`:
       return { ...state, fetching: true };
-    case `${ACTIONS.FETCH_CONVERSATION}_FULFILLED`:
+    case `${ACTIONS.FETCH_CONVERSATION_INFO}_FULFILLED`:
       return {
         ...state,
-        data: action.payload.data,
+        data: { ...state.data, ...action.payload.data },
         intact: false,
         fetching: false
       };
-    case `${ACTIONS.FETCH_CONVERSATION}_REJECTED`:
+    case `${ACTIONS.FETCH_CONVERSATION_INFO}_REJECTED`:
+      return {
+        ...state,
+        error: action.payload.data,
+        intact: false,
+        fetching: false
+      };
+    case `${ACTIONS.FETCH_CONVERSATION_MESSAGES}_PENDING`:
+      return { ...state, fetching: true };
+    case `${ACTIONS.FETCH_CONVERSATION_MESSAGES}_FULFILLED`:
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          messagesContainer: {
+            messages: get(state, "data.messagesContainer.messages")
+              ? [
+                  ...action.payload.data.messages,
+                  ...state.data.messagesContainer.messages
+                ]
+              : action.payload.data.messages,
+
+            metadata: action.payload.data.metadata
+          }
+        },
+        intact: false,
+        fetching: false
+      };
+    case `${ACTIONS.FETCH_CONVERSATION_MESSAGES}_REJECTED`:
       return {
         ...state,
         error: action.payload.data,
@@ -38,9 +66,14 @@ const conversationReducer = (state = INITIAL_STATE, action) => {
         ...state,
         data: {
           ...state.data,
-          messages: !isNil(get(state.data, "messages"))
-            ? [...state.data.messages, action.payload]
-            : [action.payload]
+          messagesContainer: get(state.data, "messagesContainer.messages")
+            ? {
+                messages: [
+                  ...state.data.messagesContainer.messages,
+                  action.payload
+                ]
+              }
+            : { messages: [action.payload] }
         }
       };
     default:

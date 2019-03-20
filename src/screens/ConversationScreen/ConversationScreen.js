@@ -5,16 +5,14 @@ import {
   View,
   FlatList,
   Text,
-  TouchableWithoutFeedback,
+  RefreshControl,
   KeyboardAvoidingView,
   StatusBar
 } from "react-native";
 import { isNil, isEqual, get } from "lodash";
 
 import { connect } from "react-redux";
-// import { MaterialCommunityIcons, Feather, MaterialIcons } from '@expo/vector-icons';
-import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import { prepareAvatar } from "../../helpers";
+
 import {
   Header,
   HeaderTitle,
@@ -30,7 +28,8 @@ import {
   fetchConversation,
   pushNewMessage,
   sendPhoto,
-  clearConversation
+  clearConversation,
+  fetchConversationInfo
 } from "@/screens/MessagesScreen/actions/homeScreen.actions";
 import { getConversation } from "@/screens/MessagesScreen/selectors/homeScreen.selectors";
 import ConversationBottomBar from "./components/ConversationBottomBar";
@@ -38,7 +37,9 @@ import ConversationBottomBar from "./components/ConversationBottomBar";
 class ConversationScreen extends React.Component {
   state = {
     messageInput: "",
-    conversationId: null
+    conversationId: null,
+    page: 0,
+    scrolledTop: false
   };
 
   componentDidMount() {
@@ -46,14 +47,19 @@ class ConversationScreen extends React.Component {
       socket,
       navigation: {
         state: {
-          params: { conversationId, photo }
+          params: { conversationId }
         }
       }
     } = this.props;
 
     console.log("mounted");
 
-    !isNil(conversationId) && this.props.fetchConversation(conversationId);
+    !isNil(conversationId) &&
+      Promise.all([
+        this.props.fetchConversation(conversationId, 0, 20),
+        this.props.fetchConversationInfo(conversationId)
+      ]);
+
     // !isNil(photo) && console.log(photo);
 
     socket.on("message", this.pushMessage);
@@ -69,9 +75,30 @@ class ConversationScreen extends React.Component {
     this.props.socket.removeListener("message", this.pushMessage);
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    const {
+      fetchConversation,
+      navigation: {
+        state: {
+          params: { conversationId }
+        }
+      }
+    } = this.props;
+
+    if (prevState.page !== this.state.page) {
+      fetchConversation(conversationId, this.state.page, 20);
+    }
+  }
+
   pushMessage = message => {
     console.log("message", message.messageContent);
     this.props.pushNewMessage(message);
+  };
+
+  onRefresh = () => {
+    const { page } = this.state;
+    console.log(page);
+    this.setState({ page: page + 1 });
   };
 
   componentWillReceiveProps(nextProps) {
@@ -236,6 +263,20 @@ class ConversationScreen extends React.Component {
     );
   };
 
+  handleScrollingOnNewMessage = () => {
+    !this.state.scrolledTop && this.refs.scrollView.scrollToEnd();
+  };
+
+  handleScroll = ({
+    nativeEvent: { contentOffset, contentSize, layoutMeasurement }
+  }) => {
+    if (contentOffset.y + layoutMeasurement.height === contentSize.height) {
+      this.setState({ scrolledTop: false });
+    } else {
+      this.setState({ scrolledTop: true });
+    }
+  };
+
   _keyExtractor = (item, index) => String(index);
 
   render() {
@@ -246,7 +287,10 @@ class ConversationScreen extends React.Component {
       }
     } = this.props.navigation;
     const color = get(this.props.conversation, "data.color");
-    const messages = get(this.props.conversation, "data.messages");
+    const messages = get(
+      this.props.conversation,
+      "data.messagesContainer.messages"
+    );
     const emoji = get(this.props.conversation, "data.emoji");
 
     return (
@@ -272,13 +316,23 @@ class ConversationScreen extends React.Component {
             onPress={this.navigateToConversationInfo}
           />
         </Header>
-        <ScrollView ref="scrollView">
+        <ScrollView
+          onScroll={this.handleScroll}
+          scrollEventThrottle={16}
+          refreshControl={
+            <RefreshControl
+              refreshing={this.props.conversation.fetching}
+              onRefresh={this.onRefresh}
+            />
+          }
+          ref="scrollView"
+        >
           <FlatList
             style={{ width: "100%" }}
             data={messages}
             keyExtractor={this._keyExtractor}
             renderItem={this._renderItem}
-            onContentSizeChange={() => this.refs.scrollView.scrollToEnd()}
+            onContentSizeChange={this.handleScrollingOnNewMessage}
           />
         </ScrollView>
         <KeyboardAvoidingView behavior="padding">
@@ -326,7 +380,8 @@ const mapDispatchToProps = {
   fetchConversation,
   pushNewMessage,
   sendPhoto,
-  clearConversation
+  clearConversation,
+  fetchConversationInfo
 };
 
 export default connect(
