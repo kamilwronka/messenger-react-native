@@ -114,9 +114,32 @@ export const sendPhoto = file => async (dispatch, getState) => {
   }
 };
 
+export const sendVideo = file => async (dispatch, getState) => {
+  const user = getUserData(getState());
+
+  try {
+    const {
+      data: { url, key }
+    } = await getPresignedUrlForVideo(user.token);
+    await uploadToS3(url, key, file);
+    return Promise.resolve({ key });
+  } catch (err) {
+    console.log(err);
+    Promise.reject(err);
+  }
+};
+
 const getPresignedUrl = token => {
   return axios({
     url: `${apiConfig.ROOT_URL}/api/upload`,
+    method: "get",
+    headers: { Authorization: token }
+  });
+};
+
+const getPresignedUrlForVideo = token => {
+  return axios({
+    url: `${apiConfig.ROOT_URL}/api/upload/video`,
     method: "get",
     headers: { Authorization: token }
   });

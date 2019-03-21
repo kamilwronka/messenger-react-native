@@ -21,6 +21,7 @@ class LoginScreen extends Component {
   }
 
   onSubmit = async values => {
+    console.log(values);
     this.props.loginUser(values);
   };
 

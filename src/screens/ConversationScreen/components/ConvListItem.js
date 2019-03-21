@@ -12,6 +12,7 @@ import { isNil, find } from "lodash";
 import { prepareAvatar } from "@/helpers";
 import { getUserData } from "@/selectors/user.selectors";
 import ConversationPhoto from "./ConversationPhoto";
+import ConversationVideo from "./ConversationVideo";
 
 const SCREEN_WIDTH = Dimensions.get("window").width;
 const SCREEN_HEIGHT = Dimensions.get("window").height;
@@ -158,6 +159,8 @@ class ConvListItem extends Component {
             conversationName={this.props.conversationName}
           />
         );
+      case "video":
+        return <ConversationVideo video={item} />;
       default:
         return null;
     }

@@ -103,6 +103,7 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
+        multiDexEnabled true
     }
     splits {
         abi {
@@ -131,9 +132,11 @@ android {
             }
         }
     }
+    compileOptions { targetCompatibility JavaVersion.VERSION_1_8 }
 }
 
 dependencies {
+    implementation project(':react-native-video')
     implementation project(':react-native-sound')
     implementation project(':react-native-linear-gradient')
     implementation project(':react-native-splash-screen')

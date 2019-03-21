@@ -28,6 +28,7 @@ import {
   fetchConversation,
   pushNewMessage,
   sendPhoto,
+  sendVideo,
   clearConversation,
   fetchConversationInfo
 } from "@/screens/MessagesScreen/actions/homeScreen.actions";
@@ -105,7 +106,7 @@ class ConversationScreen extends React.Component {
     const {
       navigation: {
         state: {
-          params: { photo }
+          params: { photo, video }
         }
       }
     } = this.props;
@@ -113,13 +114,16 @@ class ConversationScreen extends React.Component {
     const {
       navigation: {
         state: {
-          params: { photo: nextPhoto }
+          params: { photo: nextPhoto, video: nextVideo }
         }
       }
     } = nextProps;
 
     if (!isEqual(photo, nextPhoto) && nextPhoto) {
       this.handlePhotoSend(nextPhoto);
+    }
+    if (!isEqual(video, nextVideo) && nextVideo) {
+      this.handleVideoSend(nextVideo);
     }
   }
 
@@ -196,6 +200,30 @@ class ConversationScreen extends React.Component {
         width: data.width,
         height: data.height
       }
+    };
+
+    const { socket } = this.props;
+    socket.emit(
+      "message",
+      conversationId,
+      message,
+      participants.map(elem => elem._id)
+    );
+  };
+
+  handleVideoSend = async video => {
+    console.log(video);
+    const {
+      state: {
+        params: { participants, conversationId }
+      }
+    } = this.props.navigation;
+    let data = await this.props.sendVideo(video);
+
+    const message = {
+      userId: this.props.user.data._id,
+      messageType: "video",
+      messageContent: data.key
     };
 
     const { socket } = this.props;
@@ -380,6 +408,7 @@ const mapDispatchToProps = {
   fetchConversation,
   pushNewMessage,
   sendPhoto,
+  sendVideo,
   clearConversation,
   fetchConversationInfo
 };

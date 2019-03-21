@@ -47,6 +47,7 @@ class AppSocketWrapper extends Component {
       }
       this.props.fetchConversations();
     });
+
     return (
       <SocketContext.Provider value={this.socket}>
         {this.props.children}
