@@ -51,9 +51,20 @@ export const HeaderIconLeft = ({ iconName, size, color, onPress }) => {
   );
 };
 
-export const HeaderIconRight = ({ iconName, size, color, onPress }) => {
+export const HeaderIconRight = ({
+  iconName,
+  size,
+  color,
+  onPress,
+  additionalStyle
+}) => {
   return (
-    <View style={{ position: "absolute", right: 32 }}>
+    <View
+      style={[
+        { position: "absolute", right: 32 },
+        additionalStyle ? additionalStyle : {}
+      ]}
+    >
       <TouchableWithoutFeedback onPress={onPress}>
         <Icon name={iconName} size={size} color={color ? color : "#ffffff"} />
       </TouchableWithoutFeedback>

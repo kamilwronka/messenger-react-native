@@ -1,24 +1,10 @@
 "use strict";
 import React, { Component } from "react";
-import {
-  StyleSheet,
-  BackHandler,
-  View,
-  Platform,
-  StatusBar
-} from "react-native";
+import { StyleSheet, BackHandler, View } from "react-native";
 
 import Camera from "./components/Camera";
 import Video from "./components/Video";
 import Photo from "./components/Photo";
-import LinearGradient from "react-native-linear-gradient";
-
-import {
-  Header,
-  HeaderTitle,
-  HeaderIconRight,
-  HeaderIconLeft
-} from "@/components/Header/HeaderNew";
 
 class CameraScreen extends Component {
   static navigationOptions = {
@@ -121,12 +107,5 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     alignSelf: "center",
     margin: 20
-  },
-  backgroundVideo: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    bottom: 0,
-    right: 0
   }
 });

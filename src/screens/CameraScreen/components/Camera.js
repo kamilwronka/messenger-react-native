@@ -1,6 +1,6 @@
 import React, { PureComponent } from "react";
 import { RNCamera } from "react-native-camera";
-import { PanResponder, View } from "react-native";
+import { PanResponder, View, Text, Animated, StyleSheet } from "react-native";
 import { withNavigation } from "react-navigation";
 
 import {
@@ -9,6 +9,9 @@ import {
   HeaderIconRight,
   HeaderIconLeft
 } from "@/components/Header/HeaderNew";
+
+const LONG_PRESS_DURATION = 1000; // 1 second
+const MAX_VIDEO_DURATION = 15 * 1000; //30 seconds
 
 class Camera extends PureComponent {
   constructor(props) {
@@ -26,21 +29,28 @@ class Camera extends PureComponent {
         this.longPressTimeout = setTimeout(() => {
           console.log("long press");
           this.videoRecording = true;
+          this.recordingTimer = setInterval(this.updateTimer, 1000);
+
           this.recordVideo();
-        }, 2000);
+        }, LONG_PRESS_DURATION);
       },
       onPanResponderMove: (evt, gestureState) => {},
       onPanResponderTerminationRequest: (evt, gestureState) => true,
       onPanResponderRelease: (evt, gestureState) => {
         this.touchEnd = Date.now();
         clearTimeout(this.longPressTimeout);
+        clearInterval(this.recordingTimer);
+        this.updateTimer(true);
 
-        if (this.touchEnd - this.touchStart < 2000) {
+        if (this.touchEnd - this.touchStart < LONG_PRESS_DURATION) {
           this.takePicture();
         }
 
-        if (this.touchEnd - this.touchStart >= 2000 && this.videoRecording) {
-          this.camera.stopRecording();
+        if (
+          this.touchEnd - this.touchStart >= LONG_PRESS_DURATION &&
+          this.videoRecording
+        ) {
+          this.stopRecording();
         }
       },
       onPanResponderTerminate: (evt, gestureState) => {},
@@ -51,11 +61,31 @@ class Camera extends PureComponent {
   }
 
   state = {
-    flash: false
+    flash: false,
+    front: false,
+    recordingTimer: 0,
+    buttonScale: new Animated.Value(1)
   };
 
   toggleFlash = () => {
     this.setState({ flash: !this.state.flash });
+  };
+
+  toggleCameraType = () => {
+    this.setState({ front: !this.state.front });
+  };
+
+  updateTimer = reset => {
+    if (reset) {
+      this.setState({ recordingTimer: 0 });
+    } else {
+      this.setState({ recordingTimer: this.state.recordingTimer + 1000 });
+    }
+  };
+
+  calculateButtonPercentage = () => {
+    const percentage = (this.state.recordingTimer / MAX_VIDEO_DURATION) * 100;
+    return percentage.toFixed();
   };
 
   takePicture = async () => {
@@ -73,10 +103,26 @@ class Camera extends PureComponent {
         quality: RNCamera.Constants.VideoQuality["720p"],
         orientation: "portrait"
       };
-      this.camera.recordAsync(options).then(data => {
-        this.props.pushToContainerState({ video: data });
-      });
+
+      Animated.timing(this.state.buttonScale, {
+        toValue: 1.2,
+        duration: 100,
+        useNativeDriver: true
+      }).start(() => console.log("done"));
+
+      // this.camera.recordAsync(options).then(data => {
+      //   this.props.pushToContainerState({ video: data });
+      // });
     }
+  };
+
+  stopRecording = () => {
+    // this.camera.stopRecording();
+    Animated.timing(this.state.buttonScale, {
+      toValue: 1,
+      duration: 100,
+      useNativeDriver: true
+    }).start();
   };
 
   goBack = () => {
@@ -84,33 +130,63 @@ class Camera extends PureComponent {
   };
 
   render() {
-    const { flash } = this.state;
+    const { flash, front: stateFront } = this.state;
     const {
-      FlashMode: { on, off }
+      FlashMode: { on, off },
+      Type: { back, front }
     } = RNCamera.Constants;
+
+    const outerButtonScale = this.state.buttonScale.interpolate({
+      inputRange: [1, 1.2],
+      outputRange: [1, 1.2]
+    });
+
+    const outerButtonStyle = {
+      transform: [
+        {
+          scale: outerButtonScale
+        }
+      ]
+    };
 
     return (
       <View style={{ flex: 1 }}>
-        <Header>
-          <HeaderIconLeft
-            iconName="chevron-left"
-            onPress={this.goBack}
-            color="#ffffff"
-            size={28}
-          />
-          <HeaderIconRight
-            iconName={flash ? "flash-off" : "flash"}
-            onPress={this.toggleFlash}
-            color="#ffffff"
-            size={28}
-          />
-        </Header>
+        <View
+          style={{
+            position: "absolute",
+            zIndex: 3,
+            backgroundColor: "transparent"
+          }}
+        >
+          <Header>
+            <HeaderIconLeft
+              iconName="chevron-left"
+              onPress={this.goBack}
+              color="#ffffff"
+              size={28}
+            />
+            <HeaderIconRight
+              iconName={flash ? "flash-off" : "flash"}
+              onPress={this.toggleFlash}
+              color="#ffffff"
+              size={28}
+              additionalStyle={{ right: 64 }}
+            />
+            <HeaderIconRight
+              iconName={stateFront ? "camera-front" : "camera-rear"}
+              onPress={this.toggleCameraType}
+              color="#ffffff"
+              size={28}
+              additionalStyle={{ right: 16 }}
+            />
+          </Header>
+        </View>
         <RNCamera
           ref={ref => {
             this.camera = ref;
           }}
           style={{ flex: 1, justifyContent: "flex-end" }}
-          type={RNCamera.Constants.Type.back}
+          type={stateFront ? front : back}
           flashMode={flash ? on : off}
           permissionDialogTitle={"Permission to use camera"}
           permissionDialogMessage={
@@ -122,16 +198,15 @@ class Camera extends PureComponent {
             <View
               {...this._panResponder.panHandlers}
               style={{
-                alignSelf: "center",
-                // marginBottom: 50,
-                height: 64,
-                width: 64,
-                borderRadius: 32,
-                borderWidth: 4,
-                borderColor: "#ffffff",
-                backgroundColor: "transparent"
+                alignSelf: "center"
               }}
-            />
+            >
+              <Animated.View
+                style={[outerButtonStyle, styles.buttonOuterBorder]}
+              >
+                <View style={styles.button} />
+              </Animated.View>
+            </View>
           </View>
         </RNCamera>
       </View>
@@ -140,3 +215,22 @@ class Camera extends PureComponent {
 }
 
 export default withNavigation(Camera);
+
+const styles = StyleSheet.create({
+  buttonOuterBorder: {
+    alignItems: "center",
+    justifyContent: "center",
+    height: 72,
+    width: 72,
+    borderRadius: 36,
+    backgroundColor: "transparent",
+    borderWidth: 6,
+    borderColor: "#ffffff"
+  },
+  button: {
+    height: 48,
+    width: 48,
+    borderRadius: 24,
+    backgroundColor: "#ffffff"
+  }
+});
