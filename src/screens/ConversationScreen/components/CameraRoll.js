@@ -69,7 +69,6 @@ class CameraRoll extends PureComponent {
   getCameraPhotos = async () => {
     return await Camera.getPhotos({
       first: 20,
-      groupTypes: "All",
       assetType: "Photos"
     });
   };
@@ -77,7 +76,6 @@ class CameraRoll extends PureComponent {
   getVideos = async () => {
     return await Camera.getPhotos({
       first: 20,
-      groupTypes: "All",
       assetType: "All"
     });
   };

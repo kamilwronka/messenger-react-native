@@ -2,24 +2,25 @@
 import React, { Component } from "react";
 import {
   StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-  ImageBackground,
   BackHandler,
-  PanResponder
+  View,
+  Platform,
+  StatusBar
 } from "react-native";
-import { RNCamera } from "react-native-camera";
-import Video from "react-native-video";
 
-const TOUCH_DURATION_FOR_VIDEO_RECORDING = 1000;
+import Camera from "./components/Camera";
+import Video from "./components/Video";
+import Photo from "./components/Photo";
+import LinearGradient from "react-native-linear-gradient";
 
-export default class BadInstagramCloneApp extends Component {
-  state = {
-    photo: null,
-    video: null
-  };
+import {
+  Header,
+  HeaderTitle,
+  HeaderIconRight,
+  HeaderIconLeft
+} from "@/components/Header/HeaderNew";
 
+class CameraScreen extends Component {
   static navigationOptions = {
     header: null
   };
@@ -29,45 +30,16 @@ export default class BadInstagramCloneApp extends Component {
 
   constructor(props) {
     super(props);
-    this._didFocusSubscription = props.navigation.addListener(
-      "didFocus",
-      payload =>
-        BackHandler.addEventListener("hardwareBackPress", this.removeTakenPhoto)
+    this._didFocusSubscription = props.navigation.addListener("didFocus", () =>
+      BackHandler.addEventListener(
+        "hardwareBackPress",
+        this.removeTakenPhotoOrVideo
+      )
     );
-    this._panResponder = PanResponder.create({
-      onStartShouldSetPanResponder: (evt, gestureState) => true,
-      onStartShouldSetPanResponderCapture: (evt, gestureState) => true,
-      onMoveShouldSetPanResponder: (evt, gestureState) => true,
-      onMoveShouldSetPanResponderCapture: (evt, gestureState) => true,
-
-      onPanResponderGrant: (evt, gestureState) => {
-        console.log("grant");
-        this.touchStart = Date.now();
-        this.longPressTimeout = setTimeout(() => {
-          console.log("long press");
-          this.videoRecording = true;
-          this.recordVideo();
-        }, 2000);
-      },
-      onPanResponderMove: (evt, gestureState) => {},
-      onPanResponderTerminationRequest: (evt, gestureState) => true,
-      onPanResponderRelease: (evt, gestureState) => {
-        this.touchEnd = Date.now();
-        clearTimeout(this.longPressTimeout);
-
-        if (this.touchEnd - this.touchStart < 2000) {
-          this.takePicture();
-        }
-
-        if (this.touchEnd - this.touchStart >= 2000 && this.videoRecording) {
-          this.camera.stopRecording();
-        }
-      },
-      onPanResponderTerminate: (evt, gestureState) => {},
-      onShouldBlockNativeResponder: (evt, gestureState) => {
-        return true;
-      }
-    });
+    this.state = {
+      photo: null,
+      video: null
+    };
   }
 
   componentWillUnmount() {
@@ -78,34 +50,16 @@ export default class BadInstagramCloneApp extends Component {
   async componentDidMount() {
     this._willBlurSubscription = this.props.navigation.addListener(
       "willBlur",
-      payload =>
+      () =>
         BackHandler.removeEventListener(
           "hardwareBackPress",
-          this.removeTakenPhoto
+          this.removeTakenPhotoOrVideo
         )
     );
   }
 
-  takePicture = async () => {
-    console.log("photo taken");
-    if (this.camera) {
-      const options = { quality: 0.5, base64: true };
-      const data = await this.camera.takePictureAsync(options);
-      this.setState({ photo: data });
-    }
-  };
-
-  recordVideo = async () => {
-    if (this.camera) {
-      const options = {
-        quality: RNCamera.Constants.VideoQuality["720p"],
-        orientation: "portrait"
-      };
-      this.camera.recordAsync(options).then(data => {
-        this.setState({ video: data });
-        console.log(data);
-      });
-    }
+  pushToState = data => {
+    this.setState(data);
   };
 
   sendPhoto = () => {
@@ -122,133 +76,31 @@ export default class BadInstagramCloneApp extends Component {
     });
   };
 
-  removeTakenPhoto = () => {
-    if (this.state.photo) {
-      this.setState({ photo: null });
+  removeTakenPhotoOrVideo = () => {
+    if (this.state.photo || this.state.video) {
+      this.setState({ photo: null, video: null });
       return true;
     } else {
       return false;
     }
   };
 
-  render() {
+  renderProperView = () => {
     if (this.state.photo) {
-      return (
-        <View style={{ flex: 1 }}>
-          <ImageBackground
-            style={{ flex: 1 }}
-            source={{ uri: this.state.photo.uri }}
-          >
-            <View
-              style={{
-                flex: 1,
-                backgroundColor: "transparent",
-                flexDirection: "row"
-              }}
-            >
-              <TouchableOpacity
-                onPress={this.sendPhoto}
-                style={{
-                  flex: 1,
-                  alignSelf: "flex-end",
-                  alignItems: "center",
-                  marginBottom: 50
-                }}
-              >
-                <View
-                  style={{
-                    height: 64,
-                    width: 64,
-                    borderRadius: 32,
-                    backgroundColor: "#fff",
-                    alignItems: "center",
-                    justifyContent: "center"
-                  }}
-                >
-                  <Text>Wyślij</Text>
-                </View>
-              </TouchableOpacity>
-            </View>
-          </ImageBackground>
-        </View>
-      );
+      return <Photo sendPhoto={this.sendPhoto} photo={this.state.photo} />;
     } else if (this.state.video) {
-      return (
-        <View style={{ flex: 1 }}>
-          <Video
-            source={{ uri: this.state.video.uri }} // Can be a URL or a local file.
-            ref={ref => {
-              this.player = ref;
-            }} // Store reference
-            onBuffer={this.onBuffer} // Callback when remote video is buffering
-            onError={this.videoError} // Callback when video cannot be loaded
-            style={styles.backgroundVideo}
-          />
-          <View style={StyleSheet.absoluteFill}>
-            <TouchableOpacity
-              onPress={this.sendVideo}
-              style={{
-                position: "absolute",
-                bottom: 50,
-                marginBottom: 50
-              }}
-            >
-              <View
-                style={{
-                  height: 64,
-                  width: 64,
-                  borderRadius: 32,
-                  backgroundColor: "#fff",
-                  alignItems: "center",
-                  justifyContent: "center"
-                }}
-              >
-                <Text>Wyślij</Text>
-              </View>
-            </TouchableOpacity>
-          </View>
-        </View>
-      );
+      return <Video sendVideo={this.sendVideo} video={this.state.video} />;
     } else {
-      return (
-        <View style={{ flex: 1 }}>
-          <RNCamera
-            ref={ref => {
-              this.camera = ref;
-            }}
-            style={{ flex: 1, justifyContent: "flex-end" }}
-            type={RNCamera.Constants.Type.back}
-            flashMode={RNCamera.Constants.FlashMode.on}
-            permissionDialogTitle={"Permission to use camera"}
-            permissionDialogMessage={
-              "We need your permission to use your camera phone"
-            }
-            onGoogleVisionBarcodesDetected={({ barcodes }) => {
-              console.log(barcodes);
-            }}
-            pauseAfterCapture
-          >
-            <View style={{ alignSelf: "center", bottom: 50 }}>
-              <View
-                {...this._panResponder.panHandlers}
-                style={{
-                  alignSelf: "center",
-                  // marginBottom: 50,
-                  height: 64,
-                  width: 64,
-                  borderRadius: 32,
-                  borderWidth: 4,
-                  borderColor: "#ffffff",
-                  backgroundColor: "transparent"
-                }}
-              />
-            </View>
-          </RNCamera>
-        </View>
-      );
+      return <Camera pushToContainerState={this.pushToState} />;
     }
+  };
+
+  render() {
+    return <View style={styles.container}>{this.renderProperView()}</View>;
   }
 }
+
+export default CameraScreen;
 
 const styles = StyleSheet.create({
   container: {
