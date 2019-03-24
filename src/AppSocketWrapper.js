@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import Sound from "react-native-sound";
-import { Vibration } from "react-native";
-import firebase from "react-native-firebase";
+import { Vibration, PushNotificationIOS } from "react-native";
+import PushNotification from "react-native-push-notification";
 
 import apiConfig from "./config/api_config";
 import SocketContext from "@/helpers/socketContext";
@@ -19,6 +19,44 @@ class AppSocketWrapper extends Component {
     }
   });
 
+  pushNotifications = PushNotification.configure({
+    // (optional) Called when Token is generated (iOS and Android)
+    onRegister: function(token) {
+      console.log("TOKEN:", token);
+    },
+
+    // (required) Called when a remote or local notification is opened or received
+    onNotification: function(notification) {
+      console.log("NOTIFICATION:", notification);
+
+      // process the notification
+
+      // required on iOS only (see fetchCompletionHandler docs: https://facebook.github.io/react-native/docs/pushnotificationios.html)
+      notification.finish(PushNotificationIOS.FetchResult.NoData);
+    },
+
+    // ANDROID ONLY: GCM or FCM Sender ID (product_number) (optional - not required for local notifications, but is need to receive remote push notifications)
+    senderID: "819638503388",
+
+    // IOS ONLY (optional): default: all - Permissions to register.
+    permissions: {
+      alert: true,
+      badge: true,
+      sound: true
+    },
+
+    // Should the initial notification be popped automatically
+    // default: true
+    popInitialNotification: true,
+
+    /**
+     * (optional) default: true
+     * - Specified if permissions (ios) and token (android and ios) will requested or not,
+     * - if not, you must call PushNotificationsHandler.requestPermissions() later
+     */
+    requestPermissions: true
+  });
+
   sound = new Sound(
     "https://fsa.zobj.net/download/bHGd7vJCMekZuwAMEv0zfI-UYx8SuFlDM_7D9IdQA8I39EQwujqnkK3gHwWHYwTTxz8cT8ThIg_YT4E17Dj3fgn0gw9avkhFf2LIPlcOkanowoPx9nCnKl27k_RI/?a=web&c=72&f=messenger_2013.mp3&special=1553122204-kiSV4Uglth0zi%2FVahE9qpv7YwSGN1BJPNSXM0VeykJA%3D",
     null,
@@ -27,12 +65,10 @@ class AppSocketWrapper extends Component {
     }
   );
 
-  componentDidMount() {
-    this.checkPermission();
-    this.createNotificationListeners();
-  }
+  componentDidMount() {}
 
   componentWillReceiveProps(nextProps) {
+    console.log(nextProps);
     if (
       this.props.user.logged !== nextProps.user.logged ||
       nextProps.user.logged === true
@@ -47,88 +83,6 @@ class AppSocketWrapper extends Component {
 
   componentWillUnmount() {
     this.socket.disconnect();
-    this.notificationListener();
-    this.notificationOpenedListener();
-  }
-
-  async createNotificationListeners() {
-    /*
-     * Triggered when a particular notification has been received in foreground
-     * */
-    this.notificationListener = firebase
-      .notifications()
-      .onNotification(notification => {
-        const { title, body } = notification;
-        this.showAlert(title, body);
-      });
-
-    /*
-     * If your app is in background, you can listen for when a notification is clicked / tapped / opened as follows:
-     * */
-    this.notificationOpenedListener = firebase
-      .notifications()
-      .onNotificationOpened(notificationOpen => {
-        const { title, body } = notificationOpen.notification;
-        this.showAlert(title, body);
-      });
-
-    /*
-     * If your app is closed, you can check if it was opened by a notification being clicked / tapped / opened as follows:
-     * */
-    const notificationOpen = await firebase
-      .notifications()
-      .getInitialNotification();
-    if (notificationOpen) {
-      const { title, body } = notificationOpen.notification;
-      this.showAlert(title, body);
-    }
-    /*
-     * Triggered for data only payload in foreground
-     * */
-    this.messageListener = firebase.messaging().onMessage(message => {
-      //process data message
-      console.log(JSON.stringify(message));
-    });
-  }
-
-  showAlert(title, body) {
-    Alert.alert(
-      title,
-      body,
-      [{ text: "OK", onPress: () => console.log("OK Pressed") }],
-      { cancelable: false }
-    );
-  }
-
-  async checkPermission() {
-    const enabled = await firebase.messaging().hasPermission();
-    if (enabled) {
-      this.getToken();
-    } else {
-      this.requestPermission();
-    }
-  }
-
-  async requestPermission() {
-    try {
-      await firebase.messaging().requestPermission();
-      // User has authorised
-      this.getToken();
-    } catch (error) {
-      // User has rejected permissions
-      console.log("permission rejected");
-    }
-  }
-
-  async getToken() {
-    let fcmToken = await AsyncStorage.getItem("fcmToken");
-    if (!fcmToken) {
-      fcmToken = await firebase.messaging().getToken();
-      if (fcmToken) {
-        // user has a device token
-        await AsyncStorage.setItem("fcmToken", fcmToken);
-      }
-    }
   }
 
   render() {
