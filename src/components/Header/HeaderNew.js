@@ -1,11 +1,5 @@
 import React from "react";
-import {
-  Text,
-  TouchableNativeFeedback,
-  View,
-  Dimensions,
-  TouchableWithoutFeedback
-} from "react-native";
+import { Text, View, Dimensions, TouchableWithoutFeedback } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
 const { width } = Dimensions.get("window");

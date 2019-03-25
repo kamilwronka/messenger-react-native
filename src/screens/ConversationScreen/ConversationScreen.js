@@ -6,8 +6,7 @@ import {
   FlatList,
   Text,
   RefreshControl,
-  KeyboardAvoidingView,
-  StatusBar
+  KeyboardAvoidingView
 } from "react-native";
 import { isNil, isEqual, get } from "lodash";
 
@@ -53,15 +52,11 @@ class ConversationScreen extends React.Component {
       }
     } = this.props;
 
-    console.log("mounted");
-
     !isNil(conversationId) &&
       Promise.all([
         this.props.fetchConversation(conversationId, 0, 20),
         this.props.fetchConversationInfo(conversationId)
       ]);
-
-    // !isNil(photo) && console.log(photo);
 
     socket.on("message", this.pushMessage);
 
@@ -71,7 +66,6 @@ class ConversationScreen extends React.Component {
   }
 
   componentWillUnmount() {
-    console.log("unmounted");
     this.props.clearConversation();
     this.props.socket.removeListener("message", this.pushMessage);
   }
@@ -91,14 +85,16 @@ class ConversationScreen extends React.Component {
     }
   }
 
+  handleGoBack = () => {
+    this.props.navigation.goBack(null);
+  };
+
   pushMessage = message => {
-    console.log("message", message.messageContent);
     this.props.pushNewMessage(message);
   };
 
   onRefresh = () => {
     const { page } = this.state;
-    console.log(page);
     this.setState({ page: page + 1 });
   };
 
@@ -145,7 +141,6 @@ class ConversationScreen extends React.Component {
     };
     const { socket } = this.props;
     this.setState({ messageInput: "" });
-    console.log("emitted");
     socket.emit(
       "message",
       conversationId,
@@ -155,7 +150,6 @@ class ConversationScreen extends React.Component {
   };
 
   handleEmojiSend = e => {
-    console.log(e.target);
     const {
       state: {
         params: { participants, conversationId }
@@ -212,7 +206,6 @@ class ConversationScreen extends React.Component {
   };
 
   handleVideoSend = async video => {
-    console.log(video);
     const {
       state: {
         params: { participants, conversationId }
@@ -268,8 +261,6 @@ class ConversationScreen extends React.Component {
       navigate
     } = this.props.navigation;
 
-    console.log("to info");
-
     navigate({ routeName: "ConversationInfoScreen", params });
   };
 
@@ -323,6 +314,7 @@ class ConversationScreen extends React.Component {
 
     return (
       <View
+        renderToHardwareTextureAndroid
         style={{
           flex: 1,
           backgroundColor: "#040D16",
@@ -332,7 +324,7 @@ class ConversationScreen extends React.Component {
         <Header>
           <HeaderIconLeft
             iconName="chevron-left"
-            onPress={() => goBack(null)}
+            onPress={this.handleGoBack}
             color={color}
             size={28}
           />
@@ -346,7 +338,7 @@ class ConversationScreen extends React.Component {
         </Header>
         <ScrollView
           onScroll={this.handleScroll}
-          scrollEventThrottle={16}
+          scrollEventThrottle={50}
           refreshControl={
             <RefreshControl
               refreshing={this.props.conversation.fetching}

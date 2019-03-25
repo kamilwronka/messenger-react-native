@@ -111,7 +111,6 @@ export const sendPhoto = file => async (dispatch, getState) => {
     await uploadToS3(url, key, file);
     return Promise.resolve({ key, height: file.height, width: file.width });
   } catch (err) {
-    console.log(err);
     Promise.reject(err);
   }
 };
@@ -126,7 +125,6 @@ export const sendVideo = file => async (dispatch, getState) => {
     await uploadToS3(url, key, file);
     return Promise.resolve({ key });
   } catch (err) {
-    console.log(err);
     Promise.reject(err);
   }
 };

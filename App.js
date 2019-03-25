@@ -1,6 +1,5 @@
 import React, { Component } from "react";
-import { Platform, StyleSheet, StatusBar, Text, View } from "react-native";
-import { Root, Spinner } from "native-base";
+import { StyleSheet, StatusBar, View, YellowBox } from "react-native";
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/lib/integration/react";
 import SplashScreen from "react-native-splash-screen";
@@ -10,6 +9,11 @@ import AppSocketWrapper from "./src/AppSocketWrapper";
 
 import { persistor, store } from "./src/store";
 
+console.ignoredYellowBox = ["Remote debugger"];
+YellowBox.ignoreWarnings([
+  "Unrecognized WebSocket connection option(s) `agent`, `perMessageDeflate`, `pfx`, `key`, `passphrase`, `cert`, `ca`, `ciphers`, `rejectUnauthorized`. Did you mean to put these under `headers`?"
+]);
+
 export default class App extends Component {
   componentDidMount() {
     setTimeout(SplashScreen.hide, 100);
@@ -17,7 +21,7 @@ export default class App extends Component {
 
   render() {
     return (
-      <View style={{ flex: 1, backgroundColor: "#ffffff" }}>
+      <View style={styles.container}>
         <Provider store={store}>
           <PersistGate loading={null} persistor={persistor}>
             <AppSocketWrapper>
@@ -34,18 +38,6 @@ export default class App extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#F5FCFF"
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: "center",
-    margin: 10
-  },
-  instructions: {
-    textAlign: "center",
-    color: "#333333",
-    marginBottom: 5
+    backgroundColor: "#ffffff"
   }
 });

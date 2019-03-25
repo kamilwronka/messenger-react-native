@@ -105,11 +105,7 @@ const styles = StyleSheet.create({
 });
 
 export default reduxForm({
-  form: "registerForm",
-  initialValues: {
-    email: "kamil@kamil.pl",
-    password: "kamilo"
-  }
+  form: "registerForm"
 })(
   connect(
     mapStateToProps,

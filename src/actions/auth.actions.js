@@ -28,7 +28,7 @@ export const logoutUser = () => (dispatch, getState) => {
   });
 };
 
-export const loginUser = data => async dispatch => {
+export const loginUser = data => dispatch => {
   return dispatch({
     type: ACTIONS.LOGIN_USER,
     payload: axios.post(`${apiConfig.ROOT_URL}/api/auth/login`, data)

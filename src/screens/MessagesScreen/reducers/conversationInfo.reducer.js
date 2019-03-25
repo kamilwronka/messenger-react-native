@@ -27,7 +27,6 @@ const conversationsReducer = (state = INITIAL_STATE, action) => {
         fetching: false
       };
     case `${ACTIONS.SET_CONVERSATION_COLOR}_FULFILLED`:
-      console.log(get(action.payload, "data.color"));
       return {
         ...state,
         data: { ...state.data, color: get(action.payload, "data.color") }
