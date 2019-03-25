@@ -5,13 +5,13 @@ import { View } from "react-native";
 import CameraScreen from "../screens/CameraScreen/CameraScreen";
 import ContactsScreen from "../screens/ContactsScreen/ContactsScreen";
 import NotificationsScreen from "../screens/NotificationsScreen/NotificationsScreen";
-import ProfileStack from "./ProfileStackNavigation";
 
 import TabBarIcon from "../components/TabBarIcon";
 import MessagesScreen from "../screens/MessagesScreen/MessagesScreen";
+import RelationsScreen from "../screens/RelationsScreen/RelationsScreen";
 
 const HomeTabIcon = ({ focused }) => (
-  <TabBarIcon name="home" size={28} focused={focused} />
+  <TabBarIcon name="forum" size={28} focused={focused} />
 );
 const PeopleTabIcon = ({ focused }) => (
   <TabBarIcon name="account-multiple" size={28} focused={focused} />
@@ -39,8 +39,8 @@ const CameraTabIcon = ({ focused }) => (
 const NotificationsTabIcon = ({ focused }) => (
   <TabBarIcon name="bell" size={28} focused={focused} />
 );
-const ProfileTabIcon = ({ focused }) => (
-  <TabBarIcon name="account" size={28} focused={focused} />
+const RelationsTabIcon = ({ focused }) => (
+  <TabBarIcon name="library-plus" size={28} focused={focused} />
 );
 
 export const BottomTabNavigation = createBottomTabNavigator(
@@ -77,11 +77,11 @@ export const BottomTabNavigation = createBottomTabNavigator(
         tabBarIcon: NotificationsTabIcon
       }
     },
-    ProfileStack: {
-      screen: ProfileStack,
+    RelationsScreen: {
+      screen: RelationsScreen,
       navigationOptions: {
         header: null,
-        tabBarIcon: ProfileTabIcon
+        tabBarIcon: RelationsTabIcon
       }
     }
   },

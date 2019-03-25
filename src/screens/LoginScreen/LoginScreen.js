@@ -23,22 +23,15 @@ class LoginScreen extends PureComponent {
     header: null
   };
 
-  componentWillReceiveProps(nextProps) {
-    if (
-      nextProps.user.logged !== this.props.user.logged &&
-      nextProps.user.logged
-    ) {
-      this.props.navigation.navigate("HomeScreen");
-    }
-  }
-
   goBack = () => {
     const backAction = NavigationActions.back();
     this.props.navigation.dispatch(backAction);
   };
 
-  handleSubmit = values => {
-    this.props.loginUser(values);
+  handleSubmit = async values => {
+    // alert("dupa");
+    await this.props.loginUser(values);
+    this.props.navigation.navigate("HomeScreen");
   };
 
   renderInput = ({ ...obj }) => {
@@ -106,11 +99,7 @@ const styles = StyleSheet.create({
 });
 
 export default reduxForm({
-  form: "loginForm",
-  initialValues: {
-    email: "kamil@kamil.pl",
-    password: "kamilo"
-  }
+  form: "loginForm"
 })(
   connect(
     mapStateToProps,

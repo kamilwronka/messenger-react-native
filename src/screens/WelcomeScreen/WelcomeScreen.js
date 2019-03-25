@@ -6,16 +6,10 @@ import {
   Image,
   StatusBar,
   TouchableWithoutFeedback,
-  ActivityIndicator,
-  TouchableNativeFeedback,
   Text
 } from "react-native";
-import { Button } from "@/components/Buttons";
-
-import InitialScreen from "./InitialScreen";
 
 const SCREEN_WIDTH = Dimensions.get("window").width;
-const SCREEN_HEIGHT = Dimensions.get("window").height;
 
 class WelcomeScreen extends Component {
   static navigationOptions = {

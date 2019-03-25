@@ -16,9 +16,7 @@ export const setUserAvatar = file => async (dispatch, getState) => {
     } = await getPresignedUrl(user.token);
     await uploadToS3(url, key, file);
     return pushImgUrl(key, user.token, dispatch);
-  } catch (err) {
-    console.log(err);
-  }
+  } catch (err) {}
 };
 
 const pushImgUrl = (url, token, dispatch) => {
@@ -30,7 +28,7 @@ const pushImgUrl = (url, token, dispatch) => {
       data: { url },
       headers: { Authorization: token }
     })
-  }).then(res => console.log(res));
+  });
 };
 
 const getPresignedUrl = token => {

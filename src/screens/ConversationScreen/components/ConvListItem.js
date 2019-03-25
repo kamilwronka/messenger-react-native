@@ -160,7 +160,7 @@ class ConvListItem extends Component {
           />
         );
       case "video":
-        return <ConversationVideo video={item} />;
+        return <ConversationVideo video={item} id={_id} />;
       default:
         return null;
     }

@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 import { connect } from "react-redux";
 import Sound from "react-native-sound";
 import { Vibration, PushNotificationIOS, AsyncStorage } from "react-native";
@@ -12,7 +12,7 @@ import { fetchConversations } from "./screens/MessagesScreen/actions/homeScreen.
 
 const VIBRATION_DURATION = 200;
 
-class AppSocketWrapper extends Component {
+class AppSocketWrapper extends PureComponent {
   state = {
     token: null,
     os: null
@@ -27,21 +27,11 @@ class AppSocketWrapper extends Component {
   pushNotifications = PushNotification.configure({
     // (optional) Called when Token is generated (iOS and Android)
     onRegister: async data => {
-      console.log("data:", data);
-      console.log(data);
       await AsyncStorage.setItem("pushNotificationsKey", data.token);
     },
 
     // (required) Called when a remote or local notification is opened or received
-    onNotification: function(notification) {
-      console.log("NOTIFICATION:", notification);
-      alert(JSON.stringify(notification));
-
-      // process the notification
-
-      // required on iOS only (see fetchCompletionHandler docs: https://facebook.github.io/react-native/docs/pushnotificationios.html)
-      // notification.finish(PushNotificationIOS.FetchResult.NoData);
-    },
+    onNotification: function(notification) {},
 
     // ANDROID ONLY: GCM or FCM Sender ID (product_number) (optional - not required for local notifications, but is need to receive remote push notifications)
     senderID: "819638503388",
@@ -56,12 +46,6 @@ class AppSocketWrapper extends Component {
     // Should the initial notification be popped automatically
     // default: true
     popInitialNotification: true,
-
-    /**
-     * (optional) default: true
-     * - Specified if permissions (ios) and token (android and ios) will requested or not,
-     * - if not, you must call PushNotificationsHandler.requestPermissions() later
-     */
     requestPermissions: true
   });
 
@@ -69,7 +53,7 @@ class AppSocketWrapper extends Component {
     "https://fsa.zobj.net/download/bHGd7vJCMekZuwAMEv0zfI-UYx8SuFlDM_7D9IdQA8I39EQwujqnkK3gHwWHYwTTxz8cT8ThIg_YT4E17Dj3fgn0gw9avkhFf2LIPlcOkanowoPx9nCnKl27k_RI/?a=web&c=72&f=messenger_2013.mp3&special=1553122204-kiSV4Uglth0zi%2FVahE9qpv7YwSGN1BJPNSXM0VeykJA%3D",
     null,
     error => {
-      console.log(error);
+      // console.log(error);
     }
   );
 
@@ -81,7 +65,6 @@ class AppSocketWrapper extends Component {
   }
 
   async componentWillReceiveProps(nextProps) {
-    console.log(nextProps);
     if (
       this.props.user.logged !== nextProps.user.logged ||
       nextProps.user.logged === true

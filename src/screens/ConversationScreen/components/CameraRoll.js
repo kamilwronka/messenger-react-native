@@ -42,9 +42,9 @@ class CameraRoll extends PureComponent {
         }
       );
       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        console.log("You can use the camera");
+        // console.log("You can use the camera");
       } else {
-        console.log("Camera permission denied");
+        // console.log("Camera permission denied");
       }
     } catch (err) {
       console.warn(err);
@@ -87,7 +87,7 @@ class CameraRoll extends PureComponent {
       this.getVideos()
     ]);
 
-    console.log("refresh");
+    // console.log("refresh");
 
     this.setState({
       photos: [...photos.edges, ...videos.edges],
