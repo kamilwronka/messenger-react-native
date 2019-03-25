@@ -6,7 +6,7 @@ const { width } = Dimensions.get("window");
 
 const SignUpForm = ({ component }) => {
   return (
-    <View style={{ marginTop: 84 }}>
+    <View style={{ marginTop: 48 }}>
       <Field
         name="username"
         component={component}
