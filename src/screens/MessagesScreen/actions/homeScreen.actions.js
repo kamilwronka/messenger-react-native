@@ -102,6 +102,8 @@ export const pushNewMessage = msg => {
 export const sendPhoto = file => async (dispatch, getState) => {
   const user = getUserData(getState());
 
+  // console.log(file)
+
   try {
     const {
       data: { url, key }

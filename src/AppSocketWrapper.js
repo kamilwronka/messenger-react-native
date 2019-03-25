@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import Sound from "react-native-sound";
-import { Vibration, PushNotificationIOS } from "react-native";
+import { Vibration, PushNotificationIOS, AsyncStorage } from "react-native";
 import PushNotification from "react-native-push-notification";
 
 import apiConfig from "./config/api_config";
@@ -13,6 +13,11 @@ import { fetchConversations } from "./screens/MessagesScreen/actions/homeScreen.
 const VIBRATION_DURATION = 200;
 
 class AppSocketWrapper extends Component {
+  state = {
+    token: null,
+    os: null
+  };
+
   socket = io(apiConfig.ROOT_URL, {
     query: {
       token: this.props.user.token
@@ -21,18 +26,21 @@ class AppSocketWrapper extends Component {
 
   pushNotifications = PushNotification.configure({
     // (optional) Called when Token is generated (iOS and Android)
-    onRegister: function(token) {
-      console.log("TOKEN:", token);
+    onRegister: async data => {
+      console.log("data:", data);
+      console.log(data);
+      await AsyncStorage.setItem("pushNotificationsKey", data.token);
     },
 
     // (required) Called when a remote or local notification is opened or received
     onNotification: function(notification) {
       console.log("NOTIFICATION:", notification);
+      alert(JSON.stringify(notification));
 
       // process the notification
 
       // required on iOS only (see fetchCompletionHandler docs: https://facebook.github.io/react-native/docs/pushnotificationios.html)
-      notification.finish(PushNotificationIOS.FetchResult.NoData);
+      // notification.finish(PushNotificationIOS.FetchResult.NoData);
     },
 
     // ANDROID ONLY: GCM or FCM Sender ID (product_number) (optional - not required for local notifications, but is need to receive remote push notifications)
@@ -65,9 +73,14 @@ class AppSocketWrapper extends Component {
     }
   );
 
-  componentDidMount() {}
+  async componentDidMount() {
+    const token = await AsyncStorage.getItem("pushNotificationsKey");
+    if (this.props.user.logged) {
+      this.socket.emit("newPushToken", token);
+    }
+  }
 
-  componentWillReceiveProps(nextProps) {
+  async componentWillReceiveProps(nextProps) {
     console.log(nextProps);
     if (
       this.props.user.logged !== nextProps.user.logged ||
@@ -78,6 +91,8 @@ class AppSocketWrapper extends Component {
           token: nextProps.user.token
         }
       });
+      const token = await AsyncStorage.getItem("pushNotificationsKey");
+      this.socket.emit("newPushToken", token);
     }
   }
 

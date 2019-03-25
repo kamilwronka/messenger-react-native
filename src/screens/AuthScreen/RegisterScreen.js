@@ -20,7 +20,7 @@ class RegisterScreen extends Component {
   }
 
   onSubmit = values => {
-    this.props.registerUser(values);
+    // this.props.registerUser(values);
   };
 
   renderInput = ({
