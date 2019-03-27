@@ -19,6 +19,7 @@ import { isNil, get } from "lodash";
 
 import { connect } from "react-redux";
 import { prepareAvatar } from "@/helpers";
+import SocketContext from "@/helpers/socketContext";
 import {
   Header,
   HeaderTitle,
@@ -70,8 +71,12 @@ class SearchScreen extends PureComponent {
   };
 
   handleFriendRequest = userId => {
-    this.props.sendFriendRequest(userId).then(res => {
-      alert(res.value.data.data);
+    // this.props.sendFriendRequest(userId).then(res => {
+    //   alert(res.value.data.data);
+    // });
+    this.props.socket.emit("newNotification", {
+      requestedUserId: userId,
+      type: "friendsRequest"
     });
   };
 
@@ -222,6 +227,20 @@ class SearchScreen extends PureComponent {
   }
 }
 
+class SearchScreenWithSocket extends PureComponent {
+  static navigationOptions = {
+    header: null
+  };
+
+  render() {
+    return (
+      <SocketContext.Consumer>
+        {socket => <SearchScreen {...this.props} socket={socket} />}
+      </SocketContext.Consumer>
+    );
+  }
+}
+
 const mapStateToProps = state => {
   return {
     user: getUserData(state),
@@ -238,4 +257,4 @@ const mapDispatchToProps = {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(SearchScreen);
+)(SearchScreenWithSocket);
