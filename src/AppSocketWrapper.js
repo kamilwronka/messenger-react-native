@@ -9,6 +9,7 @@ import SocketContext from "@/helpers/socketContext";
 import io from "socket.io-client";
 import { getUserData } from "./selectors/user.selectors";
 import { fetchConversations } from "./screens/MessagesScreen/actions/homeScreen.actions";
+import { pushNotification } from "./screens/NotificationsScreen/actions/notifications.actions";
 
 const VIBRATION_DURATION = 200;
 
@@ -92,6 +93,18 @@ class AppSocketWrapper extends PureComponent {
       this.props.fetchConversations();
     });
 
+    this.socket.on("requestReceived", data => {
+      console.log(data);
+      this.props.pushNotification(data);
+    });
+
+    this.socket.on("requestSent", data => {
+      if (data.error) {
+        return alert(data.error);
+      }
+      alert(`Zaproszenie do użytkownika ${data.toUser} zostało wysłane.`);
+    });
+
     return (
       <SocketContext.Provider value={this.socket}>
         {this.props.children}
@@ -107,7 +120,8 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = {
-  fetchConversations
+  fetchConversations,
+  pushNotification
 };
 
 export default connect(
