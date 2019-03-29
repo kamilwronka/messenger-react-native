@@ -5,10 +5,11 @@ import { View } from "react-native";
 import CameraScreen from "../screens/CameraScreen/CameraScreen";
 import ContactsScreen from "../screens/ContactsScreen/ContactsScreen";
 import NotificationsScreen from "../screens/NotificationsScreen/NotificationsScreen";
-
-import TabBarIcon from "../components/TabBarIcon";
 import MessagesScreen from "../screens/MessagesScreen/MessagesScreen";
 import RelationsScreen from "../screens/RelationsScreen/RelationsScreen";
+
+import TabBarIcon from "../components/TabBarIcon";
+import NotificationsIcon from "./components/NotificationsIcon";
 
 const HomeTabIcon = ({ focused }) => (
   <TabBarIcon name="forum" size={28} focused={focused} />
@@ -37,7 +38,7 @@ const CameraTabIcon = ({ focused }) => (
   </View>
 );
 const NotificationsTabIcon = ({ focused }) => (
-  <TabBarIcon name="bell" size={28} focused={focused} />
+  <NotificationsIcon focused={focused} />
 );
 const RelationsTabIcon = ({ focused }) => (
   <TabBarIcon name="library-plus" size={28} focused={focused} />

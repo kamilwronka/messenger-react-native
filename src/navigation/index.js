@@ -13,6 +13,7 @@ import ConversationInfoScreen from "../screens/ConversationInfoScreen/Conversati
 import LoginScreen from "../screens/LoginScreen/LoginScreen";
 import SignUpScreen from "../screens/SignUpScreen/SignUpScreen";
 import SettingsScreen from "../screens/SettingsScreen/SettingsScreen";
+import GalleryScreen from "../screens/GalleryScreen/GalleryScreen";
 
 const SearchStack = createStackNavigator(
   {
@@ -103,6 +104,10 @@ const MessengerApp = createStackNavigator({
   },
   SettingsScreen: {
     screen: SettingsScreen,
+    navigationOptions: { gesturesEnabled: false, header: null }
+  },
+  GalleryScreen: {
+    screen: GalleryScreen,
     navigationOptions: { gesturesEnabled: false, header: null }
   }
 });
