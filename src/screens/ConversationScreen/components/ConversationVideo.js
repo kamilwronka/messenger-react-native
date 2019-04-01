@@ -16,14 +16,6 @@ class ConversationVideo extends PureComponent {
     modalOpened: false
   };
 
-  onBuffer = () => {
-    console.log("buffering");
-  };
-
-  onError = e => {
-    console.log(e);
-  };
-
   playVideo = () => {
     this.player.presentFullscreenPlayer();
     this.setState({ modalOpened: true });
@@ -39,10 +31,15 @@ class ConversationVideo extends PureComponent {
         <TouchableWithoutFeedback onPress={this.playVideo}>
           <View
             style={{
-              width: 196,
-              height: 350,
+              width: 130,
+              height: 200,
               marginVertical: 10,
-              borderRadius: 5
+              marginHorizontal: 10,
+              borderRadius: 5,
+              alignSelf:
+                this.props.video.userId === this.props.id
+                  ? "flex-end"
+                  : "flex-start"
             }}
           >
             <Video

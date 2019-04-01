@@ -103,8 +103,6 @@ class ConversationInfoScreen extends React.Component {
       }
     } = this.props;
 
-    console.log(this.props.conversationInfo);
-
     const colors = [
       "#29335C",
       "#DB2B39",

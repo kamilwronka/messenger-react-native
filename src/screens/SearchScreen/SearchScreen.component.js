@@ -13,17 +13,20 @@ import {
   TouchableWithoutFeedback,
   RefreshControl
 } from "react-native";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { isNil, get } from "lodash";
 
 import { connect } from "react-redux";
 import { prepareAvatar } from "@/helpers";
+import SocketContext from "@/helpers/socketContext";
 import {
   Header,
   HeaderTitle,
   HeaderIconLeft
 } from "@/components/Header/HeaderNew";
 import BorderedInput from "@/components/Input/BorderedInput";
+import RoundInput from "@/components/Input/RoundInput";
 
 import {
   fetchUserByQuery,
@@ -46,7 +49,6 @@ class SearchScreen extends PureComponent {
   colorsArr = ["#b0003a", "#6a0080", "#002984", "#00675b"];
 
   componentDidMount() {
-    console.log("search screen", this.props.navigation);
     this.props.navigation.state.params.callback();
   }
 
@@ -69,8 +71,12 @@ class SearchScreen extends PureComponent {
   };
 
   handleFriendRequest = userId => {
-    this.props.sendFriendRequest(userId).then(res => {
-      alert(res.value.data.data);
+    // this.props.sendFriendRequest(userId).then(res => {
+    //   alert(res.value.data.data);
+    // });
+    this.props.socket.emit("newNotification", {
+      requestedUserId: userId,
+      type: "friendsRequest"
     });
   };
 
@@ -83,11 +89,11 @@ class SearchScreen extends PureComponent {
     });
   };
 
-  _keyExtractor = (item, index) => index;
+  _keyExtractor = (item, index) => `${index}`;
 
   _renderItem = ({ item }) => {
     const showAddBtn = !item.friends.includes(this.props.user.data._id);
-    console.log(showAddBtn);
+
     return (
       <TouchableWithoutFeedback onPress={() => this.goToConversation(item)}>
         <View
@@ -153,7 +159,9 @@ class SearchScreen extends PureComponent {
               <TouchableOpacity
                 onPress={() => this.handleFriendRequest(item._id)}
               >
-                <Text style={{ color: "#fff" }}>ikonka dodawania</Text>
+                <Text style={{ color: "#fff" }}>
+                  <Icon name="account-plus" color="#ffffff" size={28} />
+                </Text>
               </TouchableOpacity>
             )}
           </View>
@@ -182,8 +190,12 @@ class SearchScreen extends PureComponent {
           <HeaderTitle color="#ffffff" value="Szukaj" />
         </Header>
         <View style={{ marginVertical: 10, marginHorizontal: 20 }}>
-          <BorderedInput
+          <RoundInput
+            autoFocus
             placeholder="Szukaj..."
+            icon
+            iconName="magnify"
+            iconSize={24}
             value={this.state.searchValue}
             onChangeText={this.handleSearch}
             handleIconPress={this.clearSearchBar}
@@ -215,6 +227,20 @@ class SearchScreen extends PureComponent {
   }
 }
 
+class SearchScreenWithSocket extends PureComponent {
+  static navigationOptions = {
+    header: null
+  };
+
+  render() {
+    return (
+      <SocketContext.Consumer>
+        {socket => <SearchScreen {...this.props} socket={socket} />}
+      </SocketContext.Consumer>
+    );
+  }
+}
+
 const mapStateToProps = state => {
   return {
     user: getUserData(state),
@@ -231,4 +257,4 @@ const mapDispatchToProps = {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(SearchScreen);
+)(SearchScreenWithSocket);

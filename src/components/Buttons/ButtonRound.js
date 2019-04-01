@@ -16,7 +16,7 @@ const ButtonRound = ({
   textColor
 }) => {
   return (
-    <TouchableWithoutFeedback onPress={onPress} style={{ flex: 1 }}>
+    <TouchableWithoutFeedback onPress={onPress} style={{ flex: 1, zIndex: 5 }}>
       <View
         style={[
           {

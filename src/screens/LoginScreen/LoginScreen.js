@@ -23,22 +23,15 @@ class LoginScreen extends PureComponent {
     header: null
   };
 
-  componentWillReceiveProps(nextProps) {
-    if (
-      nextProps.user.logged !== this.props.user.logged &&
-      nextProps.user.logged
-    ) {
-      this.props.navigation.navigate("HomeScreen");
-    }
-  }
-
   goBack = () => {
     const backAction = NavigationActions.back();
     this.props.navigation.dispatch(backAction);
   };
 
-  handleSubmit = values => {
-    this.props.loginUser(values);
+  handleSubmit = async values => {
+    // alert("dupa");
+    await this.props.loginUser(values);
+    this.props.navigation.navigate("HomeScreen");
   };
 
   renderInput = ({ ...obj }) => {
@@ -57,31 +50,26 @@ class LoginScreen extends PureComponent {
             backgroundColor: "#AD6A6C",
             borderBottomLeftRadius: width / 2
           }}
-        >
-          <View
-            style={{
-              flex: 1
-            }}
-          >
-            <Header>
-              <HeaderIconLeft
-                onPress={this.goBack}
-                iconName="chevron-left"
-                color="#ffffff"
-                size={28}
-              />
-              <HeaderTitle value="Sign in" color="#ffffff" />
-            </Header>
-            <LoginForm component={this.renderInput} />
-            <ButtonRound
-              additionalStyle={styles.button}
-              onPress={handleSubmit(this.handleSubmit)}
-              indicatorActive={user.fetching}
-              indicatorColor="#ffffff"
-              value="SIGN IN"
-              textColor="#ffffff"
+        />
+        <View style={StyleSheet.absoluteFill}>
+          <Header>
+            <HeaderIconLeft
+              onPress={this.goBack}
+              iconName="chevron-left"
+              color="#ffffff"
+              size={28}
             />
-          </View>
+            <HeaderTitle value="Sign in" color="#ffffff" />
+          </Header>
+          <LoginForm component={this.renderInput} />
+          <ButtonRound
+            additionalStyle={styles.button}
+            onPress={handleSubmit(this.handleSubmit)}
+            indicatorActive={user.fetching}
+            indicatorColor="#ffffff"
+            value="SIGN IN"
+            textColor="#ffffff"
+          />
         </View>
       </View>
     );
@@ -105,16 +93,13 @@ const styles = StyleSheet.create({
     width: width - 64,
     backgroundColor: "#5D2E46",
     position: "absolute",
-    bottom: -24
+    top: height - 156,
+    zIndex: 5
   }
 });
 
 export default reduxForm({
-  form: "loginForm",
-  initialValues: {
-    email: "kamil@kamil.pl",
-    password: "kamilo"
-  }
+  form: "loginForm"
 })(
   connect(
     mapStateToProps,

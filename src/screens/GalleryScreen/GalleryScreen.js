@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { ScrollView } from "react-native";
+import { ScrollView, Text } from "react-native";
 
 import { ScreenContainer } from "@/components/ScreenContainer";
 import {
@@ -7,10 +7,8 @@ import {
   HeaderTitle,
   HeaderIconLeft
 } from "@/components/Header/HeaderNew";
-import ProfileSection from "./components/ProfileSection";
-import SettingsList from "./components/SettingsList";
 
-class SettingsScreen extends Component {
+class GalleryScreen extends Component {
   static navigationOptions = {
     header: null
   };
@@ -29,15 +27,14 @@ class SettingsScreen extends Component {
             color="#ffffff"
             size={28}
           />
-          <HeaderTitle value="Settings" />
+          <HeaderTitle value="Gallery" />
         </Header>
         <ScrollView>
-          <ProfileSection />
-          <SettingsList />
+          <Text>Dupa</Text>
         </ScrollView>
       </ScreenContainer>
     );
   }
 }
 
-export default SettingsScreen;
+export default GalleryScreen;

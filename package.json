@@ -21,6 +21,7 @@
     "react-native-image-zoom-viewer": "^2.2.25",
     "react-native-linear-gradient": "^2.5.4",
     "react-native-progress": "^3.6.0",
+    "react-native-push-notification": "^3.1.2",
     "react-native-sound": "^0.10.12",
     "react-native-splash-screen": "^3.2.0",
     "react-native-vector-icons": "^6.3.0",
@@ -32,7 +33,7 @@
     "redux-persist": "^5.10.0",
     "redux-promise-middleware": "^6.1.0",
     "redux-thunk": "^2.3.0",
-    "socket.io-client": "^2.2.0"
+    "socket.io-client": "^2.1.1"
   },
   "devDependencies": {
     "@babel/plugin-transform-react-jsx-source": "^7.2.0",

@@ -57,31 +57,26 @@ class SignUpScreen extends PureComponent {
             backgroundColor: "#5D2E46",
             borderBottomLeftRadius: width / 2
           }}
-        >
-          <View
-            style={{
-              flex: 1
-            }}
-          >
-            <Header>
-              <HeaderIconLeft
-                onPress={this.goBack}
-                iconName="chevron-left"
-                color="#ffffff"
-                size={28}
-              />
-              <HeaderTitle value="Sign up" color="#ffffff" />
-            </Header>
-            <SignUpForm component={this.renderInput} />
-            <ButtonRound
-              additionalStyle={styles.button}
-              onPress={handleSubmit(this.handleSubmit)}
-              indicatorActive={user.fetching}
-              indicatorColor="#ffffff"
-              value="SIGN IN"
-              textColor="#ffffff"
+        />
+        <View style={StyleSheet.absoluteFill}>
+          <Header>
+            <HeaderIconLeft
+              onPress={this.goBack}
+              iconName="chevron-left"
+              color="#ffffff"
+              size={28}
             />
-          </View>
+            <HeaderTitle value="Sign up" color="#ffffff" />
+          </Header>
+          <SignUpForm component={this.renderInput} />
+          <ButtonRound
+            additionalStyle={styles.button}
+            onPress={handleSubmit(this.handleSubmit)}
+            indicatorActive={user.fetching}
+            indicatorColor="#ffffff"
+            value="SIGN UP"
+            textColor="#ffffff"
+          />
         </View>
       </View>
     );
@@ -105,16 +100,12 @@ const styles = StyleSheet.create({
     width: width - 64,
     backgroundColor: "#AD6A6C",
     position: "absolute",
-    bottom: -24
+    top: height - 156
   }
 });
 
 export default reduxForm({
-  form: "registerForm",
-  initialValues: {
-    email: "kamil@kamil.pl",
-    password: "kamilo"
-  }
+  form: "registerForm"
 })(
   connect(
     mapStateToProps,

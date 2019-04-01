@@ -14,7 +14,11 @@ import { isNil } from "lodash";
 
 import { connect } from "react-redux";
 import { prepareAvatar } from "../../helpers";
-import { Header, HeaderTitle } from "@/components/Header/HeaderNew";
+import {
+  Header,
+  HeaderTitle,
+  HeaderIconRight
+} from "@/components/Header/HeaderNew";
 
 import { fetchFriends } from "./actions/contactsScreen.actions";
 import { getFriends } from "./selectors/contactsScreen.selectors";
@@ -40,6 +44,10 @@ class ContactsScreen extends PureComponent {
     this.props.fetchFriends();
   };
 
+  navigateToSettings = () => {
+    this.props.navigation.navigate("SettingsScreen");
+  };
+
   handleFriendRequest = userId => {
     this.props.sendFriendRequest(userId).then(res => {
       alert(res.value.data.data);
@@ -63,9 +71,7 @@ class ContactsScreen extends PureComponent {
 
   _renderItem = ({ item }) => {
     return (
-      <TouchableWithoutFeedback
-        onPress={() => this.goToConversation(item)}
-      >
+      <TouchableWithoutFeedback onPress={() => this.goToConversation(item)}>
         <View
           style={{
             flex: 1,
@@ -112,8 +118,12 @@ class ContactsScreen extends PureComponent {
               flexWrap: "nowrap"
             }}
           >
-            <Text style={{ fontSize: 16 }}>{item.username}</Text>
-            <Text style={{ fontSize: 12, color: "#aaaaaa" }}>
+            <Text
+              style={{ fontSize: 18, fontWeight: "bold", color: "#ffffff" }}
+            >
+              {item.username}
+            </Text>
+            <Text style={{ fontSize: 14, color: "#aaaaaa" }}>
               3 wspólnych znajomych
             </Text>
           </View>
@@ -128,15 +138,22 @@ class ContactsScreen extends PureComponent {
         style={{
           flex: 1,
           backgroundColor: "#040D16",
-          flexDirection: "column",
-          flexGrow: 1
+          flexDirection: "column"
         }}
       >
         <Header>
           <HeaderTitle value="Contacts" color="#ffffff" />
+          <HeaderIconRight
+            iconName="settings"
+            size={28}
+            color="#ffffff"
+            onPress={this.navigateToSettings}
+          />
         </Header>
-        <SearchHeader />
         <ScrollView
+          contentContainerStyle={{
+            marginTop: 24
+          }}
           refreshControl={
             <RefreshControl
               refreshing={this.props.friends.fetching}
@@ -144,6 +161,7 @@ class ContactsScreen extends PureComponent {
             />
           }
         >
+          <SearchHeader />
           <FlatList
             style={{ width: "100%" }}
             data={this.props.friends.data}

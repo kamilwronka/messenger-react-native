@@ -14,7 +14,11 @@ import SearchHeader from "../../components/SearchHeader";
 import SocketContext from "@/helpers/socketContext";
 
 import { prepareAvatar, prepareLastMessage } from "@/helpers";
-import { Header, HeaderTitle } from "@/components/Header/HeaderNew";
+import {
+  Header,
+  HeaderTitle,
+  HeaderIconRight
+} from "@/components/Header/HeaderNew";
 
 import { fetchConversations } from "./actions/homeScreen.actions";
 import { getConversations } from "./selectors/homeScreen.selectors";
@@ -35,6 +39,10 @@ class MessagesScreen extends PureComponent {
 
   _onRefresh = () => {
     this.props.fetchConversations();
+  };
+
+  navigateToSettings = () => {
+    this.props.navigation.navigate("SettingsScreen");
   };
 
   prepareConversationName = (name, participants) => {
@@ -130,6 +138,12 @@ class MessagesScreen extends PureComponent {
       >
         <Header>
           <HeaderTitle value="Messages" color="#FFFFFF" />
+          <HeaderIconRight
+            iconName="settings"
+            size={28}
+            color="#ffffff"
+            onPress={this.navigateToSettings}
+          />
         </Header>
         <ScrollView
           contentContainerStyle={{

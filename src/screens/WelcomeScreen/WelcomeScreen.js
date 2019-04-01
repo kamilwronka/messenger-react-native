@@ -6,16 +6,11 @@ import {
   Image,
   StatusBar,
   TouchableWithoutFeedback,
-  ActivityIndicator,
-  TouchableNativeFeedback,
   Text
 } from "react-native";
-import { Button } from "@/components/Buttons";
-
-import InitialScreen from "./InitialScreen";
+import { ScreenContainer } from "@/components/ScreenContainer";
 
 const SCREEN_WIDTH = Dimensions.get("window").width;
-const SCREEN_HEIGHT = Dimensions.get("window").height;
 
 class WelcomeScreen extends Component {
   static navigationOptions = {
@@ -32,10 +27,10 @@ class WelcomeScreen extends Component {
 
   render() {
     return (
-      <View style={{ flex: 1 }}>
+      <ScreenContainer>
         <StatusBar barStyle="light-content" />
         <ImageBackground
-          style={{ flex: 1 }}
+          style={{ flex: 1, backgroundColor: "" }}
           source={require("../../assets/images/drawable-xxxhdpi/background.png")}
         >
           <View
@@ -110,7 +105,7 @@ class WelcomeScreen extends Component {
             </View>
           </View>
         </ImageBackground>
-      </View>
+      </ScreenContainer>
     );
   }
 }

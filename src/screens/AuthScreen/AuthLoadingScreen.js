@@ -1,19 +1,10 @@
 import React from "react";
-import {
-  StyleSheet,
-  Text,
-  View,
-  Button,
-  ActivityIndicator,
-  StatusBar
-} from "react-native";
-import { isNil } from "lodash";
+import { StyleSheet, View } from "react-native";
 import { connect } from "react-redux";
-import SplashScreen from "react-native-splash-screen";
 
 import { getUserData } from "../../selectors/user.selectors";
 
-class AuthLoadingScreen extends React.Component {
+class AuthLoadingScreen extends React.PureComponent {
   static navigationOptions = {
     header: null
   };
@@ -23,29 +14,9 @@ class AuthLoadingScreen extends React.Component {
   };
 
   componentDidMount() {
-    const { logged, intact } = this.props.user;
-
-    console.log(logged);
+    const { logged } = this.props.user;
 
     if (logged) {
-      this.props.navigation.navigate("HomeScreen");
-    } else {
-      console.log("navigating to welcome screen");
-      this.props.navigation.navigate("WelcomeScreen");
-    }
-  }
-
-  componentWillReceiveProps(nextProps) {
-    const { logged, intact } = this.props.user;
-    const { logged: newLoggedStatus, intact: newIntactStatus } = nextProps.user;
-
-    console.log(newLoggedStatus);
-
-    if (
-      logged !== newLoggedStatus &&
-      newLoggedStatus &&
-      (intact !== newIntactStatus && !intact)
-    ) {
       this.props.navigation.navigate("HomeScreen");
     } else {
       this.props.navigation.navigate("WelcomeScreen");

@@ -1,10 +1,8 @@
-import React from "react";
 import { createStackNavigator, createAppContainer } from "react-navigation";
 import CameraScreen from "../screens/CameraScreen/CameraScreen";
 import SearchScreen from "../screens/SearchScreen/SearchScreen.component";
 import PhotoScreen from "../screens/PhotoScreen/PhotoScreen";
 
-import AuthScreen from "../screens/AuthScreen/AuthScreen";
 import WelcomeScreen from "../screens/WelcomeScreen/WelcomeScreen";
 import AuthLoadingScreen from "../screens/AuthScreen/AuthLoadingScreen";
 
@@ -14,6 +12,8 @@ import { BottomTabNavigation } from "./BottomTabNavigation";
 import ConversationInfoScreen from "../screens/ConversationInfoScreen/ConversationInfoScreen";
 import LoginScreen from "../screens/LoginScreen/LoginScreen";
 import SignUpScreen from "../screens/SignUpScreen/SignUpScreen";
+import SettingsScreen from "../screens/SettingsScreen/SettingsScreen";
+import GalleryScreen from "../screens/GalleryScreen/GalleryScreen";
 
 const SearchStack = createStackNavigator(
   {
@@ -77,10 +77,6 @@ const MessengerApp = createStackNavigator({
   WelcomeScreen: {
     screen: WelcomeScreen
   },
-  AuthScreen: {
-    screen: AuthScreen,
-    navigationOptions: { header: null }
-  },
   LoginScreen: {
     screen: LoginScreen
   },
@@ -104,6 +100,14 @@ const MessengerApp = createStackNavigator({
   },
   PhotoScreen: {
     screen: PhotoScreen,
+    navigationOptions: { gesturesEnabled: false, header: null }
+  },
+  SettingsScreen: {
+    screen: SettingsScreen,
+    navigationOptions: { gesturesEnabled: false, header: null }
+  },
+  GalleryScreen: {
+    screen: GalleryScreen,
     navigationOptions: { gesturesEnabled: false, header: null }
   }
 });

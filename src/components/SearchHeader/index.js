@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#f0f0f0",
     borderRadius: 24,
     marginBottom: 20,
-    marginHorizontal: 32,
+    marginHorizontal: 32
   },
   search: {
     flex: 1,
@@ -40,10 +40,6 @@ const styles = StyleSheet.create({
 });
 
 class SearchHeader extends Component {
-  componentDidMount() {
-    console.log("mount");
-  }
-
   componentWillReceiveProps(nextProps) {
     // if(this.props.)
   }

@@ -33,7 +33,6 @@ class Camera extends PureComponent {
       onMoveShouldSetPanResponderCapture: (evt, gestureState) => true,
 
       onPanResponderGrant: (evt, gestureState) => {
-        console.log("grant");
         this.touchStart = Date.now();
         this.longPressTimeout = setTimeout(() => {
           this.videoRecording = true;
@@ -103,7 +102,6 @@ class Camera extends PureComponent {
   };
 
   takePicture = async () => {
-    console.log("photo taken");
     if (this.camera) {
       const options = { quality: 0.5, base64: true };
       const data = await this.camera.takePictureAsync(options);
@@ -122,7 +120,7 @@ class Camera extends PureComponent {
         toValue: 1.2,
         duration: 100,
         useNativeDriver: true
-      }).start(() => console.log("done"));
+      }).start();
 
       this.camera.recordAsync(options).then(data => {
         this.props.pushToContainerState({ video: data });

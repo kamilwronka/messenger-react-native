@@ -40,7 +40,6 @@ class NotificationsScreen extends Component {
   componentDidMount() {
     this.props.fetchNotifications();
     this.props.socket.on("request", data => {
-      console.log(data);
       this.props.pushNotification(data);
     });
   }
@@ -67,8 +66,6 @@ class NotificationsScreen extends Component {
 
   _renderItem = ({ item }) => {
     const date = new Date(item.date).toLocaleDateString();
-
-    console.log(item);
 
     return (
       <TouchableWithoutFeedback>
