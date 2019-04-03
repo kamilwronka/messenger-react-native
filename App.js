@@ -6,6 +6,7 @@ import SplashScreen from "react-native-splash-screen";
 
 import AppNavigator from "./src/navigation";
 import AppSocketWrapper from "./src/AppSocketWrapper";
+import UIProvider from "./src/components/UIProvider";
 
 import { persistor, store } from "./src/store";
 
@@ -24,10 +25,12 @@ export default class App extends Component {
       <View style={styles.container}>
         <Provider store={store}>
           <PersistGate loading={null} persistor={persistor}>
-            <AppSocketWrapper>
-              <StatusBar barStyle="light-content" />
-              <AppNavigator />
-            </AppSocketWrapper>
+            <UIProvider>
+              <AppSocketWrapper>
+                <StatusBar barStyle="light-content" />
+                <AppNavigator />
+              </AppSocketWrapper>
+            </UIProvider>
           </PersistGate>
         </Provider>
       </View>
@@ -38,6 +41,6 @@ export default class App extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#ffffff"
+    backgroundColor: "#040D16"
   }
 });

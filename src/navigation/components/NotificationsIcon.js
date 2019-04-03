@@ -7,7 +7,6 @@ import TabBarIcon from "@/components/TabBarIcon";
 
 class NotificationsIcon extends PureComponent {
   render() {
-    console.log(this.props.notificationsLength);
     return (
       <TabBarIcon
         name="bell"
