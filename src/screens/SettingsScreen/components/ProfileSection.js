@@ -7,6 +7,8 @@ import {
   Image,
   Dimensions
 } from "react-native";
+import { noop } from "lodash";
+import { withNavigation } from "react-navigation";
 
 import { connect } from "react-redux";
 
@@ -15,6 +17,7 @@ import {
   setUserBackgroundImage
 } from "../actions/profile.actions";
 import { getUserData } from "@/selectors/user.selectors";
+import { emitter, EMITTER_EVENTS } from "@/helpers/emitter";
 
 const SCREEN_WIDTH = Dimensions.get("window").width;
 const SCREEN_HEIGHT = Dimensions.get("window").height;
@@ -28,34 +31,104 @@ class ProfileScreen extends Component {
     image: null
   };
 
-  _pickImage = async () => {
-    const { status: cameraRollPerm } = await Permissions.askAsync(
-      Permissions.CAMERA_ROLL
-    );
-
-    // only if user allows permission to camera roll
-    if (cameraRollPerm === "granted") {
-      let pickerResult = await ImagePicker.launchImageLibraryAsync({
-        allowsEditing: true
-      });
-
-      this.props.setUserAvatar(pickerResult);
-    }
+  goToCamera = () => {
+    this.props.navigation.navigate("CameraScreen");
   };
 
-  _pickBackgroundImage = async () => {
-    const { status: cameraRollPerm } = await Permissions.askAsync(
-      Permissions.CAMERA_ROLL
-    );
-
-    if (cameraRollPerm === "granted") {
-      let pickerResult = await ImagePicker.launchImageLibraryAsync({
-        allowsEditing: true
-      });
-
-      this.props.setUserBackgroundImage(pickerResult);
-    }
+  goToGallery = () => {
+    this.props.navigation.navigate("GalleryScreen");
   };
+
+  PROFILE_PICTURE_OPTIONS = {
+    menuItems: [
+      {
+        id: 0,
+        icon: "camera",
+        text: "Take photo",
+        onPress: this.goToCamera
+      },
+      {
+        id: 1,
+        icon: "image",
+        text: "Pick image from gallery",
+        onPress: this.goToGallery
+      },
+      {
+        id: 2,
+        icon: "cancel",
+        text: "Cancel",
+        onPress: noop
+      }
+    ],
+    cancelButtonIndex: 2
+  };
+
+  BACKGROUND_PICTURE_OPTIONS = {
+    menuItems: [
+      {
+        id: 0,
+        icon: "camera",
+        text: "Take photo",
+        onPress: this.goToCamera
+      },
+      {
+        id: 1,
+        icon: "image",
+        text: "Pick image from gallery",
+        onPress: this.goToGallery
+      },
+      {
+        id: 2,
+        icon: "cancel",
+        text: "Cancel",
+        onPress: noop
+      }
+    ],
+    cancelButtonIndex: 2
+  };
+
+  setProfilePicture = () => {
+    emitter.emit(
+      EMITTER_EVENTS.SHOW_ACTION_SHEET,
+      this.PROFILE_PICTURE_OPTIONS
+    );
+  };
+
+  setBackgroundImage = () => {
+    emitter.emit(
+      EMITTER_EVENTS.SHOW_ACTION_SHEET,
+      this.BACKGROUND_PICTURE_OPTIONS
+    );
+  };
+
+  // _pickImage = async () => {
+  //   const { status: cameraRollPerm } = await Permissions.askAsync(
+  //     Permissions.CAMERA_ROLL
+  //   );
+
+  //   // only if user allows permission to camera roll
+  //   if (cameraRollPerm === "granted") {
+  //     let pickerResult = await ImagePicker.launchImageLibraryAsync({
+  //       allowsEditing: true
+  //     });
+
+  //     this.props.setUserAvatar(pickerResult);
+  //   }
+  // };
+
+  // _pickBackgroundImage = async () => {
+  //   const { status: cameraRollPerm } = await Permissions.askAsync(
+  //     Permissions.CAMERA_ROLL
+  //   );
+
+  //   if (cameraRollPerm === "granted") {
+  //     let pickerResult = await ImagePicker.launchImageLibraryAsync({
+  //       allowsEditing: true
+  //     });
+
+  //     this.props.setUserBackgroundImage(pickerResult);
+  //   }
+  // };
 
   render() {
     const {
@@ -64,10 +137,7 @@ class ProfileScreen extends Component {
 
     return (
       <View style={{ flex: 1, flexDirection: "column", alignItems: "center" }}>
-        <TouchableOpacity
-          style={{ flex: 1 }}
-          // onPress={this._pickBackgroundImage}
-        >
+        <TouchableOpacity style={{ flex: 1 }} onPress={this.setBackgroundImage}>
           <Image
             style={{
               flex: 1,
@@ -86,7 +156,7 @@ class ProfileScreen extends Component {
           />
         </TouchableOpacity>
         <View style={{ top: -56, zIndex: 2 }}>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={this.setProfilePicture}>
             <Image
               style={{
                 width: 112,
@@ -137,4 +207,4 @@ const mapDispatchToProps = {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(ProfileScreen);
+)(withNavigation(ProfileScreen));

@@ -29,9 +29,12 @@ class LoginScreen extends PureComponent {
   };
 
   handleSubmit = async values => {
-    // alert("dupa");
-    await this.props.loginUser(values);
-    this.props.navigation.navigate("HomeScreen");
+    try {
+      await this.props.loginUser(values);
+      this.props.navigation.navigate("HomeScreen");
+    } catch (err) {
+      console.log(err.response);
+    }
   };
 
   renderInput = ({ ...obj }) => {
@@ -99,7 +102,11 @@ const styles = StyleSheet.create({
 });
 
 export default reduxForm({
-  form: "loginForm"
+  form: "loginForm",
+  initialValues: {
+    email: "kamil@kamil.pl",
+    password: "kamilo"
+  }
 })(
   connect(
     mapStateToProps,
