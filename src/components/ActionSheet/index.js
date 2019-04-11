@@ -20,8 +20,8 @@ class ActionSheet extends PureComponent {
         onPress = onDismiss;
       } else {
         onPress = () => {
-          item.onPress();
           onDismiss();
+          item.onPress();
         };
       }
 
@@ -90,11 +90,12 @@ const styles = StyleSheet.create({
     flex: 1
   },
   actionSheet: {
-    position: "absolute",
-    backgroundColor: "#fff",
-    bottom: 0,
-    left: 0,
-    right: 0
+    // position: "absolute",
+    backgroundColor: "#fff"
+    // bottom: 0,
+    // left: 0,
+    // right: 0,
+    // zIndex: 10
   },
   actionSheetItem: {
     height: 56,

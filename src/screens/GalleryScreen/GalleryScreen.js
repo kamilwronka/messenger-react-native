@@ -133,6 +133,7 @@ class GalleryScreen extends Component {
       this.getVideos(page * pageSize)
     ]);
 
+    console.log(photos, videos);
     // console.log("refresh");
     console.log(page, pageSize);
 
@@ -157,18 +158,16 @@ class GalleryScreen extends Component {
             color="#ffffff"
             size={28}
           />
-          <HeaderTitle value="Gallery" />
+          <HeaderTitle value="Photos" />
         </Header>
-        <ScrollView>
-          <FlatList
-            numColumns={4}
-            data={this.state.photos}
-            keyExtractor={this._keyExtractor}
-            renderItem={this._renderPhoto}
-            onEndReached={this.loadMore}
-            onEndReachedThreshold={0.5}
-          />
-        </ScrollView>
+        <FlatList
+          numColumns={4}
+          data={this.state.photos}
+          keyExtractor={this._keyExtractor}
+          renderItem={this._renderPhoto}
+          onEndReached={this.loadMore}
+          onEndReachedThreshold={0.8}
+        />
       </ScreenContainer>
     );
   }

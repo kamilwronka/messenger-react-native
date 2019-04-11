@@ -11,12 +11,14 @@ class ConversationListItem extends PureComponent {
       conversationName,
       navigation
     } = this.props;
+
     navigation.navigate({
       routeName: "ConversationScreen",
       params: {
         conversationId: item._id,
         participants: preparedParticipants,
-        conversationName
+        conversationName,
+        conversationColor: item.color
       }
     });
   };
@@ -58,13 +60,20 @@ class ConversationListItem extends PureComponent {
                 {conversationName}
               </Text>
               {!isNil(lastMessage) && (
-                <Text style={{ fontSize: 14, color: "#bbbbbb" }}>
-                  {`${lastMessage} \u2022 ${lastMessageDate}`}
+                <Text
+                  numberOfLines={1}
+                  style={{ fontSize: 14, color: "#bbbbbb", paddingRight: 20 }}
+                >
+                  {lastMessage}
                 </Text>
               )}
             </View>
             <View style={{ height: 48 }}>
-              {/* <Text style={{ fontSize: 12, color: '#000000' }}>23:15</Text> */}
+              {!isNil(lastMessage) && (
+                <Text style={{ fontSize: 12, color: "#bbbbbb" }}>
+                  {lastMessageDate}
+                </Text>
+              )}
             </View>
           </View>
         </TouchableWithoutFeedback>

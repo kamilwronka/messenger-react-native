@@ -70,41 +70,52 @@ class ConvListItem extends Component {
   render() {
     const {
       item,
+      isTheSameSender,
       participants,
       user: {
         data: { _id }
       }
     } = this.props;
 
+    const isCurrentUser = item.userId === _id;
+    console.log(isTheSameSender);
+
     switch (item.messageType) {
       case "text":
         return (
           <TouchableWithoutFeedback onPress={this.handleClick}>
-            <View style={{ marginHorizontal: 20, flex: 1 }}>
+            <View
+              style={{
+                marginLeft: isCurrentUser ? 60 : 20,
+                marginRight: isCurrentUser ? 20 : 60
+              }}
+            >
               <View
                 style={{
-                  alignSelf: item.userId === _id ? "flex-end" : "flex-start",
+                  alignSelf: isCurrentUser ? "flex-end" : "flex-start",
                   flexDirection: "row"
                 }}
               >
                 {this.prepareMessageAvatar(item, participants)}
                 <View
                   style={{
-                    height: 36,
-                    alignSelf: item.userId === _id ? "flex-end" : "flex-start",
+                    minHeight: 36,
+                    alignSelf: isCurrentUser ? "flex-end" : "flex-start",
                     backgroundColor:
                       item.userId !== _id ? "#cccccc" : this.props.color,
-                    marginTop: 2,
+                    marginTop: isTheSameSender ? 0 : 20,
                     alignItems: "center",
                     justifyContent: "center",
-                    borderRadius: 10,
-                    paddingHorizontal: 10
+                    borderRadius: 18,
+                    paddingHorizontal: 10,
+                    paddingVertical: 10
                   }}
                 >
                   <Text
                     style={{
                       fontSize: 14,
-                      color: item.userId !== _id ? "#000000" : "#FFFFFF"
+                      lineHeight: 20,
+                      color: !isCurrentUser ? "#000000" : "#FFFFFF"
                     }}
                   >
                     {item.messageContent}
@@ -114,7 +125,7 @@ class ConvListItem extends Component {
               {this.state.opened ? (
                 <Text
                   style={{
-                    alignSelf: item.userId === _id ? "flex-end" : "flex-start",
+                    alignSelf: isCurrentUser ? "flex-end" : "flex-start",
                     fontSize: 10,
                     color: "#cccccc"
                   }}
@@ -124,7 +135,7 @@ class ConvListItem extends Component {
               ) : (
                 <Text
                   style={{
-                    alignSelf: item.userId === _id ? "flex-end" : "flex-start",
+                    alignSelf: isCurrentUser ? "flex-end" : "flex-start",
                     fontSize: 10,
                     color: "#cccccc"
                   }}
@@ -141,7 +152,7 @@ class ConvListItem extends Component {
             <Text
               style={{
                 fontSize: 48,
-                alignSelf: item.userId === _id ? "flex-end" : "flex-start"
+                alignSelf: isCurrentUser ? "flex-end" : "flex-start"
               }}
             >
               {item.messageContent}

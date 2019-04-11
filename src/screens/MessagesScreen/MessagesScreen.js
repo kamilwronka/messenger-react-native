@@ -91,6 +91,7 @@ class MessagesScreen extends PureComponent {
       return (
         <Avatar
           name={conversationName}
+          color={conversation.color}
           imgUrl={desiredParticipant.avatar}
           size="medium"
         />

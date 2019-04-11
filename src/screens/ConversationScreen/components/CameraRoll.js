@@ -98,12 +98,6 @@ class CameraRoll extends PureComponent {
   render() {
     return (
       <FlatList
-        refreshControl={
-          <RefreshControl
-            refreshing={this.state.fetchingCameraRoll}
-            onRefresh={this.loadCameraRoll}
-          />
-        }
         data={this.state.photos}
         extraData={this.state.selectedIndex}
         keyExtractor={this._keyExtractor}

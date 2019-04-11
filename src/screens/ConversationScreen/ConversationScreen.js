@@ -5,10 +5,12 @@ import {
   View,
   FlatList,
   Text,
+  Animated,
   RefreshControl,
   KeyboardAvoidingView
 } from "react-native";
 import { isNil, isEqual, get } from "lodash";
+import { emitter, EMITTER_EVENTS } from "@/helpers/emitter";
 
 import { connect } from "react-redux";
 
@@ -34,17 +36,20 @@ import {
 import { getConversation } from "@/screens/MessagesScreen/selectors/homeScreen.selectors";
 import ConversationBottomBar from "./components/ConversationBottomBar";
 
+const SCROLLED_OFFSET = 100;
+
 class ConversationScreen extends React.Component {
   state = {
     messageInput: "",
     conversationId: null,
     page: 0,
-    scrolledTop: false
+    scrolledTop: false,
+    scrollViewShow: new Animated.Value(0),
+    initialAnimationShow: true
   };
 
   componentDidMount() {
     const {
-      socket,
       navigation: {
         state: {
           params: { conversationId }
@@ -57,17 +62,12 @@ class ConversationScreen extends React.Component {
         this.props.fetchConversation(conversationId, 0, 20),
         this.props.fetchConversationInfo(conversationId)
       ]);
-
-    socket.on("message", this.pushMessage);
-
-    socket.on("newConversation", conversationId => {
-      this.setState({ conversationId });
-    });
+    this.setupListeners();
   }
 
   componentWillUnmount() {
     this.props.clearConversation();
-    this.props.socket.removeListener("message", this.pushMessage);
+    this.removeListeners();
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -83,7 +83,38 @@ class ConversationScreen extends React.Component {
     if (prevState.page !== this.state.page) {
       fetchConversation(conversationId, this.state.page, 20);
     }
+
+    if (
+      this.state.initialAnimationShow &&
+      !this.state.scrolledTop &&
+      this.state.scrolledTop !== prevState.scrolledTop
+    ) {
+      Animated.timing(this.state.scrollViewShow, {
+        toValue: 1,
+        duration: 50,
+        useNativeDriver: true
+      }).start(() => {
+        this.setState({ initialAnimationShow: false });
+      });
+    }
   }
+
+  setupListeners = () => {
+    const { socket } = this.props;
+
+    socket.on("message", this.pushMessage);
+
+    this.actionSheetListener = emitter.addListener(
+      EMITTER_EVENTS.MESSAGE_INPUT_RESIZE,
+      this.handleScrollingOnNewMessage
+    );
+  };
+
+  removeListeners = () => {
+    this.actionSheetListener && this.actionSheetListener.remove();
+    this.props.socket &&
+      this.props.socket.removeListener("message", this.pushMessage);
+  };
 
   handleGoBack = () => {
     this.props.navigation.goBack(null);
@@ -264,32 +295,54 @@ class ConversationScreen extends React.Component {
     navigate({ routeName: "ConversationInfoScreen", params });
   };
 
-  _renderItem = ({ item }) => {
+  _renderItem = ({ item, index }) => {
     const {
       state: {
-        params: { participants, conversationId, conversationName }
+        params: {
+          participants,
+          conversationId,
+          conversationName,
+          conversationColor
+        }
       }
     } = this.props.navigation;
+    const messages = get(
+      this.props.conversation,
+      "data.messagesContainer.messages"
+    );
+    let isTheSameSender = false;
+
+    if (index > 0) {
+      if (item.userId === get(messages, `[${index - 1}].userId`)) {
+        isTheSameSender = true;
+      }
+    }
 
     return (
       <ConvListItem
         item={item}
         participants={participants}
-        color={get(this.props.conversation, "data.color", "#912F56")}
+        color={conversationColor}
         conversationName={conversationName}
         conversationId={conversationId}
+        isTheSameSender={isTheSameSender}
       />
     );
   };
 
   handleScrollingOnNewMessage = () => {
+    console.log(this.state.scrolledTop);
     !this.state.scrolledTop && this.refs.scrollView.scrollToEnd();
+    // this.refs.scrollView.scrollToEnd();
   };
 
   handleScroll = ({
     nativeEvent: { contentOffset, contentSize, layoutMeasurement }
   }) => {
-    if (contentOffset.y + layoutMeasurement.height === contentSize.height) {
+    if (
+      contentOffset.y + layoutMeasurement.height >=
+      contentSize.height - SCROLLED_OFFSET
+    ) {
       this.setState({ scrolledTop: false });
     } else {
       this.setState({ scrolledTop: true });
@@ -300,17 +353,23 @@ class ConversationScreen extends React.Component {
 
   render() {
     const {
-      goBack,
       state: {
-        params: { participants, conversationId, conversationName }
+        params: { conversationName, conversationColor }
       }
     } = this.props.navigation;
-    const color = get(this.props.conversation, "data.color");
+    const color = conversationColor;
     const messages = get(
       this.props.conversation,
       "data.messagesContainer.messages"
     );
     const emoji = get(this.props.conversation, "data.emoji");
+
+    const scrollViewContainerStyles = {
+      opacity: this.state.scrollViewShow.interpolate({
+        inputRange: [0, 1],
+        outputRange: [0, 1]
+      })
+    };
 
     return (
       <View
@@ -336,31 +395,38 @@ class ConversationScreen extends React.Component {
             onPress={this.navigateToConversationInfo}
           />
         </Header>
-        <ScrollView
-          onScroll={this.handleScroll}
-          scrollEventThrottle={50}
-          refreshControl={
-            <RefreshControl
-              refreshing={this.props.conversation.fetching}
-              onRefresh={this.onRefresh}
-            />
-          }
-          ref="scrollView"
+        <Animated.View
+          style={[
+            { flex: 1, flexDirection: "column" },
+            scrollViewContainerStyles
+          ]}
         >
-          <FlatList
-            style={{ width: "100%" }}
-            data={messages}
-            keyExtractor={this._keyExtractor}
-            renderItem={this._renderItem}
-            onContentSizeChange={this.handleScrollingOnNewMessage}
-          />
-        </ScrollView>
+          <ScrollView
+            onScroll={this.handleScroll}
+            scrollEventThrottle={50}
+            refreshControl={
+              <RefreshControl
+                refreshing={this.props.conversation.fetching}
+                onRefresh={this.onRefresh}
+              />
+            }
+            ref="scrollView"
+          >
+            <FlatList
+              style={{ width: "100%" }}
+              data={messages}
+              keyExtractor={this._keyExtractor}
+              renderItem={this._renderItem}
+              onContentSizeChange={this.handleScrollingOnNewMessage}
+            />
+          </ScrollView>
+        </Animated.View>
         <KeyboardAvoidingView behavior="padding">
           <ConversationBottomBar
             goToCamera={this.goToCamera}
             messageInput={this.state.messageInput}
             onInputFocus={() =>
-              setTimeout(this.refs.scrollView.scrollToEnd, 100)
+              setTimeout(this.handleScrollingOnNewMessage, 100)
             }
             inputColor={color}
             handleSubmit={this.handleSubmit}

@@ -1,5 +1,12 @@
 import React, { PureComponent } from "react";
-import { Text, TouchableWithoutFeedback, View } from "react-native";
+import {
+  Text,
+  TouchableWithoutFeedback,
+  View,
+  BackHandler,
+  Keyboard
+} from "react-native";
+import { withNavigation } from "react-navigation";
 
 import { Footer } from "@/components/Footer";
 import CameraRoll from "./CameraRoll";
@@ -10,15 +17,48 @@ class ConversationBottomBar extends PureComponent {
     selectedTab: ""
   };
 
+  _didFocusSubscription;
+  _willBlurSubscription;
+
+  constructor(props) {
+    super(props);
+    this._didFocusSubscription = props.navigation.addListener("didFocus", () =>
+      BackHandler.addEventListener("hardwareBackPress", this.dismissSelectedTab)
+    );
+  }
+
+  componentDidMount() {
+    this.keyboardDidShowListener = Keyboard.addListener(
+      "keyboardDidShow",
+      this.dismissSelectedTab
+    );
+  }
+
+  componentWillUnmount() {
+    this._didFocusSubscription && this._didFocusSubscription.remove();
+    this._willBlurSubscription && this._willBlurSubscription.remove();
+    this.keyboardDidShowListener && this.keyboardDidShowListener.remove();
+  }
+
   selectTab = selectedTab => {
     this.setState({ selectedTab });
   };
 
   toggleCameraRollTab = () => {
+    Keyboard.dismiss();
     const desiredTab =
       this.state.selectedTab === "cameraRoll" ? "" : "cameraRoll";
 
     this.selectTab(desiredTab);
+  };
+
+  dismissSelectedTab = () => {
+    if (this.state.selectedTab) {
+      this.setState({ selectedTab: "" });
+      return true;
+    } else {
+      return false;
+    }
   };
 
   render() {
@@ -46,4 +86,4 @@ class ConversationBottomBar extends PureComponent {
   }
 }
 
-export default ConversationBottomBar;
+export default withNavigation(ConversationBottomBar);
