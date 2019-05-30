@@ -90,20 +90,23 @@ class ConvListItem extends Component {
                 {this.prepareMessageAvatar(item, participants)}
                 <View
                   style={{
-                    height: 36,
+                    minHeight: 36,
                     alignSelf: item.userId === _id ? "flex-end" : "flex-start",
                     backgroundColor:
                       item.userId !== _id ? "#cccccc" : this.props.color,
                     marginTop: 2,
                     alignItems: "center",
                     justifyContent: "center",
-                    borderRadius: 10,
+                    borderRadius: 18,
                     paddingHorizontal: 10
                   }}
                 >
                   <Text
                     style={{
+                      flex: 1,
                       fontSize: 14,
+                      flexWrap: "wrap",
+                      marginVertical: 10,
                       color: item.userId !== _id ? "#000000" : "#FFFFFF"
                     }}
                   >

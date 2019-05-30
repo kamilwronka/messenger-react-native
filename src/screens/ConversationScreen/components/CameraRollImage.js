@@ -36,7 +36,7 @@ class CameraRollImage extends PureComponent {
       selectImage,
       photo: { uri }
     } = this.props;
-    const height = 250;
+    const height = this.props.height || 250;
     const width = 280;
 
     return (

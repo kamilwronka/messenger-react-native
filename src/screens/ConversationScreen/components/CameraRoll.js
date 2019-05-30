@@ -62,6 +62,7 @@ class CameraRoll extends PureComponent {
         selectImage={() => this.selectImage(index)}
         photo={item.node.image}
         handleImageSend={handleImageSend}
+        height={this.props.containerHeight}
       />
     );
   };

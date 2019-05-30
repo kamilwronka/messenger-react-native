@@ -36,8 +36,8 @@ const conversationReducer = (state = INITIAL_STATE, action) => {
           messagesContainer: {
             messages: get(state, "data.messagesContainer.messages")
               ? [
-                  ...action.payload.data.messages,
-                  ...state.data.messagesContainer.messages
+                  ...state.data.messagesContainer.messages,
+                  ...action.payload.data.messages
                 ]
               : action.payload.data.messages,
 
@@ -69,8 +69,8 @@ const conversationReducer = (state = INITIAL_STATE, action) => {
           messagesContainer: get(state.data, "messagesContainer.messages")
             ? {
                 messages: [
-                  ...state.data.messagesContainer.messages,
-                  action.payload
+                  action.payload,
+                  ...state.data.messagesContainer.messages
                 ]
               }
             : { messages: [action.payload] }

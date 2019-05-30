@@ -1,5 +1,5 @@
 import React, { PureComponent } from "react";
-import { Text, TouchableWithoutFeedback, View } from "react-native";
+import { Keyboard } from "react-native";
 
 import { Footer } from "@/components/Footer";
 import CameraRoll from "./CameraRoll";
@@ -8,6 +8,18 @@ import TextMessage from "./TextMessage";
 class ConversationBottomBar extends PureComponent {
   state = {
     selectedTab: ""
+  };
+
+  componentDidMount() {
+    Keyboard.addListener("keyboardWillShow", this._keyboardWillShow);
+  }
+
+  componentWillUnmount() {
+    Keyboard.removeListener("keyboardWillShow", this._keyboardWillShow);
+  }
+
+  _keyboardWillShow = () => {
+    this.selectTab("");
   };
 
   selectTab = selectedTab => {
@@ -26,7 +38,12 @@ class ConversationBottomBar extends PureComponent {
 
     switch (this.state.selectedTab) {
       case "cameraRoll":
-        desiredTab = <CameraRoll {...this.props} />;
+        desiredTab = (
+          <CameraRoll
+            containerHeight={this.props.keyboardHeight}
+            {...this.props}
+          />
+        );
         break;
       default:
         desiredTab = null;

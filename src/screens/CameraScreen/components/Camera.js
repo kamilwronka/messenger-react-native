@@ -214,15 +214,7 @@ class Camera extends PureComponent {
                 alignSelf: "center"
               }}
             >
-              <Progress.Circle
-                size={72}
-                progress={this.calculateButtonPercentage()}
-                unfilledColor="#ffffff"
-                color="#5D2E46"
-                borderWidth={0}
-                thickness={8}
-                fill="rgba(255, 255, 255, 0.3)"
-              />
+              <View style={{ height: 64, width: 64, backgroundColor: "red" }} />
             </View>
           </View>
         </RNCamera>

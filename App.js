@@ -1,5 +1,11 @@
 import React, { Component } from "react";
-import { StyleSheet, StatusBar, View, YellowBox } from "react-native";
+import {
+  StyleSheet,
+  StatusBar,
+  View,
+  YellowBox,
+  SafeAreaView
+} from "react-native";
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/lib/integration/react";
 import SplashScreen from "react-native-splash-screen";
@@ -22,7 +28,7 @@ export default class App extends Component {
 
   render() {
     return (
-      <View style={styles.container}>
+      <SafeAreaView style={styles.container}>
         <Provider store={store}>
           <PersistGate loading={null} persistor={persistor}>
             <UIProvider>
@@ -33,7 +39,7 @@ export default class App extends Component {
             </UIProvider>
           </PersistGate>
         </Provider>
-      </View>
+      </SafeAreaView>
     );
   }
 }

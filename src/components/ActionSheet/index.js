@@ -1,11 +1,5 @@
 import React, { PureComponent } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableNativeFeedback,
-  TouchableWithoutFeedback
-} from "react-native";
+import { View, Text, StyleSheet, TouchableWithoutFeedback } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
 class ActionSheet extends PureComponent {
@@ -26,7 +20,7 @@ class ActionSheet extends PureComponent {
       }
 
       return (
-        <TouchableNativeFeedback key={item.id} onPress={onPress}>
+        <TouchableWithoutFeedback key={item.id} onPress={onPress}>
           <View style={styles.actionSheetItem}>
             {item.icon && (
               <View style={styles.iconContainer}>
@@ -49,7 +43,7 @@ class ActionSheet extends PureComponent {
               </Text>
             </View>
           </View>
-        </TouchableNativeFeedback>
+        </TouchableWithoutFeedback>
       );
     });
   };

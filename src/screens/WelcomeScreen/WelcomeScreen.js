@@ -29,82 +29,74 @@ class WelcomeScreen extends Component {
     return (
       <ScreenContainer>
         <StatusBar barStyle="light-content" />
-        <ImageBackground
-          style={{ flex: 1, backgroundColor: "" }}
-          source={require("../../assets/images/drawable-xxxhdpi/background.png")}
+        <View
+          style={{
+            flex: 1,
+            flexDirection: "column",
+            alignItems: "center",
+            backgroundColor: "rgba(4, 13, 22, 0.3)"
+          }}
         >
+          <Image
+            style={{
+              height: SCREEN_WIDTH / 1.5,
+              width: SCREEN_WIDTH / 1.5,
+              marginTop: 50
+            }}
+            source={require("../../assets/images/drawable-xhdpi/gnojek.png")}
+          />
           <View
             style={{
-              flex: 1,
-              flexDirection: "column",
               alignItems: "center",
-              backgroundColor: "rgba(4, 13, 22, 0.3)"
+              position: "absolute",
+              bottom: 0,
+              width: SCREEN_WIDTH
             }}
           >
-            <Image
+            <TouchableWithoutFeedback
+              onPress={this.onSignInPress}
               style={{
-                height: SCREEN_WIDTH / 1.5,
-                width: SCREEN_WIDTH / 1.5,
-                marginTop: 50,
-                shadowOffset: { width: 10, height: 10 },
-                shadowColor: "#ffffff",
-                shadowOpacity: 1
-              }}
-              source={require("../../assets/images/drawable-xhdpi/gnojek.png")}
-            />
-            <View
-              style={{
-                alignItems: "center",
-                position: "absolute",
-                bottom: 0,
-                width: SCREEN_WIDTH
+                marginBottom: 20
               }}
             >
-              <TouchableWithoutFeedback
-                onPress={this.onSignInPress}
+              <View
                 style={{
-                  marginBottom: 20
+                  height: 48,
+                  width: SCREEN_WIDTH - 64,
+                  alignItems: "center",
+                  justifyContent: "center",
+                  borderRadius: 24,
+                  backgroundColor: "#AD6A6C",
+                  marginBottom: 20,
+                  flexDirection: "row"
                 }}
               >
-                <View
-                  style={{
-                    height: 48,
-                    width: SCREEN_WIDTH - 64,
-                    alignItems: "center",
-                    justifyContent: "center",
-                    borderRadius: 24,
-                    backgroundColor: "#AD6A6C",
-                    marginBottom: 20,
-                    flexDirection: "row"
-                  }}
-                >
-                  <Text style={{ color: "#ffffff" }}>SIGN IN</Text>
-                </View>
-              </TouchableWithoutFeedback>
-              <TouchableWithoutFeedback
-                onPress={this.onSignUpPress}
+                <Text style={{ color: "#ffffff" }}>SIGN IN</Text>
+              </View>
+            </TouchableWithoutFeedback>
+            <TouchableWithoutFeedback
+              onPress={this.onSignUpPress}
+              style={{
+                marginBottom: 40
+              }}
+            >
+              <View
                 style={{
-                  marginBottom: 40
+                  width: SCREEN_WIDTH - 64,
+                  alignItems: "center",
+                  justifyContent: "center",
+                  height: 48,
+                  borderRadius: 24,
+                  backgroundColor: "#5D2E46",
+                  marginBottom: 40,
+                  flexDirection: "row"
                 }}
               >
-                <View
-                  style={{
-                    width: SCREEN_WIDTH - 64,
-                    alignItems: "center",
-                    justifyContent: "center",
-                    height: 48,
-                    borderRadius: 24,
-                    backgroundColor: "#5D2E46",
-                    marginBottom: 40,
-                    flexDirection: "row"
-                  }}
-                >
-                  <Text style={{ color: "#ffffff" }}>SIGN UP</Text>
-                </View>
-              </TouchableWithoutFeedback>
-            </View>
+                <Text style={{ color: "#ffffff" }}>SIGN UP</Text>
+              </View>
+            </TouchableWithoutFeedback>
           </View>
-        </ImageBackground>
+        </View>
       </ScreenContainer>
     );
   }
