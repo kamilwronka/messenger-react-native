@@ -4,7 +4,8 @@ import {
   View,
   RefreshControl,
   ScrollView,
-  FlatList
+  FlatList,
+  Text
 } from "react-native";
 import { isNil, isArray, get, isEmpty } from "lodash";
 // import { MaterialCommunityIcons, Feather } from '@expo/vector-icons';

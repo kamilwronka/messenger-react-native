@@ -6,7 +6,8 @@ import {
   FlatList,
   Text,
   RefreshControl,
-  KeyboardAvoidingView
+  KeyboardAvoidingView,
+  Keyboard
 } from "react-native";
 import { isNil, isEqual, get } from "lodash";
 
@@ -39,7 +40,8 @@ class ConversationScreen extends React.Component {
     messageInput: "",
     conversationId: null,
     page: 0,
-    scrolledTop: false
+    keyboardHeight: 0,
+    endEverReached: false
   };
 
   componentDidMount() {
@@ -54,20 +56,19 @@ class ConversationScreen extends React.Component {
 
     !isNil(conversationId) &&
       Promise.all([
-        this.props.fetchConversation(conversationId, 0, 20),
+        this.props.fetchConversation(conversationId, 0, 10),
         this.props.fetchConversationInfo(conversationId)
       ]);
 
     socket.on("message", this.pushMessage);
 
-    socket.on("newConversation", conversationId => {
-      this.setState({ conversationId });
-    });
+    Keyboard.addListener("keyboardDidShow", this._keyboardDidShow);
   }
 
   componentWillUnmount() {
     this.props.clearConversation();
     this.props.socket.removeListener("message", this.pushMessage);
+    Keyboard.removeListener("keyboardDidShow", this._keyboardDidShow);
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -81,9 +82,14 @@ class ConversationScreen extends React.Component {
     } = this.props;
 
     if (prevState.page !== this.state.page) {
-      fetchConversation(conversationId, this.state.page, 20);
+      fetchConversation(conversationId, this.state.page, 10);
     }
   }
+
+  _keyboardDidShow = e => {
+    console.log(e);
+    this.setState({ keyboardHeight: e.endCoordinates.height });
+  };
 
   handleGoBack = () => {
     this.props.navigation.goBack(null);
@@ -93,7 +99,7 @@ class ConversationScreen extends React.Component {
     this.props.pushNewMessage(message);
   };
 
-  onRefresh = () => {
+  loadMoreData = () => {
     const { page } = this.state;
     this.setState({ page: page + 1 });
   };
@@ -282,18 +288,8 @@ class ConversationScreen extends React.Component {
     );
   };
 
-  handleScrollingOnNewMessage = () => {
-    !this.state.scrolledTop && this.refs.scrollView.scrollToEnd();
-  };
-
-  handleScroll = ({
-    nativeEvent: { contentOffset, contentSize, layoutMeasurement }
-  }) => {
-    if (contentOffset.y + layoutMeasurement.height === contentSize.height) {
-      this.setState({ scrolledTop: false });
-    } else {
-      this.setState({ scrolledTop: true });
-    }
+  scrollToEnd = () => {
+    setTimeout(this.refs.scrollView.scrollToEnd, 100);
   };
 
   _keyExtractor = (item, index) => String(index);
@@ -337,14 +333,27 @@ class ConversationScreen extends React.Component {
           />
         </Header>
         <ScrollView
-          onScroll={this.handleScroll}
+          // refreshControl={
+          //   <RefreshControl
+          //     refreshing={this.props.conversation.fetching}
+          //     onRefresh={this.onRefresh}
+          //   />
+          // }
+          onScroll={e => {
+            console.log(e.nativeEvent);
+            if (e.nativeEvent.contentOffset.y < 150) {
+              this.state.endEverReached && this.loadMoreData();
+            }
+
+            if (
+              e.nativeEvent.contentOffset.y +
+                e.nativeEvent.layoutMeasurement.height >
+              e.nativeEvent.contentSize.height - 100
+            ) {
+              this.setState({ endEverReached: true });
+            }
+          }}
           scrollEventThrottle={50}
-          refreshControl={
-            <RefreshControl
-              refreshing={this.props.conversation.fetching}
-              onRefresh={this.onRefresh}
-            />
-          }
           ref="scrollView"
         >
           <FlatList
@@ -352,22 +361,22 @@ class ConversationScreen extends React.Component {
             data={messages}
             keyExtractor={this._keyExtractor}
             renderItem={this._renderItem}
-            onContentSizeChange={this.handleScrollingOnNewMessage}
+            onContentSizeChange={this.scrollToEnd}
+            inverted
+            initialNumToRender={10}
           />
         </ScrollView>
-        <KeyboardAvoidingView behavior="padding">
+        <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={40}>
           <ConversationBottomBar
             goToCamera={this.goToCamera}
             messageInput={this.state.messageInput}
-            onInputFocus={() =>
-              setTimeout(this.refs.scrollView.scrollToEnd, 100)
-            }
             inputColor={color}
             handleSubmit={this.handleSubmit}
             handleChangeInput={this.handleChangeInput}
             handleEmojiSend={this.handleEmojiSend}
             emoji={emoji}
             handleImageSend={this.handleImageSend}
+            keyboardHeight={this.state.keyboardHeight}
           />
         </KeyboardAvoidingView>
       </View>

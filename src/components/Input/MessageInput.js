@@ -29,17 +29,19 @@ const styles = StyleSheet.create({
   container: {
     // borderColor: '#cccccc',
     // borderWidth: 1,
-    height: 36,
+    minHeight: 36,
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: "#f0f0f0",
-    borderRadius: 10
+    borderRadius: 18
   },
   input: {
     flex: 1,
-    height: 40,
+    minHeight: 36,
     paddingLeft: 15,
+    textAlignVertical: "center",
     fontSize: 16,
+    paddingTop: 8,
     color: "#000000"
   },
   icon: {

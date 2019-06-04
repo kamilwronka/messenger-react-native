@@ -8,7 +8,6 @@ export const Header = ({ children }) => {
   return (
     <View
       style={{
-        marginTop: 24,
         height: 56,
         width,
         flexDirection: "row",

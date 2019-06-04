@@ -1,5 +1,5 @@
 import React, { PureComponent } from "react";
-import { TouchableNativeFeedback, View, Text } from "react-native";
+import { TouchableWithoutFeedback, View, Text } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { connect } from "react-redux";
 import { withNavigation } from "react-navigation";
@@ -24,7 +24,7 @@ class SettingsList extends PureComponent {
         >
           <Text style={{ fontSize: 20, color: "#ffffff" }}>Preferences</Text>
         </View>
-        <TouchableNativeFeedback>
+        <TouchableWithoutFeedback>
           <View
             style={{
               height: 72,
@@ -68,8 +68,8 @@ class SettingsList extends PureComponent {
               </Text>
             </View>
           </View>
-        </TouchableNativeFeedback>
-        <TouchableNativeFeedback>
+        </TouchableWithoutFeedback>
+        <TouchableWithoutFeedback>
           <View
             style={{
               height: 72,
@@ -111,8 +111,8 @@ class SettingsList extends PureComponent {
               <Text style={{ color: "#ffffff", fontSize: 18 }}>Photos</Text>
             </View>
           </View>
-        </TouchableNativeFeedback>
-        <TouchableNativeFeedback>
+        </TouchableWithoutFeedback>
+        <TouchableWithoutFeedback>
           <View
             style={{
               height: 72,
@@ -156,7 +156,7 @@ class SettingsList extends PureComponent {
               </Text>
             </View>
           </View>
-        </TouchableNativeFeedback>
+        </TouchableWithoutFeedback>
         <View
           style={{
             paddingHorizontal: 32,
@@ -167,7 +167,7 @@ class SettingsList extends PureComponent {
         >
           <Text style={{ fontSize: 20, color: "#ffffff" }}>Account</Text>
         </View>
-        <TouchableNativeFeedback>
+        <TouchableWithoutFeedback>
           <View
             style={{
               height: 72,
@@ -211,8 +211,8 @@ class SettingsList extends PureComponent {
               </Text>
             </View>
           </View>
-        </TouchableNativeFeedback>
-        <TouchableNativeFeedback onPress={this.handleLogout}>
+        </TouchableWithoutFeedback>
+        <TouchableWithoutFeedback onPress={this.handleLogout}>
           <View
             style={{
               height: 72,
@@ -254,7 +254,7 @@ class SettingsList extends PureComponent {
               <Text style={{ color: "#ffffff", fontSize: 18 }}>Log out</Text>
             </View>
           </View>
-        </TouchableNativeFeedback>
+        </TouchableWithoutFeedback>
       </View>
     );
   }
