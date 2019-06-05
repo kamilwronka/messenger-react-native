@@ -38,7 +38,8 @@ class ConversationScreen extends React.Component {
     conversationId: null,
     page: 0,
     keyboardHeight: 0,
-    endEverReached: false
+    endEverReached: false,
+    scrolled: false
   };
 
   componentDidMount() {
@@ -99,7 +100,7 @@ class ConversationScreen extends React.Component {
 
   loadMoreData = () => {
     const { page } = this.state;
-    this.setState({ page: page + 1 });
+    !this.props.conversation.fetching && this.setState({ page: page + 1 });
   };
 
   componentWillReceiveProps(nextProps) {
@@ -287,7 +288,7 @@ class ConversationScreen extends React.Component {
   };
 
   scrollToEnd = () => {
-    setTimeout(this.refs.scrollView.scrollToEnd, 100);
+    !this.state.scrolled && setTimeout(this.refs.scrollView.scrollToEnd, 100);
   };
 
   _keyExtractor = (item, index) => String(index);
@@ -343,6 +344,13 @@ class ConversationScreen extends React.Component {
               e.nativeEvent.contentSize.height - 100
             ) {
               this.setState({ endEverReached: true });
+            }
+            if (
+              e.nativeEvent.contentOffset.y +
+                e.nativeEvent.layoutMeasurement.height <
+              e.nativeEvent.contentSize.height
+            ) {
+              this.setState({ scrolled: true });
             }
           }}
           scrollEventThrottle={50}

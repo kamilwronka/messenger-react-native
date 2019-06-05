@@ -13,6 +13,7 @@ import {
   Alert
 } from "react-native";
 import { isNil, get } from "lodash";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { connect } from "react-redux";
 import {
@@ -90,6 +91,31 @@ class ConversationInfoScreen extends React.Component {
     this.setState({ emojiModalVisible: visible });
   };
 
+  renderColorItem = ({ item }) => {
+    const { conversationId } = this.props.navigation.state.params;
+
+    console.log(item);
+
+    return (
+      <TouchableWithoutFeedback
+        onPress={() =>
+          this.props
+            .setConversationColor(conversationId, item)
+            .then(() => this.setModalVisible(false))
+        }
+      >
+        <View
+          style={{
+            height: SCREEN_WIDTH / 5 - 16,
+            width: SCREEN_WIDTH / 5 - 16,
+            backgroundColor: item,
+            margin: 4
+          }}
+        />
+      </TouchableWithoutFeedback>
+    );
+  };
+
   _keyExtractor = (item, index) => index;
 
   render() {
@@ -104,16 +130,56 @@ class ConversationInfoScreen extends React.Component {
     } = this.props;
 
     const colors = [
-      "#29335C",
-      "#DB2B39",
-      "#534D41",
-      "#519E8A",
-      "#243B4A",
-      "#805E73",
-      "#87BCDE",
-      "#000000",
-      "#66101F",
-      "#8A8E91"
+      "#FF6633",
+      "#FFB399",
+      "#FF33FF",
+      "#FFFF99",
+      "#00B3E6",
+      "#E6B333",
+      "#3366E6",
+      "#999966",
+      "#99FF99",
+      "#B34D4D",
+      "#80B300",
+      "#809900",
+      "#E6B3B3",
+      "#6680B3",
+      "#66991A",
+      "#FF99E6",
+      "#CCFF1A",
+      "#FF1A66",
+      "#E6331A",
+      "#33FFCC",
+      "#66994D",
+      "#B366CC",
+      "#4D8000",
+      "#B33300",
+      "#CC80CC",
+      "#66664D",
+      "#991AFF",
+      "#E666FF",
+      "#4DB3FF",
+      "#1AB399",
+      "#E666B3",
+      "#33991A",
+      "#CC9999",
+      "#B3B31A",
+      "#00E680",
+      "#4D8066",
+      "#809980",
+      "#E6FF80",
+      "#1AFF33",
+      "#999933",
+      "#FF3380",
+      "#CCCC00",
+      "#66E64D",
+      "#4D80CC",
+      "#9900B3",
+      "#E64D66",
+      "#4DB380",
+      "#FF4D4D",
+      "#99E6E6",
+      "#6666FF"
     ];
 
     return (
@@ -127,21 +193,18 @@ class ConversationInfoScreen extends React.Component {
           }}
         >
           <Modal
-            animationType="fade"
+            animationType="slide"
             transparent={false}
             hardwareAccelerated
-            presentationStyle="pageSheet"
             visible={this.state.emojiModalVisible}
             onRequestClose={() => {
               this.setEmojiModalVisible(false);
             }}
           />
-
           <Modal
-            animationType="fade"
-            transparent={false}
+            animationType="slide"
+            transparent={true}
             hardwareAccelerated={true}
-            presentationStyle="pageSheet"
             visible={this.state.modalVisible}
             onRequestClose={() => {
               this.setModalVisible(false);
@@ -150,40 +213,54 @@ class ConversationInfoScreen extends React.Component {
             <View
               style={{
                 flex: 1,
-                backgroundColor: "transparent",
-                justifyContent: "center",
-                alignItems: "center"
+                justifyContent: "flex-end",
+                flexDirection: "column"
               }}
             >
-              <Text>Wybierz sobie kolor ryjku</Text>
               <View
                 style={{
-                  backgroundColor: "#ffffff",
-                  height: SCREEN_HEIGHT / 2,
-                  width: SCREEN_WIDTH - 200,
                   flexWrap: "wrap",
-                  flexDirection: "row"
+                  flexDirection: "row",
+                  height: SCREEN_HEIGHT / 2,
+                  backgroundColor: "#fff",
+                  padding: 20
                 }}
               >
-                {colors.map(color => {
-                  return (
-                    <TouchableWithoutFeedback
-                      onPress={() =>
-                        this.props
-                          .setConversationColor(conversationId, color)
-                          .then(() => this.setModalVisible(false))
-                      }
-                    >
-                      <View
-                        style={{
-                          height: 64,
-                          width: 64,
-                          backgroundColor: color
-                        }}
-                      />
-                    </TouchableWithoutFeedback>
-                  );
-                })}
+                <Text style={{ fontSize: 22, fontWeight: "bold" }}>
+                  Set your chat color
+                </Text>
+                <TouchableOpacity
+                  onPress={() => this.setModalVisible(false)}
+                  style={{ position: "absolute", right: 20, top: 20 }}
+                >
+                  <View
+                    style={{
+                      height: 36,
+                      width: 36,
+                      borderRadius: 18,
+                      backgroundColor: "#f0f0f0",
+                      justifyContent: "center",
+                      alignItems: "center"
+                    }}
+                  >
+                    <Icon name="close" size={24} color="#000" />
+                  </View>
+                </TouchableOpacity>
+                <View
+                  style={{
+                    marginTop: 20,
+                    marginBottom: 40
+                  }}
+                >
+                  <FlatList
+                    style={{ width: "100%", height: "100%" }}
+                    contentContainerStyle={{ width: "100%" }}
+                    data={colors}
+                    numColumns={5}
+                    renderItem={this.renderColorItem}
+                    keyExtractor={this._keyExtractor}
+                  />
+                </View>
               </View>
             </View>
           </Modal>
@@ -195,12 +272,6 @@ class ConversationInfoScreen extends React.Component {
               size={28}
             />
             <HeaderTitle color="#ffffff" value="Ustawienia" />
-            <HeaderIconRight
-              iconName="dots-vertcal"
-              onPress={this.toggleSearchBar}
-              color="#ffffff"
-              size={28}
-            />
           </Header>
           <ScrollView style={{ flex: 1, flexDirection: "column", flexGrow: 1 }}>
             <View
