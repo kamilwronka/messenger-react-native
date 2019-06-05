@@ -1,7 +1,11 @@
 import React, { PureComponent } from "react";
-import { Platform, Text, TouchableWithoutFeedback, View } from "react-native";
+import { Text, TouchableWithoutFeedback, View, StyleSheet } from "react-native";
 import { isEmpty, isNil } from "lodash";
 import { withNavigation } from "react-navigation";
+import { connect } from "react-redux";
+
+import { getUserData } from "@/selectors/user.selectors";
+import { prepareLastMessage, prepareLastMessageDate } from "@/helpers";
 
 class ConversationListItem extends PureComponent {
   handleConversationSelect = () => {
@@ -27,8 +31,13 @@ class ConversationListItem extends PureComponent {
       conversationName,
       children,
       lastMessage,
-      lastMessageDate
+      user
     } = this.props;
+
+    const lastMessagePrefix =
+      user.data._id === lastMessage.userId ? "You: " : "";
+    const lastMessageContent = prepareLastMessage(lastMessage);
+    const lastMessageDate = prepareLastMessageDate(lastMessage);
 
     return (
       !isEmpty(preparedParticipants) && (
@@ -58,13 +67,13 @@ class ConversationListItem extends PureComponent {
                 {conversationName}
               </Text>
               {!isNil(lastMessage) && (
-                <Text style={{ fontSize: 14, color: "#bbbbbb" }}>
-                  {`${lastMessage} \u2022 ${lastMessageDate}`}
+                <Text numberOfLines={1} style={styles.lastMessageContent}>
+                  {lastMessagePrefix + lastMessageContent}
                 </Text>
               )}
             </View>
             <View style={{ height: 48 }}>
-              {/* <Text style={{ fontSize: 12, color: '#000000' }}>23:15</Text> */}
+              <Text style={styles.lastMessageDate}>{lastMessageDate}</Text>
             </View>
           </View>
         </TouchableWithoutFeedback>
@@ -73,4 +82,18 @@ class ConversationListItem extends PureComponent {
   }
 }
 
-export default withNavigation(ConversationListItem);
+const mapStateToProps = state => {
+  return {
+    user: getUserData(state)
+  };
+};
+
+export default connect(mapStateToProps)(withNavigation(ConversationListItem));
+
+const styles = StyleSheet.create({
+  lastMessageDate: { fontSize: 14, color: "#bbbbbb" },
+  lastMessageContent: {
+    fontSize: 14,
+    color: "#bbbbbb"
+  }
+});

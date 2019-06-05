@@ -72,10 +72,17 @@ const ModalStack = createStackNavigator(
 
 const MessengerApp = createStackNavigator({
   AuthLoadingScreen: {
-    screen: AuthLoadingScreen
+    screen: AuthLoadingScreen,
+    navigationOptions: {
+      gesturesEnabled: false
+    }
   },
   WelcomeScreen: {
-    screen: WelcomeScreen
+    screen: WelcomeScreen,
+    navigationOptions: {
+      gesturesEnabled: false,
+      header: null
+    }
   },
   LoginScreen: {
     screen: LoginScreen
@@ -92,23 +99,23 @@ const MessengerApp = createStackNavigator({
   },
   ConversationStack: {
     screen: ConversationStack,
-    navigationOptions: { gesturesEnabled: false, header: null }
+    navigationOptions: { header: null }
   },
   CameraScreen: {
     screen: CameraScreen,
-    navigationOptions: { gesturesEnabled: false, header: null }
+    navigationOptions: { header: null }
   },
   PhotoScreen: {
     screen: PhotoScreen,
-    navigationOptions: { gesturesEnabled: false, header: null }
+    navigationOptions: { header: null }
   },
   SettingsScreen: {
     screen: SettingsScreen,
-    navigationOptions: { gesturesEnabled: false, header: null }
+    navigationOptions: { header: null }
   },
   GalleryScreen: {
     screen: GalleryScreen,
-    navigationOptions: { gesturesEnabled: false, header: null }
+    navigationOptions: { header: null }
   }
 });
 
