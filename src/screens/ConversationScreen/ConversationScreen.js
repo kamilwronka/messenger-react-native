@@ -1,11 +1,8 @@
 import React, { Component } from "react";
 import {
   ScrollView,
-  StyleSheet,
   View,
   FlatList,
-  Text,
-  RefreshControl,
   KeyboardAvoidingView,
   Keyboard
 } from "react-native";
@@ -89,6 +86,7 @@ class ConversationScreen extends React.Component {
   _keyboardDidShow = e => {
     console.log(e);
     this.setState({ keyboardHeight: e.endCoordinates.height });
+    this.scrollToEnd();
   };
 
   handleGoBack = () => {
@@ -333,15 +331,9 @@ class ConversationScreen extends React.Component {
           />
         </Header>
         <ScrollView
-          // refreshControl={
-          //   <RefreshControl
-          //     refreshing={this.props.conversation.fetching}
-          //     onRefresh={this.onRefresh}
-          //   />
-          // }
           onScroll={e => {
             console.log(e.nativeEvent);
-            if (e.nativeEvent.contentOffset.y < 150) {
+            if (e.nativeEvent.contentOffset.y < 300) {
               this.state.endEverReached && this.loadMoreData();
             }
 

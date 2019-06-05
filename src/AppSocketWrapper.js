@@ -12,6 +12,13 @@ import { fetchConversations } from "./screens/MessagesScreen/actions/homeScreen.
 import { pushNotification } from "./screens/NotificationsScreen/actions/notifications.actions";
 
 const VIBRATION_DURATION = 200;
+const MESSAGE_SOUND = new Sound(
+  "https://fsa.zobj.net/download/bHGd7vJCMekZuwAMEv0zfI-UYx8SuFlDM_7D9IdQA8I39EQwujqnkK3gHwWHYwTTxz8cT8ThIg_YT4E17Dj3fgn0gw9avkhFf2LIPlcOkanowoPx9nCnKl27k_RI/?a=web&c=72&f=messenger_2013.mp3&special=1553122204-kiSV4Uglth0zi%2FVahE9qpv7YwSGN1BJPNSXM0VeykJA%3D",
+  null,
+  error => {
+    // console.log(error);
+  }
+);
 
 class AppSocketWrapper extends PureComponent {
   state = {
@@ -50,26 +57,21 @@ class AppSocketWrapper extends PureComponent {
   //   requestPermissions: true
   // });
 
-  sound = new Sound(
-    "https://fsa.zobj.net/download/bHGd7vJCMekZuwAMEv0zfI-UYx8SuFlDM_7D9IdQA8I39EQwujqnkK3gHwWHYwTTxz8cT8ThIg_YT4E17Dj3fgn0gw9avkhFf2LIPlcOkanowoPx9nCnKl27k_RI/?a=web&c=72&f=messenger_2013.mp3&special=1553122204-kiSV4Uglth0zi%2FVahE9qpv7YwSGN1BJPNSXM0VeykJA%3D",
-    null,
-    error => {
-      // console.log(error);
-    }
-  );
-
   async componentDidMount() {
     const token = await AsyncStorage.getItem("pushNotificationsKey");
+    this.setupListeners();
     if (this.props.user.logged) {
-      this.socket.emit("newPushToken", token);
+      if (this.socket) {
+        this.socket.emit("newPushToken", token);
+      }
     }
   }
 
   async componentWillReceiveProps(nextProps) {
-    if (
-      this.props.user.logged !== nextProps.user.logged ||
-      nextProps.user.logged === true
-    ) {
+    const { logged } = this.props.user;
+    const { logged: nextLogged } = nextProps.user;
+
+    if (logged !== nextLogged || logged === true) {
       this.socket = io(apiConfig.ROOT_URL, {
         query: {
           token: nextProps.user.token
@@ -78,16 +80,20 @@ class AppSocketWrapper extends PureComponent {
       const token = await AsyncStorage.getItem("pushNotificationsKey");
       this.socket.emit("newPushToken", token);
     }
+
+    if (logged !== nextLogged && nextLogged === false) {
+      this.socket.disconnect();
+    }
   }
 
   componentWillUnmount() {
     this.socket.disconnect();
   }
 
-  render() {
+  setupListeners = () => {
     this.socket.on("message", msg => {
       if (msg.userId !== this.props.user.data._id) {
-        this.sound.play();
+        MESSAGE_SOUND.play();
         Vibration.vibrate(VIBRATION_DURATION);
       }
       this.props.fetchConversations();
@@ -104,7 +110,9 @@ class AppSocketWrapper extends PureComponent {
       }
       alert(`Zaproszenie do użytkownika ${data.toUser} zostało wysłane.`);
     });
+  };
 
+  render() {
     return (
       <SocketContext.Provider value={this.socket}>
         {this.props.children}

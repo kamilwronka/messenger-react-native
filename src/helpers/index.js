@@ -11,11 +11,21 @@ export const prepareLastMessage = lastMessage => {
       case "emoji":
         return lastMessage.messageContent;
       case "photo":
-        return "Wysłano zdjęcie";
+        return "Sent photo";
       default:
         return "";
     }
   } else {
     return null;
+  }
+};
+
+export const prepareLastMessageDate = lastMessage => {
+  if (!isNil(lastMessage)) {
+    const messageDate = new Date(lastMessage.date);
+    const hour = messageDate.getHours();
+    const minute = messageDate.getMinutes();
+
+    return `${hour}:${minute}`;
   }
 };
