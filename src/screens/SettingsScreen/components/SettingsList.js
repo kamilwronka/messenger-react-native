@@ -5,6 +5,7 @@ import { connect } from "react-redux";
 import { withNavigation } from "react-navigation";
 
 import { logoutUser } from "@/actions/auth.actions";
+import ListItem from "@/components/ListItem/ListItem";
 
 class SettingsList extends PureComponent {
   handleLogout = async () => {
@@ -24,6 +25,12 @@ class SettingsList extends PureComponent {
         >
           <Text style={{ fontSize: 20, color: "#ffffff" }}>Preferences</Text>
         </View>
+        <ListItem
+          iconName="bell"
+          iconBackgroundColor="#41337A"
+          iconColor="#fff"
+          text="Notifications and sounds"
+        />
         <TouchableWithoutFeedback>
           <View
             style={{
