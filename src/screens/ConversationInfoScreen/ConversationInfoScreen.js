@@ -13,7 +13,7 @@ import {
   Alert
 } from "react-native";
 import { isNil, get } from "lodash";
-import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import { ListItem, List } from "@/components/List";
 
 import { connect } from "react-redux";
 import {
@@ -28,9 +28,17 @@ import { getUserData } from "@/selectors/user.selectors";
 import {
   fetchConversationInfo,
   pushNewMessage,
-  setConversationColor
+  setConversationColor,
+  fetchConversationPhotos
 } from "@/screens/MessagesScreen/actions/homeScreen.actions";
-import { getConversationInfo } from "@/screens/MessagesScreen/selectors/homeScreen.selectors";
+import {
+  getConversationInfo,
+  getConversationPhotos
+} from "@/screens/MessagesScreen/selectors/homeScreen.selectors";
+import ColorPicker from "./components/ColorPicker";
+
+import { ScreenContainer } from "@/components/ScreenContainer";
+import Switch from "@/components/Switch";
 
 const SCREEN_WIDTH = Dimensions.get("window").width;
 const SCREEN_HEIGHT = Dimensions.get("window").height;
@@ -41,8 +49,10 @@ class ConversationInfoScreen extends React.Component {
   };
 
   state = {
-    modalVisible: false,
-    emojiModalVisible: false
+    colorPickerVisible: false,
+    emojiModalVisible: false,
+    savePhotos: false,
+    muteConversation: false
   };
 
   componentDidMount() {
@@ -56,6 +66,7 @@ class ConversationInfoScreen extends React.Component {
     } = this.props;
 
     this.props.fetchConversationInfo(conversationId);
+    this.props.fetchConversationPhotos(conversationId, 0, 12);
   }
 
   prepareConversationImage = conversation => {
@@ -65,10 +76,6 @@ class ConversationInfoScreen extends React.Component {
     const preparedParticipants = conversation.participants.filter(
       participant => participant._id !== this.props.user.data._id
     );
-    // const conversationName = this.prepareConversationName(
-    //   conversation.name,
-    //   conversation.participants
-    // );
 
     if (preparedParticipants.length === 1) {
       const desiredParticipant = get(preparedParticipants, "[0]");
@@ -83,44 +90,46 @@ class ConversationInfoScreen extends React.Component {
     }
   };
 
-  setModalVisible(visible) {
-    this.setState({ modalVisible: visible });
-  }
+  setColorPickerVisibility = visibility => () => {
+    this.setState({ colorPickerVisible: visibility });
+  };
 
   setEmojiModalVisible = visible => {
     this.setState({ emojiModalVisible: visible });
   };
 
-  renderColorItem = ({ item }) => {
-    const { conversationId } = this.props.navigation.state.params;
-
-    console.log(item);
-
-    return (
-      <TouchableWithoutFeedback
-        onPress={() =>
-          this.props
-            .setConversationColor(conversationId, item)
-            .then(() => this.setModalVisible(false))
-        }
-      >
-        <View
-          style={{
-            height: SCREEN_WIDTH / 5 - 16,
-            width: SCREEN_WIDTH / 5 - 16,
-            backgroundColor: item,
-            margin: 4
-          }}
-        />
-      </TouchableWithoutFeedback>
-    );
+  toggleSavePhotos = () => {
+    this.setState({ savePhotos: !this.state.savePhotos });
   };
 
-  _keyExtractor = (item, index) => index;
+  toggleMuteConversation = () => {
+    this.setState({ muteConversation: !this.state.muteConversation });
+  };
+
+  renderItem = ({ item }) => {
+    return (
+      <View style={{ borderWidth: 1, borderColor: "transparent" }}>
+        <Image
+          source={{
+            uri: `https://s3.eu-central-1.amazonaws.com/messenger-dev-bucket/${
+              item.messageContent
+            }`
+          }}
+          style={{
+            width: SCREEN_WIDTH / 3,
+            height: SCREEN_WIDTH / 3,
+            borderWidth: 2,
+            borderColor: "transparent"
+          }}
+        />
+      </View>
+    );
+  };
 
   render() {
     const {
       conversationInfo: { data },
+      conversationPhotos,
       navigation: {
         goBack,
         state: {
@@ -128,70 +137,20 @@ class ConversationInfoScreen extends React.Component {
         }
       }
     } = this.props;
-
-    const colors = [
-      "#FF6633",
-      "#FFB399",
-      "#FF33FF",
-      "#FFFF99",
-      "#00B3E6",
-      "#E6B333",
-      "#3366E6",
-      "#999966",
-      "#99FF99",
-      "#B34D4D",
-      "#80B300",
-      "#809900",
-      "#E6B3B3",
-      "#6680B3",
-      "#66991A",
-      "#FF99E6",
-      "#CCFF1A",
-      "#FF1A66",
-      "#E6331A",
-      "#33FFCC",
-      "#66994D",
-      "#B366CC",
-      "#4D8000",
-      "#B33300",
-      "#CC80CC",
-      "#66664D",
-      "#991AFF",
-      "#E666FF",
-      "#4DB3FF",
-      "#1AB399",
-      "#E666B3",
-      "#33991A",
-      "#CC9999",
-      "#B3B31A",
-      "#00E680",
-      "#4D8066",
-      "#809980",
-      "#E6FF80",
-      "#1AFF33",
-      "#999933",
-      "#FF3380",
-      "#CCCC00",
-      "#66E64D",
-      "#4D80CC",
-      "#9900B3",
-      "#E64D66",
-      "#4DB380",
-      "#FF4D4D",
-      "#99E6E6",
-      "#6666FF"
-    ];
+    console.log(conversationPhotos);
 
     return (
       !isNil(data) && (
-        <View
-          style={{
-            flex: 1,
-            backgroundColor: "#040D16",
-            flexDirection: "column",
-            flexGrow: 1
-          }}
-        >
+        <ScreenContainer>
+          <Header>
+            <HeaderIconLeft
+              iconName="chevron-left"
+              onPress={() => this.props.navigation.goBack()}
+              color="#ffffff"
+              size={28}
+            />
+            <HeaderTitle color="#ffffff" value={conversationName} />
+          </Header>
           <Modal
             animationType="slide"
             transparent={false}
@@ -201,207 +160,125 @@ class ConversationInfoScreen extends React.Component {
               this.setEmojiModalVisible(false);
             }}
           />
-          <Modal
-            animationType="slide"
-            transparent={true}
-            hardwareAccelerated={true}
-            visible={this.state.modalVisible}
-            onRequestClose={() => {
-              this.setModalVisible(false);
-            }}
-          >
+          <ColorPicker
+            setColorPickerVisibility={this.setColorPickerVisibility}
+            colorPickerVisible={this.state.colorPickerVisible}
+            setConversationColor={this.props.setConversationColor}
+            conversationId={conversationId}
+          />
+
+          <ScrollView style={{ flex: 1, flexDirection: "column", flexGrow: 1 }}>
             <View
               style={{
                 flex: 1,
-                justifyContent: "flex-end",
-                flexDirection: "column"
+                flexDirection: "column",
+                alignItems: "center",
+                marginBottom: 40
               }}
             >
-              <View
-                style={{
-                  flexWrap: "wrap",
-                  flexDirection: "row",
-                  height: SCREEN_HEIGHT / 2,
-                  backgroundColor: "#fff",
-                  padding: 20
-                }}
-              >
-                <Text style={{ fontSize: 22, fontWeight: "bold" }}>
-                  Set your chat color
-                </Text>
-                <TouchableOpacity
-                  onPress={() => this.setModalVisible(false)}
-                  style={{ position: "absolute", right: 20, top: 20 }}
-                >
-                  <View
-                    style={{
-                      height: 36,
-                      width: 36,
-                      borderRadius: 18,
-                      backgroundColor: "#f0f0f0",
-                      justifyContent: "center",
-                      alignItems: "center"
-                    }}
-                  >
-                    <Icon name="close" size={24} color="#000" />
-                  </View>
-                </TouchableOpacity>
-                <View
-                  style={{
-                    marginTop: 20,
-                    marginBottom: 40
-                  }}
-                >
-                  <FlatList
-                    style={{ width: "100%", height: "100%" }}
-                    contentContainerStyle={{ width: "100%" }}
-                    data={colors}
-                    numColumns={5}
-                    renderItem={this.renderColorItem}
-                    keyExtractor={this._keyExtractor}
-                  />
-                </View>
-              </View>
-            </View>
-          </Modal>
-          <Header>
-            <HeaderIconLeft
-              iconName="chevron-left"
-              onPress={() => this.props.navigation.goBack()}
-              color="#ffffff"
-              size={28}
-            />
-            <HeaderTitle color="#ffffff" value="Ustawienia" />
-          </Header>
-          <ScrollView style={{ flex: 1, flexDirection: "column", flexGrow: 1 }}>
-            <View
-              style={{ flex: 1, flexDirection: "column", alignItems: "center" }}
-            >
-              <TouchableOpacity
-                style={{ flex: 1 }}
-                onPress={this._pickBackgroundImage}
-              >
+              <TouchableOpacity onPress={this.setProfilePicture}>
                 <Image
                   style={{
-                    flex: 1,
+                    width: 112,
+                    height: 112,
                     resizeMode: "cover",
-                    height: SCREEN_WIDTH / 2.5,
-                    width: SCREEN_WIDTH
+                    borderRadius: 56,
+                    borderWidth: 5,
+                    borderColor: "#ffffff"
                   }}
                   source={{
-                    uri: get(data, "participants[0].backgroundImage", "")
-                      ? `https://s3.eu-central-1.amazonaws.com/messenger-dev-bucket/${get(
-                          data,
-                          "participants[0].backgroundImage",
-                          ""
-                        )}`
-                      : "https://media.boingboing.net/wp-content/uploads/2018/05/cool-background1.png"
+                    uri:
+                      data && data.avatar
+                        ? `https://s3.eu-central-1.amazonaws.com/messenger-dev-bucket/${
+                            data.avatar
+                          }`
+                        : "https://i0.wp.com/www.winhelponline.com/blog/wp-content/uploads/2017/12/user.png"
                   }}
                 />
               </TouchableOpacity>
-              <View style={{ top: -56, zIndex: 2 }}>
-                <TouchableOpacity onPress={this._pickImage}>
-                  <Image
-                    style={{
-                      width: 112,
-                      height: 112,
-                      resizeMode: "cover",
-                      borderRadius: 56,
-                      borderWidth: 5,
-                      borderColor: "#ffffff",
-                      alignSelf: "center"
-                    }}
-                    source={{
-                      uri: this.prepareConversationImage(data)
-                    }}
-                  />
-                </TouchableOpacity>
-                {/* <Text
-                  style={{
-                    fontSize: 26,
-                    marginVertical: 10,
-                    fontWeight: 'bold',
-                    alignSelf: 'center',
-                  }}>
-                  {get(data.u}
-                </Text> */}
-              </View>
-              <View
+              <Text
                 style={{
-                  flex: 1,
-                  marginTop: 40,
-                  flexGrow: 1,
-                  flexDirection: "column"
+                  fontSize: 16,
+                  marginVertical: 20,
+                  alignSelf: "center",
+                  color: "#ffffff"
                 }}
               >
-                <TouchableWithoutFeedback
-                  onPress={() => {
-                    this.setModalVisible(true);
-                  }}
-                >
-                  <View
-                    style={{
-                      flex: 1,
-                      flexDirection: "row",
-                      width: SCREEN_WIDTH,
-                      height: 48,
-                      // alignItems: 'flex-end',
-                      alignContent: "space-between",
-                      flexWrap: "nowrap"
-                      // flex: 1,
-                    }}
-                  >
-                    <Text style={{ fontSize: 20 }}>Kolor</Text>
-                    <View
-                      style={{
-                        height: 36,
-                        width: 36,
-                        borderRadius: 10,
-                        backgroundColor: get(data, "color", "#912F56")
-                      }}
-                    />
-                  </View>
-                </TouchableWithoutFeedback>
-                <TouchableWithoutFeedback
-                  onPress={() => this.setEmojiModalVisible(true)}
-                >
-                  <View
-                    style={{
-                      flex: 1,
-                      flexDirection: "row",
-                      width: SCREEN_WIDTH,
-                      height: 48,
-                      // alignItems: 'flex-end',
-                      alignContent: "space-between",
-                      flexWrap: "nowrap"
-                      // flex: 1,
-                    }}
-                  >
-                    <Text style={{ fontSize: 20 }}>Emoji</Text>
-                    <Text style={{ fontSize: 26 }}>{data.emoji}</Text>
-                  </View>
-                </TouchableWithoutFeedback>
-                <TouchableWithoutFeedback>
-                  <View
-                    style={{
-                      flex: 1,
-                      flexDirection: "row",
-                      width: SCREEN_WIDTH,
-                      height: 48,
-                      // alignItems: 'flex-end',
-                      alignContent: "space-between",
-                      flexWrap: "nowrap"
-                      // flex: 1,
-                    }}
-                  >
-                    <Text style={{ fontSize: 20 }}>Nazwa konwersacji</Text>
-                    {/* <Text>{get(data, '[0].name', '')}</Text> */}
-                  </View>
-                </TouchableWithoutFeedback>
-              </View>
+                Aktywny(a) 12 min temu
+              </Text>
             </View>
+            <List>
+              <ListItem
+                iconName="palette"
+                value="Color"
+                iconColor="#FFFFFF"
+                iconBackground={get(data, "color", "#912F56")}
+                onPress={this.setColorPickerVisibility(true)}
+              />
+              <ListItem
+                iconName="emoticon"
+                value="Emoji"
+                iconColor="#FFFFFF"
+                iconBackground="#E9AFA3"
+              />
+              <ListItem
+                iconName="account-multiple"
+                value="Nicknames"
+                iconColor="#FFFFFF"
+                iconBackground="#4C3B4D"
+              />
+              <View
+                style={{
+                  paddingHorizontal: 32,
+                  width: "100%",
+                  marginBottom: 20,
+                  marginTop: 20
+                }}
+              >
+                <Text style={{ fontSize: 20, color: "#ffffff" }}>More</Text>
+              </View>
+              <ListItem
+                iconName="image"
+                value="Save photos"
+                iconColor="#FFFFFF"
+                iconBackground="#3A405A"
+              >
+                <Switch
+                  onChange={this.toggleSavePhotos}
+                  value={this.state.savePhotos}
+                />
+              </ListItem>
+              <ListItem
+                iconName={this.state.muteConversation ? "bell-off" : "bell"}
+                value="Mute conversation"
+                iconColor="#FFFFFF"
+                iconBackground="#6B0504"
+              >
+                <Switch
+                  onChange={this.toggleMuteConversation}
+                  value={this.state.muteConversation}
+                />
+              </ListItem>
+            </List>
+            <View
+              style={{
+                paddingHorizontal: 32,
+                width: "100%",
+                marginBottom: 20,
+                marginTop: 20
+              }}
+            >
+              <Text style={{ fontSize: 20, color: "#ffffff" }}>
+                Shared multimedia
+              </Text>
+            </View>
+            <FlatList
+              data={get(conversationPhotos, "data.photos")}
+              renderItem={this.renderItem}
+              numColumns={3}
+            />
           </ScrollView>
-        </View>
+        </ScreenContainer>
       )
     );
   }
@@ -410,12 +287,14 @@ class ConversationInfoScreen extends React.Component {
 const mapStateToProps = state => {
   return {
     user: getUserData(state),
-    conversationInfo: getConversationInfo(state)
+    conversationInfo: getConversationInfo(state),
+    conversationPhotos: getConversationPhotos(state)
   };
 };
 
 const mapDispatchToProps = {
   fetchConversationInfo,
+  fetchConversationPhotos,
   pushNewMessage,
   setConversationColor
 };

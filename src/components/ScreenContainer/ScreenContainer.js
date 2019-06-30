@@ -2,9 +2,13 @@ import React from "react";
 import { View, StyleSheet } from "react-native";
 import { object, string, node } from "prop-types";
 
+import colors from "@/constants/Colors";
+
 const styles = StyleSheet.create({
   container: {
-    flex: 1
+    flex: 1,
+    flexDirection: "column",
+    flexGrow: 1
   }
 });
 
@@ -19,7 +23,7 @@ const ScreenContainer = ({ backgroundColor, children, style }) => {
 };
 
 ScreenContainer.defaultProps = {
-  backgroundColor: "#040D16",
+  backgroundColor: colors.screenBackgroundColor,
   style: {}
 };
 

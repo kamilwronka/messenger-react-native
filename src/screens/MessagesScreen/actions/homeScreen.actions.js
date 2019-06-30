@@ -10,7 +10,8 @@ export const ACTIONS = {
   GET_PRESIGNED_URL: "GET_PRESIGNED_URL",
   PUSH_IMG_TO_MESSAGE: "PUSH_IMG_TO_MESSAGE",
   CLEAR_CONVERSATION: "CLEAR_CONVERSATIONs",
-  SET_CONVERSATION_COLOR: "SET_CONVERSATION_COLOR"
+  SET_CONVERSATION_COLOR: "SET_CONVERSATION_COLOR",
+  FETCH_CONVERSATION_PHOTOS: "FETCH_CONVERSATION_PHOTOS"
 };
 
 export const fetchConversations = () => (dispatch, getState) => {
@@ -44,6 +45,24 @@ export const fetchConversation = (id, page, pageSize) => (
       url: `${
         apiConfig.ROOT_URL
       }/api/conversations/${id}?page=${page}&&pageSize=${pageSize}`,
+      method: "get",
+      headers: { Authorization: user.token }
+    })
+  }).then(res => console.log(res));
+};
+
+export const fetchConversationPhotos = (id, page, pageSize) => (
+  dispatch,
+  getState
+) => {
+  const user = getUserData(getState());
+
+  return dispatch({
+    type: ACTIONS.FETCH_CONVERSATION_PHOTOS,
+    payload: axios({
+      url: `${
+        apiConfig.ROOT_URL
+      }/api/conversations/${id}/photos?page=${page}&&pageSize=${pageSize}`,
       method: "get",
       headers: { Authorization: user.token }
     })
