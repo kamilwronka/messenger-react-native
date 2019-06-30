@@ -1,11 +1,5 @@
 import React, { Component } from "react";
-import {
-  StyleSheet,
-  StatusBar,
-  View,
-  YellowBox,
-  SafeAreaView
-} from "react-native";
+import { StyleSheet, StatusBar, YellowBox, SafeAreaView } from "react-native";
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/lib/integration/react";
 import SplashScreen from "react-native-splash-screen";
@@ -23,7 +17,7 @@ YellowBox.ignoreWarnings([
 
 export default class App extends Component {
   componentDidMount() {
-    setTimeout(SplashScreen.hide, 100);
+    SplashScreen.hide();
   }
 
   render() {

@@ -6,3 +6,5 @@ export const getConversation = state =>
   get(state, "messagesScreen.conversation");
 export const getConversationInfo = state =>
   get(state, "messagesScreen.conversationInfo");
+export const getConversationPhotos = state =>
+  get(state, "messagesScreen.conversationPhotos");
