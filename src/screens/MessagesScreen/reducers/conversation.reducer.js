@@ -1,5 +1,6 @@
 import { isNil, get } from "lodash";
 import { ACTIONS } from "../actions/homeScreen.actions";
+import { ACTIONS as MSG_ACTIONS } from "../../../actions/msg.actions";
 
 const INITIAL_STATE = {
   data: null,
@@ -54,10 +55,10 @@ const conversationReducer = (state = INITIAL_STATE, action) => {
         intact: false,
         fetching: false
       };
-    case `${ACTIONS.SET_CONVERSATION_COLOR}_FULFILLED`:
+    case MSG_ACTIONS.UPDATE_CONVERSATION_COLOR:
       return {
         ...state,
-        data: { ...state.data, color: get(action.payload, "data.color") }
+        data: { ...state.data, color: action.payload.color }
       };
     case `${ACTIONS.CLEAR_CONVERSATION}`:
       return INITIAL_STATE;

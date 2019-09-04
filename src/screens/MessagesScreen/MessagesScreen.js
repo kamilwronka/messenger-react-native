@@ -4,6 +4,8 @@ import { isNil, isArray, get } from "lodash";
 import { connect } from "react-redux";
 import { NavigationEvents } from "react-navigation";
 
+import withSocket from "@/hocs/withSocket.hoc";
+
 import SearchHeader from "../../components/SearchHeader";
 import SocketContext from "@/helpers/socketContext";
 import {
@@ -110,6 +112,7 @@ class MessagesScreenWithSocket extends PureComponent {
   };
 
   render() {
+    console.log(withSocket(MessagesScreen));
     return (
       <SocketContext.Consumer>
         {socket => <MessagesScreen {...this.props} socket={socket} />}
@@ -132,7 +135,7 @@ const mapDispatchToProps = {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(MessagesScreenWithSocket);
+)(withSocket(MessagesScreen));
 
 const styles = StyleSheet.create({
   scrollView: {

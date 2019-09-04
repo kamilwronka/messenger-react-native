@@ -164,6 +164,18 @@ class ConvListItem extends Component {
         );
       case "video":
         return <ConversationVideo video={item} id={_id} />;
+      case "colorChange":
+        return (
+          <View
+            style={{
+              marginHorizontal: 20,
+              flex: 1,
+              backgroundColor: item.messageContent
+            }}
+          >
+            <Text>Uzytkownik zmienil kolor konwersacji na</Text>
+          </View>
+        );
       default:
         return null;
     }

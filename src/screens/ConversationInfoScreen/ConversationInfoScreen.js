@@ -14,8 +14,12 @@ import {
 } from "react-native";
 import { isNil, get } from "lodash";
 import { ListItem, List } from "@/components/List";
+import { updateConversationColor } from "@/actions/msg.actions";
 
 import { connect } from "react-redux";
+
+import withSocket from "@/hocs/withSocket.hoc";
+
 import {
   Header,
   HeaderTitle,
@@ -65,6 +69,10 @@ class ConversationInfoScreen extends React.Component {
       }
     } = this.props;
 
+    socket.on("changeConversationColor", ({ color, conversationId }) => {
+      this.props.updateConversationColor(conversationId, color);
+    });
+
     this.props.fetchConversationInfo(conversationId);
     this.props.fetchConversationPhotos(conversationId, 0, 12);
   }
@@ -108,7 +116,12 @@ class ConversationInfoScreen extends React.Component {
 
   renderItem = ({ item }) => {
     return (
-      <View style={{ borderWidth: 1, borderColor: "transparent" }}>
+      <View
+        style={{
+          borderWidth: 1,
+          borderColor: "transparent"
+        }}
+      >
         <Image
           source={{
             uri: `https://s3.eu-central-1.amazonaws.com/messenger-dev-bucket/${
@@ -137,7 +150,9 @@ class ConversationInfoScreen extends React.Component {
         }
       }
     } = this.props;
-    console.log(conversationPhotos);
+    // console.log(conversationPhotos);
+
+    console.log(data);
 
     return (
       !isNil(data) && (
@@ -296,10 +311,11 @@ const mapDispatchToProps = {
   fetchConversationInfo,
   fetchConversationPhotos,
   pushNewMessage,
-  setConversationColor
+  setConversationColor,
+  updateConversationColor
 };
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(ConversationInfoScreen);
+)(withSocket(ConversationInfoScreen));
